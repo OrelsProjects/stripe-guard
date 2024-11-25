@@ -18,12 +18,12 @@ interface ContentProviderProps {
 const BOTTOM_BAR_HEIGHT = 65;
 
 const ContentProvider: React.FC<ContentProviderProps> = ({ children }) => {
-  const { user, state } = useAppSelector(state => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const { theme } = useTheme();
   const sizeContent = React.useContext(SizeContext);
   const bottomBarRef = React.useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = React.useState<number>(
-    sizeContent.height,
+    sizeContent.height
   );
   ("use client");
 
@@ -42,7 +42,7 @@ const ContentProvider: React.FC<ContentProviderProps> = ({ children }) => {
           "w-full lg:max-w-[65rem] mx-auto lg:flex p-4 relative md:!h-screen md:!max-h-screen",
           {
             "pb-[calc(max(env(safe-area-inset-bottom), 16px) - 16px)]": user,
-          },
+          }
         )}
         style={{
           height: contentHeight,
@@ -65,14 +65,6 @@ const ContentProvider: React.FC<ContentProviderProps> = ({ children }) => {
               pauseOnHover={false}
             />
           </div>
-          {/* <Button
-            className="absolute top-0 right-0 p-4 z-[5555] bg-primary text-white"
-            onClick={() => {
-              axios.post("/api/migrate");
-            }}
-          >
-            Migrate
-          </Button> */}
           <div className="w-full h-full flex flex-col relative z-10 overflow-auto scrollbar-hide md:scrollbar-visible md:px-4">
             {user && <SettingsComponent />}
             {children}
