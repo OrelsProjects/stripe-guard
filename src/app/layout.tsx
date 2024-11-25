@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import AuthProvider from "@/app/providers/AuthProvider";
 import ClientTrackersProvider from "@/app/providers/ClientTrackersProvider";
 import SessionWrapper from "@/app/providers/SessionWrapper";
 import StoreProvider from "@/app/providers/StoreProvider";
 import TopLoaderProvider from "@/app/providers/TopLoaderProvider";
 import Loading from "@/components/ui/loading";
 import { initLogger } from "@/logger";
-import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
+import { ThemeProvider } from "@/app/providers/ThemeProvider";
+import { Poppins } from "@/lib/utils/fonts";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -66,7 +66,7 @@ export default function Layout({ children }: RootLayoutProps) {
   initLogger();
 
   return (
-    <html lang="en" className="font-montserrat">
+    <html lang="en" className={Poppins.className}>
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -83,17 +83,15 @@ export default function Layout({ children }: RootLayoutProps) {
             <Loading spinnerClassName="absolute top-1/2 left-1/2 h-10 w-10" />
           }
         >
-          <StoreProvider>
-            <SessionWrapper>
-              <ThemeProvider>
-                <AuthProvider>
-                  <TopLoaderProvider />
-                  {children}
-                  <ClientTrackersProvider />
-                </AuthProvider>
-              </ThemeProvider>
-            </SessionWrapper>
-          </StoreProvider>
+          <ThemeProvider>
+            <StoreProvider>
+              <SessionWrapper>
+                <TopLoaderProvider />
+                {children}
+                <ClientTrackersProvider />
+              </SessionWrapper>
+            </StoreProvider>
+          </ThemeProvider>
         </Suspense>
       </body>
     </html>

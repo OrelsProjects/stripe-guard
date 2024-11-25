@@ -3,7 +3,7 @@
 import * as React from "react";
 import "react-toastify/dist/ReactToastify.css";
 import SizeContext from "@/lib/context/sizeContext";
-import NavigationBar from "@/components/navigationBar";
+import NavigationBar from "@/components/sections/navigationBar";
 import { ThemeProvider } from "./ThemeProvider";
 import * as toast from "react-toastify";
 import SettingsComponent from "@/components/settingsContainer";
