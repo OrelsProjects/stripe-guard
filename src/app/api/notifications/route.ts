@@ -20,8 +20,8 @@ export async function POST(req: NextRequest): Promise<NextResponse<any>> {
       userId,
       type,
     }: NotificationData & { userId: string } = await req.json();
-    const user = await prisma.appUser.findUnique({
-      where: { userId },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
       include: {
         meta: {
           select: {

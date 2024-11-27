@@ -6,15 +6,20 @@ import { useAppDispatch } from "@/lib/hooks/redux";
 import { EventTracker } from "@/eventTracker";
 import { Logger } from "@/logger";
 import axios from "axios";
+import { redirect, useRouter } from "next/navigation";
 
 const useAuth = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
   const signInWithGoogle = useCallback(async () => {
     try {
       setLoading(true);
-      await signIn("google");
+      await signIn("google", {
+        redirect: true,
+        callbackUrl: "/",
+      });
     } catch (error: any) {
       if (error?.name === "UserAlreadyAuthenticatedException") {
         EventTracker.track("User already authenticated");
@@ -43,27 +48,26 @@ const useAuth = () => {
     }
   }, []);
 
-  const signInWithEmail = useCallback(
-    async (email: string, password: string) => {
-      try {
-        setLoading(true);
-        const result = await signIn("credentials", {
-          email,
-          password,
-          isSignIn: true,
-          redirect: false,
-        });
-        if (!result?.ok) {
-          throw new Error("Failed to sign in");
-        }
-      } catch (error: any) {
-        Logger.error("Error signing in with email", { error });
-        dispatch(setError("Failed to sign in"));
-        throw error;
+  const authenticateWithStripe = useCallback(async () => {
+    try {
+      const oauthLink = await axios.get<{ url: string }>(
+        "/api/stripe/auth/link",
+      );
+      // const oauthLink = await axios.post<{ url: string }>(
+      //   "/api/stripe/webhook",
+      // );
+      if (!oauthLink.data.url) {
+        throw new Error("Failed to get oauth link");
       }
-    },
-    [],
-  );
+      router.push(oauthLink.data.url);
+    } catch (error: any) {}
+  }, []);
+
+  const getStripeEvents = useCallback(async () => {
+    try {
+      await axios.post<{ url: string }>("/api/stripe/webhook");
+    } catch (error: any) {}
+  }, []);
 
   const signUpWithEmail = useCallback(
     async (
@@ -125,9 +129,10 @@ const useAuth = () => {
   }, []);
 
   return {
+    authenticateWithStripe,
+    getStripeEvents,
     signInWithGoogle,
     signInWithApple,
-    signInWithEmail,
     signUpWithEmail,
     deleteUser,
     signOut,

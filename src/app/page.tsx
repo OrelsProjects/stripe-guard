@@ -1,29 +1,32 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { HeroSection } from "@/components/sections/hero";
 import { FeaturesSection } from "@/components/sections/features";
 import { HowItWorksSection } from "@/components/sections/how-it-works";
 import { AnalyticsSection } from "@/components/sections/analytics";
 import { PricingSection } from "@/components/sections/pricing";
 import NavigationBar from "@/components/sections/navigationBar";
-import { motion } from "framer-motion";
 import Footer from "@/components/sections/footer";
+import { Button } from "@/components/ui/button";
+import useAuth from "@/lib/hooks/useAuth";
 
 export default function Home() {
   const darkSectionRef = useRef(null);
+  const { authenticateWithStripe, getStripeEvents } = useAuth();
   const [isDarkSectionVisible, setIsDarkSectionVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsDarkSectionVisible(
-          entry.intersectionRatio > 0.3 && entry.intersectionRatio < 0.8
+          entry.intersectionRatio > 0.3 && entry.intersectionRatio < 0.8,
         );
       },
       {
         threshold: [0.3, 0.8],
-      }
+      },
     );
 
     if (darkSectionRef.current) {
@@ -51,7 +54,15 @@ export default function Home() {
         <FeaturesSection />
         <HowItWorksSection />
       </motion.div>
-
+      <Button
+        className="fixed bottom-4 right-4"
+        onClick={authenticateWithStripe}
+      >
+        Stripe auth
+      </Button>
+      <Button className="fixed bottom-4 right-40" onClick={getStripeEvents}>
+        Stripe events
+      </Button>
       <div ref={darkSectionRef}>
         <AnalyticsSection />
       </div>

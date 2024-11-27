@@ -1,15 +1,16 @@
-import { welcomeTemplate } from "@/app/api/_utils/mail/templates";
 import axios from "axios";
 
-export const sendWelcomeMail = async (
+export const sendMail = async (
   to: string,
-  paid: boolean = false
+  from: string,
+  subject: string,
+  template: string,
 ) => {
   const data = {
-    from: "Build Quick <postmaster@mail.saas-template.app>",
+    from: from + " " + "<alert@mail.stripe-guard.com>",
     to: to,
-    subject: "Welcome to Build Quick!" + (paid ? " (Payment confirmed)" : ""),
-    html: welcomeTemplate(paid, to),
+    subject,
+    html: template,
   };
 
   try {
@@ -29,7 +30,7 @@ export const sendWelcomeMail = async (
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-      }
+      },
     );
 
     console.log("Mail sent successfully:", response.data);

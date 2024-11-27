@@ -41,8 +41,8 @@ export async function DELETE(req: NextRequest): Promise<any> {
     if (!session.user?.userId) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    await prisma.appUser.delete({
-      where: { userId: session.user?.userId },
+    await prisma.user.delete({
+      where: { id: session.user?.userId },
     });
     return NextResponse.json({}, { status: 200 });
   } catch (error: any) {
@@ -63,19 +63,19 @@ export async function PATCH(req: NextRequest): Promise<any> {
     }
     const { pushToken, pushTokenMobile } = await req.json();
 
-    if (pushToken) {
-      await prisma.appUserMetadata.upsert({
-        where: { userId: session.user?.userId },
-        update: { pushToken },
-        create: { userId: session.user?.userId, pushToken },
-      });
-    } else if (pushTokenMobile) {
-      await prisma.appUserMetadata.upsert({
-        where: { userId: session.user?.userId },
-        update: { pushTokenMobile },
-        create: { userId: session.user?.userId, pushTokenMobile },
-      });
-    }
+    // if (pushToken) {
+    //   await prisma.userMetaData.upsert({
+    //     where: { userId: session.user?.userId },
+    //     update: { pushToken },
+    //     create: { userId: session.user?.userId, pushToken },
+    //   });
+    // } else if (pushTokenMobile) {
+    //   await prisma.userMetaData.upsert({
+    //     where: { userId: session.user?.userId },
+    //     update: { pushTokenMobile },
+    //     create: { userId: session.user?.userId, pushTokenMobile },
+    //   });
+    // }
 
     return NextResponse.json({}, { status: 200 });
   } catch (error: any) {

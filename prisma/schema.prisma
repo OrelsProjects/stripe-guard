@@ -1,113 +1,182 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model AppUser {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String  @unique
-  email       String  @unique
-  password    String?
-  displayName String?
-  photoURL    String?
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
-  meta          AppUserMetadata?
-  settings      AppUserSettings?
-  Orders        UserOrders[]
-  Subscriptions Subscription[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("appUser")
+  @@unique([provider, providerAccountId])
+  @@map("account")
 }
 
-model AppUserMetadata {
-  appUserMetadataId String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @unique
-  referralCode      String?
-  referredBy        String?
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  paidStatus String? // "free" | "premium"
-
-  pushToken       String?
-  pushTokenMobile String?
-
-  appUser AppUser @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
-  @@map("appUserMetadata")
+  @@map("session")
 }
 
-model AppUserSettings {
-  appUserSettingsId String @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String @unique
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
 
-  showNotifications Boolean @default(true)
+  accounts     Account[]
+  sessions     Session[]
+  settings     UserSettings?
+  stripe       UserStripeCredentials?
+  orders       UserOrders[]
+  subscription Subscription[]
+  meta         UserMetadata?
+  userWebhooks UserWebhooks[]
 
-  appUser AppUser @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  @@map("user")
+}
 
-  @@map("appUserSettings")
+model UserMetadata {
+  id     String @id @default(cuid())
+  userId String @unique @map("user_id")
+
+  paidStatus String @map("paid_status") // free / premium / suspended
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_meta_data")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_token")
+}
+
+model UserSettings {
+  appUserSettingsId String  @id @default(cuid()) @map("app_user_settings_id")
+  userId            String  @unique @map("user_id")
+  showNotifications Boolean @default(true) @map("show_notifications")
+
+  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
+model UserStripeCredentials {
+  id             String  @id @default(cuid()) @map("id")
+  userId         String  @unique @map("user_id")
+  accessToken    String? @map("access_token")
+  refreshToken   String? @map("refresh_token")
+  accountId      String? @unique @map("account_id")
+  publishableKey String? @map("publishable_key")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  udpatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_stripe_credentials")
+}
+
+model UserWebhooks {
+  id              String  @id @default(cuid()) @map("id")
+  userId          String  @map("user_id")
+  eventId         String  @map("event_id")
+  livemode        Boolean @map("livemode")
+  type            String  @map("type") // checkout.session.completed, payment_intent.succeeded, etc
+  created         Int     @map("created")
+  pendingWebHooks Int     @map("pending_web_hooks")
+
+  requestId             String? @map("request_id")
+  requestIdempotencyKey String? @map("request_idempotency_key")
+
+  userNotifiedAt DateTime? @map("user_notified_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_webhooks")
 }
 
 model CartItems {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  currency String
-  price    Float
+  id       String @id @default(cuid()) @map("id")
+  name     String @map("name")
+  currency String @map("currency")
+  price    Float  @map("price")
 
-  Orders UserOrders[]
+  orders UserOrders[]
 
-  @@map("cartItems")
+  @@map("cart_items")
 }
 
 model UserOrders {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderId    String   @unique
-  userId     String
-  cartItemId String   @db.ObjectId
-  quantity   Int
-  total      Float
-  status     String   @default("pending") // pending, completed, cancelled
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String   @id @default(cuid()) @map("id")
+  orderId    String   @unique @map("order_id")
+  userId     String   @map("user_id")
+  cartItemId String   @map("cart_item_id")
+  quantity   Int      @map("quantity")
+  total      Float    @map("total")
+  status     String   @default("pending") @map("status") // pending, completed, cancelled
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  appUser  AppUser   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  appUser  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   cartItem CartItems @relation(fields: [cartItemId], references: [id], onDelete: Cascade)
 
-  @@map("userOrders")
+  @@map("user_orders")
 }
 
 model Subscription {
-  id                String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String?
-  planId            String
-  subscriptionId    String    @unique
-  startDate         DateTime
-  status            String
-  nextBillingDate   DateTime?
-  lastPaymentDate   DateTime?
-  lastPaymentAmount Float?
+  id                String    @id @default(cuid()) @map("id")
+  userId            String?   @map("user_id")
+  planId            String    @map("plan_id")
+  subscriptionId    String    @unique @map("subscription_id")
+  startDate         DateTime  @map("start_date")
+  status            String    @map("status")
+  nextBillingDate   DateTime? @map("next_billing_date")
+  lastPaymentDate   DateTime? @map("last_payment_date")
+  lastPaymentAmount Float?    @map("last_payment_amount")
 
-  appUser  AppUser?  @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  Payments Payment[]
+  appUser  User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments Payment[]
 
   @@map("subscriptions")
 }
 
 model Payment {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  paymentId      String   @unique
-  subscriptionId String
-  paidAmount     Float
-  paymentStatus  String
-  paymentDate    DateTime
+  id             String   @id @default(cuid()) @map("id")
+  paymentId      String   @unique @map("payment_id")
+  subscriptionId String   @map("subscription_id")
+  paidAmount     Float    @map("paid_amount")
+  paymentStatus  String   @map("payment_status")
+  paymentDate    DateTime @map("payment_date")
 
   subscription Subscription @relation(fields: [subscriptionId], references: [subscriptionId], onDelete: Cascade)
 

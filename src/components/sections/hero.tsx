@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/fade-in";
+import Link from "next/link";
 
 interface Error {
   title: string;
@@ -168,8 +169,10 @@ export function HeroSection() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Button size="lg" className="gap-2">
-                      Start Monitoring <ArrowRight className="w-4 h-4" />
+                    <Button size="lg" className="gap-2" asChild>
+                      <Link href="/dashboard">
+                        Start Monitoring <ArrowRight className="w-4 h-4" />
+                      </Link>
                     </Button>
                   </motion.div>
                   <motion.div

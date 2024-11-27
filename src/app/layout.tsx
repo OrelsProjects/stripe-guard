@@ -1,5 +1,5 @@
-import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import ClientTrackersProvider from "@/app/providers/ClientTrackersProvider";
 import SessionWrapper from "@/app/providers/SessionWrapper";
 import StoreProvider from "@/app/providers/StoreProvider";
@@ -9,6 +9,7 @@ import { initLogger } from "@/logger";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import { Poppins } from "@/lib/utils/fonts";
+import { Viewport } from "next";
 
 interface RootLayoutProps {
   children: React.ReactNode;

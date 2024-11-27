@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    await prisma.appUserMetadata.update({
+    await prisma.userMetaData.update({
       where: { userId: session.user.userId },
       data: {
         paidStatus: UserPaidStatusEnum.Premium,

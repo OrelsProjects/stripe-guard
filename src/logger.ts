@@ -36,18 +36,28 @@ export const setUserLogger = (user?: AppUser | null) => {
   });
 };
 
-const log = (type: StatusType, message: string, logItem?: LogItem) => {
-  printLog(type, message, logItem);
+const log = (
+  type: StatusType,
+  message: string,
+  error: any,
+  logItem?: LogItem,
+) => {
+  printLog(type, message, error, logItem);
   try {
     datadogLogs.logger.log(message, logItem?.data, type, logItem?.error);
   } catch (error: any) {}
 };
 
-const printLog = (type: StatusType, message?: string, logItem?: LogItem) => {
+const printLog = (
+  type: StatusType,
+  message?: string,
+  error?: any,
+  logItem?: LogItem,
+) => {
   if (process.env.NODE_ENV === "production") {
     return;
   }
-  const logText = `${`${type}: ` ?? ""}${message ?? ""} ${
+  const logText = `${`${type || ""}: `}${message ?? ""} ${
     logItem?.data ? JSON.stringify(logItem.data) : ""
   } ${logItem?.error ? JSON.stringify(logItem.error) : ""}
   }`;
@@ -71,19 +81,19 @@ const printLog = (type: StatusType, message?: string, logItem?: LogItem) => {
 };
 
 export class Logger {
-  static info(message: string, logItem?: LogItem) {
+  static info(message: string, error: any, logItem?: LogItem) {
     log(StatusType.info, message, logItem);
   }
 
-  static warn(message: string, logItem?: LogItem) {
+  static warn(message: string, error: any, logItem?: LogItem) {
     log(StatusType.warn, message, logItem);
   }
 
-  static error(message: string, logItem?: LogItem) {
+  static error(message: string, error: any, logItem?: LogItem) {
     log(StatusType.error, message, logItem);
   }
 
-  static debug(message: string, logItem?: LogItem) {
+  static debug(message: string, error: any, logItem?: LogItem) {
     log(StatusType.debug, message, logItem);
   }
 }

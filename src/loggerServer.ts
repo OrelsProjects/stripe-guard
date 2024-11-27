@@ -1,12 +1,11 @@
 import { createLogger, format, transports } from "winston";
 import { LogItem } from "./logger";
 
-
 interface Logger {
-  debug: (message: string, user_id: string, data?: LogItem) => void;
-  info: (message: string, user_id: string, data?: LogItem) => void;
-  error: (message: string, user_id: string, data?: LogItem) => void;
-  warn: (message: string, user_id: string, data?: LogItem) => void;
+  debug: (message: string, user_id: string, error: any, data?: LogItem) => void;
+  info: (message: string, user_id: string, error: any, data?: LogItem) => void;
+  error: (message: string, user_id: string, error: any, data?: LogItem) => void;
+  warn: (message: string, user_id: string, error: any, data?: LogItem) => void;
 }
 
 const httpTransportOptions = {
@@ -27,7 +26,7 @@ const logger: () => Logger = () => {
     level: "info" | "error" | "warn" | "debug",
     message: string,
     user_id: string,
-    data?: LogItem
+    data?: LogItem,
   ) => {
     try {
       _logger.log(level, message, {
