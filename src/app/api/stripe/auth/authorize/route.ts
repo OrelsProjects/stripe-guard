@@ -4,8 +4,6 @@ import { authOptions } from "@/auth/authOptions";
 import { getServerSession } from "next-auth";
 import prisma from "@/app/api/_db/db";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-
 // function decryptData(data: Stripe.OAuthToken) {
 //   const encryptionKey = process.env.STRIPE_ENCRYPTION_KEY as string;
 //   const decryptedToken = CryptoJS.AES.decrypt(
@@ -74,6 +72,7 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     const { searchParams } = req.nextUrl;
     const code = searchParams.get("code") as string;
     const state = searchParams.get("state") as string;
