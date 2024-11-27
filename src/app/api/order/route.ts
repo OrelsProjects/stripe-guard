@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth/authOptions";
 import { createOrder } from "@/app/api/_utils/payments";
 import prisma from "@/app/api/_db/db";
-import { sendWelcomeMail } from "@/app/api/_utils/mail/mail";
+// import { sendWelcomeMail } from "@/app/api/_utils/mail/mail";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
-    await sendWelcomeMail("orelsmail@gmail.com");
+    // await sendWelcomeMail("orelsmail@gmail.com");
 
     const value = item.price * parseInt(cart.amount);
 

@@ -69,6 +69,20 @@ export function HowItWorksSection() {
             </motion.div>
           </div>
         </FadeIn>
+
+        <FadeIn delay={0.4}>
+          <div className="text-center mt-16">
+            <h2 className="text-3xl font-bold mb-4">Authenticate with Stripe</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              Seamlessly connect your Stripe account with just a few clicks. Our secure OAuth authentication ensures your data is protected.
+            </p>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button size="lg" className="gap-2">
+                Connect with Stripe <ArrowRight className="w-4 h-4" />
+              </Button>
+            </motion.div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );

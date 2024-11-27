@@ -26,7 +26,7 @@ export default function NavigationBar() {
           <span className="text-lg font-semibold">{APP_NAME}</span>
         </motion.div>
         <nav className="flex items-center gap-6 flex-1 justify-end">
-          {["Features", "How it Works", "Analytics", "Pricing"].map(
+          {["Features", "How it Works", "Analytics", "Pricing", "Flow"].map(
             (item, i) => (
               <motion.div
                 key={item}

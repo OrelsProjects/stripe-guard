@@ -20,13 +20,13 @@ export function ErrorCard({ error, onClick }: ErrorCardProps) {
         className="cursor-pointer hover:shadow-md transition-shadow"
         onClick={onClick}
       >
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-4">
+        <CardContent className="pt-4 px-2">
+          <div className="flex items-start gap-2">
             <div className="p-2 bg-destructive/10 rounded-full">
               <AlertCircle className="w-6 h-6 text-destructive" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg mb-1">{error.type}</h3>
+              <h3 className="font-semibold text-base mb-1">{error.type}</h3>
               <p className="text-sm text-muted-foreground mb-2">
                 Failed webhooks: {error.pendingWebHooks}
               </p>

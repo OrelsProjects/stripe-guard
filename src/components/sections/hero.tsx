@@ -158,9 +158,7 @@ export function HeroSection() {
               </FadeIn>
               <FadeIn direction="up" delay={0.1}>
                 <p className="mb-8 text-lg text-muted-foreground text-center sm:text-start">
-                  Monitor webhook failures, notify instantly, and maintain
-                  smooth payment operations. Keep your revenue flowing without
-                  interruption.
+                  Monitor your webhooks effortlessly, get instant notifications on failures, and maintain smooth payment operations. Keep your revenue flowing without interruption.
                 </p>
               </FadeIn>
               <FadeIn direction="up" delay={0.2}>

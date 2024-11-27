@@ -13,6 +13,7 @@ interface ErrorDialogProps {
   error: Partial<UserWebhooks> | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onResolve: (error: Partial<UserWebhooks>) => void;
 }
 
 export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {
@@ -57,16 +58,25 @@ export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {
 
           <div className="w-full flex items-center justify-end space-x-2 text-sm text-muted-foreground/80">
             <Bell className="w-4 h-4" />
-            <span>{format((error.created as number)* 1000, "PPpp")}</span>
+            <span>{format((error.created as number) * 1000, "PPpp")}</span>
           </div>
         </div>
-        <div className="mt-6">
+        <div className="mt-6 flex gap-4">
           <Button
             size="lg"
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
             Close
+          </Button>
+          <Button
+            size="lg"
+            onClick={() => {
+              // Resolve the error here
+              onOpenChange(false);
+            }}
+          >
+            Resolved
           </Button>
         </div>
       </DialogContent>

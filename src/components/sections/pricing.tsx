@@ -55,7 +55,8 @@ export function PricingSection() {
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16">
             Choose the plan that best fits your needs. All plans include a
-            14-day free trial.
+            14-day free trial. Monitor your webhooks effortlessly and get
+            instant notifications on failures.
           </p>
         </FadeIn>
 

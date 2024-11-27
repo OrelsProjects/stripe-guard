@@ -20,11 +20,11 @@ const features = [
     title: "Performance Analytics",
     description: "Comprehensive dashboard with insights into webhook performance and failure patterns.",
   },
-  {
-    icon: Shield,
-    title: "Secure Integration",
-    description: "Enterprise-grade security with encrypted connections and data protection.",
-  },
+  // {
+  //   icon: Shield,
+  //   title: "Secure Integration",
+  //   description: "Enterprise-grade security with encrypted connections and data protection.",
+  // },
 ]
 
 export function FeaturesSection() {
@@ -40,7 +40,7 @@ export function FeaturesSection() {
           </p>
         </FadeIn>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
             <FadeIn key={feature.title} delay={index * 0.1}>
               <motion.div

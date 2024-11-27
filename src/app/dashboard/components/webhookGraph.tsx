@@ -41,11 +41,11 @@ export function WebhookGraph({ data, totalSuccess }: WebhookGraphProps) {
   );
 
   return (
-    <div className="w-full 4k:max-w-screen-2xl flex flex-col items-start gap-4">
-      <h2 className="text-2xl font-medium">
-        {" "}
-        Today&apos;s Webhook Performance
-      </h2>
+    <motion.div
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="w-full flex flex-col items-start gap-4"
+    >
       {/* <Tabs
           value={dateRangeType}
           onValueChange={value => {
@@ -107,7 +107,7 @@ export function WebhookGraph({ data, totalSuccess }: WebhookGraphProps) {
           {moment(dateRange.to).format("YYYY/MM/DD")}
         </p> */}
       {/* </div> */}
-      <Card className="w-full">
+      <Card className="w-full max-h-[478px]">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl font-bold">
             Webhook Performance
@@ -150,10 +150,10 @@ export function WebhookGraph({ data, totalSuccess }: WebhookGraphProps) {
               <Line
                 type="monotone"
                 dataKey="succeeded"
-                stroke="hsl(var(--chart-2))"
+                stroke="hsl(var(--success))"
                 strokeWidth={2}
                 dot={false}
-              />
+              ></Line>
               <Line
                 type="monotone"
                 dataKey="failed"
@@ -165,6 +165,6 @@ export function WebhookGraph({ data, totalSuccess }: WebhookGraphProps) {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 }

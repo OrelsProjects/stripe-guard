@@ -53,6 +53,14 @@ const Footer = () => {
                   Contact
                 </a>
               </li>
+              <li>
+                <a
+                  href="#flow"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Flow
+                </a>
+              </li>
             </ul>
           </div>
           <div>
