@@ -170,8 +170,8 @@ export function HeroSection() {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Button size="lg" className="gap-2" asChild>
-                      <Link href="/">
-                        Start Monitoring <ArrowRight className="w-4 h-4" />
+                      <Link href="#sign-up">
+                        Start Monitoring Now <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                   </motion.div>
@@ -179,8 +179,13 @@ export function HeroSection() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Button size="lg" variant="outline" className="gap-2">
-                      Learn More
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="gap-2"
+                      asChild
+                    >
+                      <Link href="#features">Learn more</Link>
                     </Button>
                   </motion.div>
                 </div>

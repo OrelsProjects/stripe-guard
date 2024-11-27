@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { MontserratAlternates } from "@/lib/utils/fonts";
+import axios from "axios";
 import { motion } from "framer-motion";
 import { Loader2, CheckCircle } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -10,12 +14,18 @@ export default function SignUp() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    setIsSubmitted(true);
+    try {
+      e.preventDefault();
+      setIsLoading(true);
+      // Simulate API call
+      await axios.post("/api/registerUser", { interestedUser: email });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error registering user", { error });
+      toast.error("Something went wrong... 🤔 try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -32,14 +42,17 @@ export default function SignUp() {
     >
       {/* Heading and Description */}
       <motion.h1
-        className="text-6xl font-bold mb-4 text-primary"
+        className={cn("text-6xl font-bold mb-4 text-primary")}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
         Get Hooked Now!
       </motion.h1>
       <motion.p
-        className="text-lg text-muted-foreground mb-8 text-center max-w-md"
+        className={cn(
+          "text-lg text-muted-foreground mb-8 text-center max-w-md",
+          MontserratAlternates.className,
+        )}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -49,7 +62,10 @@ export default function SignUp() {
 
       {/* Sign-Up Form */}
       <motion.form
-        className="w-96 flex flex-col gap-2"
+        className={cn(
+          "w-96 flex flex-col gap-2",
+          MontserratAlternates.className,
+        )}
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,7 +80,7 @@ export default function SignUp() {
         />
         <Button
           disabled={isLoading || isSubmitted}
-          className="bg-white text-primary hover:bg-primary/70 py-5"
+          className="bg-primary text-primary-foreground hover:bg-primary/70 py-5"
         >
           {isLoading ? (
             <>

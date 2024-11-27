@@ -18,9 +18,6 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
           autoClose={2500}
           draggablePercent={60}
           className="!mb-16 z-[51]"
-          transition={toast.Flip}
-          position="bottom-center"
-          pauseOnHover={false}
         />
       </div>
       {children}
