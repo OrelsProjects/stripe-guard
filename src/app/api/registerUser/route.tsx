@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/api/_db/db";
+import { sendMail } from "@/app/api/_utils/mail/mail";
 
 type Body = {
   interestedUser: string;
@@ -26,6 +27,12 @@ export async function POST(req: NextRequest) {
     // if (!existingUser) {
     //   await sendWelcomeMail(interestedUser, false);
     // }
+    await sendMail(
+      "orelsmail@gmail.com",
+      "StripeGuard",
+      "NEW USER HAS REGISTERED",
+      `User ${interestedUser} has registered to the platform`,
+    );
 
     return NextResponse.json(
       { message: "User registered successfully" },
