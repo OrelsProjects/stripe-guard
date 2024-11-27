@@ -27,12 +27,16 @@ export async function POST(req: NextRequest) {
     // if (!existingUser) {
     //   await sendWelcomeMail(interestedUser, false);
     // }
-    await sendMail(
-      "orelsmail@gmail.com",
-      "StripeGuard",
-      "NEW USER HAS REGISTERED",
-      `User ${interestedUser} has registered to the platform`,
-    );
+    try {
+      await sendMail(
+        "orelsmail@gmail.com",
+        "StripeGuard",
+        "NEW USER HAS REGISTERED",
+        `User ${interestedUser} has registered to the platform`,
+      );
+    } catch (error) {
+      console.error("Error sending mail", { error });
+    }
 
     return NextResponse.json(
       { message: "User registered successfully" },
