@@ -14,29 +14,12 @@ const Footer = () => {
               <h3 className="text-xl font-bold">{APP_NAME}</h3>
             </div>
             <p className="mt-4 text-gray-400">
-              Building exceptional digital experiences with dedication and
-              expertise.
+              Get notified when your Stripe webhooks fail in real time.
             </p>
           </div>
           <div>
             <h4 className="text-lg font-semibold">Quick Links</h4>
             <ul className="mt-4 space-y-2">
-              <li>
-                <a
-                  href="#why-me"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Why Me
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#portfolio"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Portfolio
-                </a>
-              </li>
               <li>
                 <a
                   href="#pricing"
@@ -47,18 +30,10 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#contact"
+                  href="#analytics"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#flow"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Flow
+                  Analytics
                 </a>
               </li>
             </ul>
@@ -66,8 +41,9 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold">Contact</h4>
             <ul className="mt-4 space-y-2">
-              <li className="text-gray-400">orelsmail@gmail.com</li>
-              <li className="text-gray-400">Schedule a call</li>
+              <li className="text-gray-400 hover:underline">
+                <a href="mailto:orelsmail@gmail.com">orelsmail@gmail.com</a>
+              </li>
             </ul>
           </div>
         </div>

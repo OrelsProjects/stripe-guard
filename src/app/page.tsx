@@ -11,6 +11,7 @@ import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/lib/hooks/useAuth";
+import SignUpSection from "@/components/sections/sign-up";
 
 export default function Home() {
   const darkSectionRef = useRef(null);
@@ -54,7 +55,7 @@ export default function Home() {
         <FeaturesSection />
         <HowItWorksSection />
       </motion.div>
-      <Button
+      {/* <Button
         className="fixed bottom-4 right-4"
         onClick={authenticateWithStripe}
       >
@@ -62,7 +63,7 @@ export default function Home() {
       </Button>
       <Button className="fixed bottom-4 right-40" onClick={getStripeEvents}>
         Stripe events
-      </Button>
+      </Button> */}
       <div ref={darkSectionRef}>
         <AnalyticsSection />
       </div>
@@ -71,7 +72,8 @@ export default function Home() {
         animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
         transition={{ duration: 0.4 }}
       >
-        <PricingSection />
+        <SignUpSection />
+        {/* <PricingSection /> */}
       </motion.div>
       <Footer />
     </motion.div>

@@ -66,6 +66,27 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+const CustomLegend = ({ payload }: any) => {
+  return (
+    <div className="flex items-center justify-center space-x-4">
+      {payload.map((entry: any, index: number) => (
+        <div key={index} className="flex items-center space-x-2">
+          <div
+            className="w-4 h-4 rounded-full"
+            style={{ backgroundColor: entry.color }}
+          />
+          <span
+            className="text-xs text-muted-foreground"
+            style={{ color: entry.color }}
+          >
+            {entry.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export const AnalyticsSection = forwardRef<HTMLElement, AnalyticsSectionProps>(
   (_, ref: ForwardedRef<HTMLElement>) => {
     return (
@@ -224,7 +245,7 @@ export const AnalyticsSection = forwardRef<HTMLElement, AnalyticsSectionProps>(
                         outerRadius={90}
                         dataKey="value"
                         cornerRadius={4}
-                        paddingAngle={8}
+                        paddingAngle={1}
                         stroke="none"
                       >
                         {eventTypeData.map((entry, index) => (
@@ -236,6 +257,12 @@ export const AnalyticsSection = forwardRef<HTMLElement, AnalyticsSectionProps>(
                         verticalAlign="bottom"
                         height={36}
                         iconType="circle"
+                        payload={eventTypeData.map(entry => ({
+                          value: entry.type,
+                          type: "circle",
+                          color: entry.color,
+                        }))}
+                        content={<CustomLegend />}
                       />
                     </PieChart>
                   </ResponsiveContainer>
