@@ -97,7 +97,7 @@ async function handleWebhookResolution(
     return;
   }
 
-  await prisma.userWebhooks.create({
+  await prisma.userWebhookEvent.create({
     data: {
       userId: user.id,
       eventId: event.id,
@@ -108,6 +108,7 @@ async function handleWebhookResolution(
       requestId: event.request?.id,
       requestIdempotencyKey: event.request?.idempotency_key,
       succeeded: webhooksPending === 0,
+      connected: true,
     },
   });
 

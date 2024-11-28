@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
   selectAuth,
@@ -15,6 +15,7 @@ import { useSession } from "next-auth/react";
 import AppUser from "@/models/appUser";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
+import axios from "axios";
 
 export default function AuthProvider({
   children,
@@ -27,14 +28,13 @@ export default function AuthProvider({
   const { user: currentUser } = useSelector(selectAuth);
   const { data: session, status } = useSession();
 
-  const setUser = async (user?: {
+  const loading = useRef(false);
+
+  const setUser = (user?: {
     name?: string | null;
     email?: string | null;
     image?: string | null;
     userId?: string | null;
-    meta: {
-      referralCode?: string | null;
-    };
   }) => {
     try {
       const appUser: AppUser = {
@@ -45,9 +45,6 @@ export default function AuthProvider({
         settings: {
           showNotifications: true,
         },
-        meta: {
-          referralCode: user?.meta.referralCode || "",
-        },
       };
       dispatch(setUserAction(appUser));
     } catch (error: any) {
@@ -56,11 +53,43 @@ export default function AuthProvider({
     }
   };
 
+  const handleUserAuthentication = async () => {
+    if (loading.current) {
+      return;
+    }
+    const isInOnboarding = pathname.includes("api-key");
+
+    if (!isInOnboarding) {
+      loading.current = true;
+    }
+
+    if (session?.user) {
+      setUser(session.user);
+      try {
+        const isUserOnboarded = await axios.get<boolean>(
+          "/api/stripe/user/onboarded",
+        ); // Did the user provide Stripe details
+
+        if (!isUserOnboarded.data) {
+          if (!isInOnboarding) {
+            router.push("/stripe-setup");
+          }
+        } else {
+          router.push("/dashboard");
+        }
+      } catch (error: any) {
+        console.error(error);
+        router.push("/stripe-setup");
+      } finally {
+        loading.current = false;
+      }
+    }
+  };
+
   useEffect(() => {
-    debugger;
     switch (status) {
       case "authenticated":
-        setUser(session.user);
+        handleUserAuthentication();
         break;
       case "loading":
         break;
@@ -77,25 +106,11 @@ export default function AuthProvider({
     setUserLogger(currentUser);
   }, [currentUser]);
 
-  useEffect(() => {
-    if (status === "loading") return;
-    if (status === "authenticated") {
-      if (
-        pathname.includes("login") ||
-        pathname.includes("register") ||
-        pathname === "/"
-      ) {
-        // router.push("/plans", { preserveQuery: true });
-      }
-    } else {
-      if (!pathname.includes("login") && !pathname.includes("register")) {
-        router.push("/", { preserveQuery: true });
-      }
-    }
-  }, [status]);
   if (
-    status === "loading" &&
-    (!pathname.includes("login") || !pathname.includes("stripe-setup"))
+    (status === "loading" &&
+      !pathname.includes("login") &&
+      !pathname.includes("stripe-setup")) ||
+    loading.current
   ) {
     return (
       <div className="w-screen h-screen flex items-center justify-center">
@@ -103,5 +118,6 @@ export default function AuthProvider({
       </div>
     );
   }
+
   return children;
 }

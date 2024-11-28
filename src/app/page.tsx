@@ -6,16 +6,12 @@ import { HeroSection } from "@/components/sections/hero";
 import { FeaturesSection } from "@/components/sections/features";
 import { HowItWorksSection } from "@/components/sections/how-it-works";
 import { AnalyticsSection } from "@/components/sections/analytics";
-import { PricingSection } from "@/components/sections/pricing";
 import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
-import { Button } from "@/components/ui/button";
-import useAuth from "@/lib/hooks/useAuth";
 import SignUpSection from "@/components/sections/sign-up";
 
 export default function Home() {
   const darkSectionRef = useRef(null);
-  const { authenticateWithStripe, getStripeEvents } = useAuth();
   const [isDarkSectionVisible, setIsDarkSectionVisible] = useState(false);
 
   useEffect(() => {

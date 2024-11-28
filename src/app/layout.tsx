@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import { Poppins } from "@/lib/utils/fonts";
 import { Viewport } from "next";
+import AnimationProvider from "@/app/providers/AnimationProvider";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -88,7 +89,7 @@ export default function Layout({ children }: RootLayoutProps) {
             <StoreProvider>
               <SessionWrapper>
                 <TopLoaderProvider />
-                {children}
+                <AnimationProvider>{children}</AnimationProvider>
                 <ClientTrackersProvider />
               </SessionWrapper>
             </StoreProvider>

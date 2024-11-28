@@ -7,13 +7,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Bell } from "lucide-react";
 import { format } from "date-fns";
-import { UserWebhooks } from "@prisma/client";
+import { UserWebhookEvent } from "@prisma/client";
 
 interface ErrorDialogProps {
-  error: Partial<UserWebhooks> | null;
+  error: Partial<UserWebhookEvent> | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onResolve: (error: Partial<UserWebhooks>) => void;
+  onResolve: (error: Partial<UserWebhookEvent>) => void;
 }
 
 export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {

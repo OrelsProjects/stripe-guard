@@ -18,7 +18,7 @@ const useAuth = () => {
       setLoading(true);
       await signIn("google", {
         redirect: true,
-        callbackUrl: "/",
+        callbackUrl: "/login",
       });
     } catch (error: any) {
       if (error?.name === "UserAlreadyAuthenticatedException") {

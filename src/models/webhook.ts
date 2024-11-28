@@ -1,8 +1,8 @@
-import { UserWebhooks } from "@prisma/client";
+import { UserWebhookEvent } from "@prisma/client";
 
 export interface WebhooksStatistics {
-  succeeded: UserWebhooks[];
-  failed: UserWebhooks[];
+  succeeded: UserWebhookEvent[];
+  failed: UserWebhookEvent[];
 }
 
 export type GraphData = {

@@ -1,17 +1,17 @@
 import { Logger } from "@/logger";
-import { UserWebhooks } from "@prisma/client";
+import { UserWebhookEvent } from "@prisma/client";
 import axios from "axios";
 import { useCallback } from "react";
 
-export default function useUserWebhooks() {
-  const getUserWebhooks = useCallback(async (): Promise<
-    UserWebhooks[] | null
+export default function useUserWebhookEvents() {
+  const getUserWebhookEvents = useCallback(async (): Promise<
+    UserWebhookEvent[] | null
   > => {
     try {
-      const userWebhooks = await axios.get<UserWebhooks[]>(
+      const getUserWebhookEvents = await axios.get<UserWebhookEvent[]>(
         "/api/stripe/user/webhooks-details",
       );
-      return userWebhooks.data;
+      return getUserWebhookEvents.data;
     } catch (error: any) {
       Logger.error("Error getting webhook details", error);
       return null;
@@ -19,6 +19,6 @@ export default function useUserWebhooks() {
   }, []);
 
   return {
-    getUserWebhooks,
+    getUserWebhookEvents,
   };
 }

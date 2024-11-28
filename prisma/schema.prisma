@@ -52,7 +52,7 @@ model User {
   orders       UserOrders[]
   subscription Subscription[]
   meta         UserMetadata?
-  userWebhooks UserWebhooks[]
+  userWebhookEvents UserWebhookEvent[]
 
   @@map("user")
 }
@@ -95,6 +95,10 @@ model UserStripeCredentials {
   accountId      String? @unique @map("account_id")
   publishableKey String? @map("publishable_key")
 
+  apiKey        String? @map("api_key") // For non-connect users
+  webhookId     String? @map("webhook_id") // For non-connect users
+  webhookSecret String? @map("webhook_secret") // For non-connect users
+
   createdAt DateTime @default(now()) @map("created_at")
   udpatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -103,7 +107,7 @@ model UserStripeCredentials {
   @@map("user_stripe_credentials")
 }
 
-model UserWebhooks {
+model UserWebhookEvent {
   id              String  @id @default(cuid()) @map("id")
   userId          String  @map("user_id")
   eventId         String  @map("event_id")
@@ -111,6 +115,8 @@ model UserWebhooks {
   type            String  @map("type") // checkout.session.completed, payment_intent.succeeded, etc
   created         Int     @map("created")
   pendingWebHooks Int     @map("pending_web_hooks")
+
+  connected Boolean @map("connected") @default(true)
 
   succeeded Boolean @map("succeeded")
 
@@ -124,7 +130,7 @@ model UserWebhooks {
 
   appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("user_webhooks")
+  @@map("user_webhook_event")
 }
 
 model CartItems {

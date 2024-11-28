@@ -65,7 +65,7 @@ export function HowItWorksSection() {
           <div className="text-center">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button size="lg" className="gap-2" asChild>
-                <Link href="#sign-up">
+                <Link href="/login">
                   Start Monitoring Now <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>

@@ -4,8 +4,8 @@ import { ErrorCard } from "@/app/dashboard/components/errorCard";
 import { ErrorDialog } from "@/app/dashboard/components/errorDialog";
 import { WebhookGraph } from "@/app/dashboard/components/webhookGraph";
 import { Card, CardTitle } from "@/components/ui/card";
-import useUserWebhooks from "@/lib/hooks/useWebhooks";
-import { UserWebhooks } from "@prisma/client";
+import useUserWebhookEvents from "@/lib/hooks/useWebhooks";
+import { UserWebhookEvent } from "@prisma/client";
 import { motion } from "framer-motion";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -55,16 +55,16 @@ const CustomTooltip = ({
 function Dashboard() {
   const [selectedError, setSelectedError] = useState<WebhookError | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [webhooks, setWebhooks] = useState<UserWebhooks[]>([]);
+  const [webhooks, setWebhooks] = useState<UserWebhookEvent[]>([]);
 
   const loadingWebhooks = useRef(false);
 
-  const { getUserWebhooks } = useUserWebhooks();
+  const { getUserWebhookEvents } = useUserWebhookEvents();
 
   useEffect(() => {
     if (loadingWebhooks.current) return;
     loadingWebhooks.current = true;
-    getUserWebhooks()
+    getUserWebhookEvents()
       .then(webhooks => setWebhooks(webhooks || []))
       .catch(() => toast.error("Failed to fetch data"))
       .finally(() => {
