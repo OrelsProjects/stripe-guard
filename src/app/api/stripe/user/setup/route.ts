@@ -81,8 +81,9 @@ const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   ...invoiceEvents,
 ];
 
-const createHookTest = async (key: string) => {
-  const webhookEndpoint = process.env.STRIPE_WEBHOOK_ENDPOINT as string;
+const createWebhook = async (key: string, userId: string) => {
+  const webhookEndpoint =
+    (process.env.STRIPE_WEBHOOK_ENDPOINT as string) + "/" + userId;
   const stripe = new Stripe(key);
   try {
     const webhook = await stripe.webhookEndpoints.create({
@@ -110,17 +111,18 @@ export async function POST(req: NextRequest) {
       md: forge.md.sha256.create(),
     });
 
-    const webhook = await createHookTest(decryptedApiKey);
+    const webhook = await createWebhook(decryptedApiKey, session.user.userId);
     if (!webhook) {
       return NextResponse.json({ error: "Invalid API key" }, { status: 400 });
     }
-    
+
     await prisma.userStripeCredentials.create({
       data: {
         userId: session.user.userId,
         apiKey: decryptedApiKey,
         webhookId: webhook.id,
         webhookSecret: webhook.secret,
+        connected: false,
       },
     });
     return NextResponse.json({ message: "API key saved" }, { status: 201 });

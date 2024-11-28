@@ -45,13 +45,13 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
 
-  accounts     Account[]
-  sessions     Session[]
-  settings     UserSettings?
-  stripe       UserStripeCredentials?
-  orders       UserOrders[]
-  subscription Subscription[]
-  meta         UserMetadata?
+  accounts          Account[]
+  sessions          Session[]
+  settings          UserSettings?
+  stripe            UserStripeCredentials?
+  orders            UserOrders[]
+  subscription      Subscription[]
+  meta              UserMetadata?
   userWebhookEvents UserWebhookEvent[]
 
   @@map("user")
@@ -99,6 +99,8 @@ model UserStripeCredentials {
   webhookId     String? @map("webhook_id") // For non-connect users
   webhookSecret String? @map("webhook_secret") // For non-connect users
 
+  connected Boolean @default(true) @map("connected")
+
   createdAt DateTime @default(now()) @map("created_at")
   udpatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -116,7 +118,7 @@ model UserWebhookEvent {
   created         Int     @map("created")
   pendingWebHooks Int     @map("pending_web_hooks")
 
-  connected Boolean @map("connected") @default(true)
+  connected Boolean @default(true) @map("connected")
 
   succeeded Boolean @map("succeeded")
 

@@ -13,6 +13,7 @@ async function saveAccountId(data: Stripe.OAuthToken, userId: string) {
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
       publishableKey: data.stripe_publishable_key,
+      connected: true,
     },
     update: {
       accountId: data.stripe_user_id,
