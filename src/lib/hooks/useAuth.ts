@@ -53,19 +53,10 @@ const useAuth = () => {
       const oauthLink = await axios.get<{ url: string }>(
         "/api/stripe/auth/link",
       );
-      // const oauthLink = await axios.post<{ url: string }>(
-      //   "/api/stripe/webhook",
-      // );
       if (!oauthLink.data.url) {
         throw new Error("Failed to get oauth link");
       }
       router.push(oauthLink.data.url);
-    } catch (error: any) {}
-  }, []);
-
-  const getStripeEvents = useCallback(async () => {
-    try {
-      await axios.post<{ url: string }>("/api/stripe/webhook");
     } catch (error: any) {}
   }, []);
 
@@ -130,7 +121,6 @@ const useAuth = () => {
 
   return {
     authenticateWithStripe,
-    getStripeEvents,
     signInWithGoogle,
     signInWithApple,
     signUpWithEmail,

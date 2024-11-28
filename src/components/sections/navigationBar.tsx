@@ -1,12 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
-const LOGO = "/logo.png";
+import Logo from "@/components/ui/Logo";
 
 export default function NavigationBar() {
   return (
@@ -17,14 +14,7 @@ export default function NavigationBar() {
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
       <div className="container flex items-center h-14 justify-between">
-        <motion.div
-          className="flex items-center gap-2 mr-4"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Image src={LOGO} alt={APP_NAME} width={32} height={32} />
-          <span className="text-lg font-semibold">{APP_NAME}</span>
-        </motion.div>
+        <Logo />
         <nav className="flex items-center gap-6 flex-1 justify-end">
           {["Features", "How it Works", "Analytics", "Sign up"].map(
             (item, i) => (

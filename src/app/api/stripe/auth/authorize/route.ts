@@ -4,47 +4,7 @@ import { authOptions } from "@/auth/authOptions";
 import { getServerSession } from "next-auth";
 import prisma from "@/app/api/_db/db";
 
-// function decryptData(data: Stripe.OAuthToken) {
-//   const encryptionKey = process.env.STRIPE_ENCRYPTION_KEY as string;
-//   const decryptedToken = CryptoJS.AES.decrypt(
-//     data.access_token as string,
-//     encryptionKey,
-//   ).toString(CryptoJS.enc.Utf8);
-//   const decryptedRefreshToken = CryptoJS.AES.decrypt(
-//     data.refresh_token as string,
-//     encryptionKey,
-//   ).toString(CryptoJS.enc.Utf8);
-
-//   const decryptedConnectedAccountId = CryptoJS.AES.decrypt(
-//     data.stripe_user_id as string,
-//     encryptionKey,
-//   ).toString(CryptoJS.enc.Utf8);
-
-//   return {
-//     ...data,
-//     access_token: decryptedToken,
-//     refresh_token: decryptedRefreshToken,
-//     stripe_user_id: decryptedConnectedAccountId,
-//   };
-// }
-
-async function initHooks(data: Stripe.OAuthToken, userId: string) {
-  // Init hooks for payment failures
-  const userStripe = new Stripe(data.access_token as string);
-  // await userStripe.webhookEndpoints.create({
-  //   url: `${process.env.NEXTAUTH_URL}/api/stripe/webhook`,
-  //   enabled_events: ["payment_intent.payment_failed"],
-  // });
-
-  const events = await userStripe.events.list({
-    limit: 100, // Customize the number of events to fetch
-  });
-  const x = 4;
-}
-
 async function saveAccountId(data: Stripe.OAuthToken, userId: string) {
-  // const encryptedData = encryptData(data);
-
   await prisma.userStripeCredentials.upsert({
     where: { userId },
     create: {
@@ -96,10 +56,8 @@ export async function GET(req: NextRequest) {
 
     await saveAccountId(oauthToken, userId);
 
-    await initHooks(oauthToken, userId);
-
     // Redirect to a success page
-    return NextResponse.redirect(new URL("/", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/dashboard", req.nextUrl.origin));
   } catch (err: any) {
     if (err.type === "StripeInvalidGrantError") {
       return NextResponse.json(

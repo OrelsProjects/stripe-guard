@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { UserWebhooks } from "@prisma/client";
+import { WebhookError } from "@/models/webhook";
 
 interface ErrorCardProps {
-  error: Partial<UserWebhooks>;
+  error: WebhookError;
   onClick: () => void;
 }
 
@@ -28,7 +28,7 @@ export function ErrorCard({ error, onClick }: ErrorCardProps) {
             <div className="flex-1">
               <h3 className="font-semibold text-base mb-1">{error.type}</h3>
               <p className="text-sm text-muted-foreground mb-2">
-                Failed webhooks: {error.pendingWebHooks}
+                Failed webhooks: {error.failedWebhooks}
               </p>
               <p className="text-xs text-muted-foreground">
                 {format((error.created as number) * 1000, "PPpp")}

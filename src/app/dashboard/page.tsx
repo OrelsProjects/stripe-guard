@@ -3,12 +3,13 @@
 import { ErrorCard } from "@/app/dashboard/components/errorCard";
 import { ErrorDialog } from "@/app/dashboard/components/errorDialog";
 import { WebhookGraph } from "@/app/dashboard/components/webhookGraph";
-import { FadeIn } from "@/components/animations/fade-in";
-import { Card } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
+import useUserWebhooks from "@/lib/hooks/useWebhooks";
 import { UserWebhooks } from "@prisma/client";
 import { motion } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { CheckCircle2, Loader2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import {
   BarChart,
   ResponsiveContainer,
@@ -19,49 +20,13 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-
-// Mock data - replace with real data in production
-const mockGraphData = [
-  { timestamp: "00:00", succeeded: 95, failed: 14 },
-  { timestamp: "04:00", succeeded: 98, failed: 23 },
-  { timestamp: "08:00", succeeded: 100, failed: 50 },
-  { timestamp: "12:00", succeeded: 97, failed: 32 },
-  { timestamp: "16:00", succeeded: 99, failed: 1 },
-  { timestamp: "20:00", succeeded: 96, failed: 14 },
-];
-
-// Mock data - events = succeeded + failed
-const eventVolumeData = mockGraphData.map(data => ({
-  timestamp: data.timestamp,
-  webhooks: data.succeeded + data.failed,
-}));
-
-const mockErrors: Partial<UserWebhooks>[] = [
-  {
-    eventId: "evt_1234567890",
-    type: "checkout.session.completed",
-    created: Date.now() / 1000 - 3600,
-    pendingWebHooks: 2,
-  },
-  {
-    eventId: "evt_0987654321",
-    type: "payment_intent.succeeded",
-    created: Date.now() / 1000 - 7200,
-    pendingWebHooks: 1,
-  },
-  {
-    eventId: "evt_1234567890",
-    type: "checkout.session.completed",
-    created: Date.now() / 1000 - 3600,
-    pendingWebHooks: 2,
-  },
-  {
-    eventId: "evt_0987654321",
-    type: "auth.capture.completed",
-    created: Date.now() / 1000 - 7200,
-    pendingWebHooks: 1,
-  },
-];
+import { Loader } from "@/components/ui/loader";
+import {
+  WebhookError,
+  FailureReason,
+  EventVolumeData,
+  GraphData,
+} from "@/models/webhook";
 
 const CustomTooltip = ({
   active,
@@ -88,21 +53,40 @@ const CustomTooltip = ({
 };
 
 function Dashboard() {
-  const [selectedError, setSelectedError] =
-    useState<Partial<UserWebhooks> | null>(null);
+  const [selectedError, setSelectedError] = useState<WebhookError | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [webhooks, setWebhooks] = useState<UserWebhooks[]>([]);
 
-  // Reduce, if error.type exists, add to the count, else create a new object
-  // then map it to { reason: key, count: value } format
-  const failureReasonsData = useMemo(() => {
-    const reasons: { reason: string; count: number }[] = [];
-    mockErrors.map(error => {
-      if (reasons.some(reason => reason.reason === error.type)) {
-        reasons.find(reason => reason.reason === error.type)!.count += 1;
-      } else {
-        reasons.push({ reason: error.type!, count: 1 });
-      }
-    });
+  const loadingWebhooks = useRef(false);
+
+  const { getUserWebhooks } = useUserWebhooks();
+
+  useEffect(() => {
+    if (loadingWebhooks.current) return;
+    loadingWebhooks.current = true;
+    getUserWebhooks()
+      .then(webhooks => setWebhooks(webhooks || []))
+      .catch(() => toast.error("Failed to fetch data"))
+      .finally(() => {
+        loadingWebhooks.current = false;
+      });
+  }, []);
+
+  const failureReasonsData = useMemo((): FailureReason[] => {
+    let reasons: { reason: string; count: number }[] = [];
+    if (webhooks.length === 0) return reasons;
+    webhooks
+      ?.filter(webhook => !webhook.succeeded)
+      .map(error => {
+        if (reasons.some(reason => reason.reason === error.type)) {
+          reasons.find(reason => reason.reason === error.type)!.count += 1;
+        } else {
+          reasons.push({ reason: error.type!, count: 1 });
+        }
+      });
+    debugger;
+    reasons = reasons.sort((a, b) => b.count - a.count).slice(0, 5);
+
     // make reason -> instead of checkout.session.completed, make it c.s.completed
     return reasons.map(reason => ({
       reason:
@@ -111,17 +95,109 @@ function Dashboard() {
         reason.reason.split(".")[1],
       count: reason.count,
     }));
-  }, [mockErrors]);
+  }, [webhooks]);
 
-  const totalSuccess = 98; // Calculate this based on your actual data
+  const errors = useMemo((): WebhookError[] => {
+    return webhooks
+      .filter(webhook => !webhook.succeeded)
+      .map(webhook => ({
+        eventId: webhook.eventId,
+        type: webhook.type,
+        created: webhook.created,
+        failedWebhooks: webhook.pendingWebHooks,
+      }));
+  }, [webhooks]);
+
+  const eventVolumeData = useMemo((): EventVolumeData[] => {
+    const webhooksByTime = webhooks.reduce(
+      (acc: Record<string, number>, webhook) => {
+        const date = new Date(webhook.created * 1000);
+        const timeSpan =
+          Math.max(...webhooks.map(w => w.created)) -
+          Math.min(...webhooks.map(w => w.created));
+        const key =
+          timeSpan > 86400
+            ? date.toISOString().split("T")[0] // Format as YYYY-MM-DD
+            : date.getHours().toString().padStart(2, "0") + ":00"; // Format as HH:00
+
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
+
+    return Object.entries(webhooksByTime)
+      .map(([timestamp, webhooks]) => ({
+        timestamp,
+        webhooks,
+      }))
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  }, [webhooks]);
+
+  /**
+   * const mockGraphData = [
+  { timestamp: "00:00", succeeded: 95, failed: 14 },
+  { timestamp: "04:00", succeeded: 98, failed: 23 },
+  { timestamp: "08:00", succeeded: 100, failed: 50 },
+  { timestamp: "12:00", succeeded: 97, failed: 32 },
+  { timestamp: "16:00", succeeded: 99, failed: 1 },
+  { timestamp: "20:00", succeeded: 96, failed: 14 },
+];
+   */
+  const graphData = useMemo((): GraphData[] => {
+    const webhooksByTime = webhooks.reduce(
+      (acc: Record<string, { succeeded: number; failed: number }>, webhook) => {
+        const date = new Date(webhook.created * 1000);
+        const timeSpan =
+          Math.max(...webhooks.map(w => w.created)) -
+          Math.min(...webhooks.map(w => w.created));
+        const key =
+          timeSpan > 86400
+            ? date.toISOString().split("T")[0]
+            : date.getHours().toString().padStart(2, "0") + ":00";
+
+        if (!acc[key]) {
+          acc[key] = { succeeded: 0, failed: 0 };
+        }
+
+        if (webhook.succeeded) {
+          acc[key].succeeded += 1;
+        } else {
+          acc[key].failed += 1;
+        }
+
+        return acc;
+      },
+      {},
+    );
+
+    return Object.entries(webhooksByTime)
+      .map(([timestamp, data]) => ({
+        timestamp,
+        succeeded: data.succeeded,
+        failed: data.failed,
+      }))
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  }, [webhooks]);
+
+  const totalSuccess = useMemo(() => {
+    return webhooks.reduce((acc, webhook) => {
+      return webhook.succeeded ? acc + 1 : acc;
+    }, 0);
+  }, [webhooks]);
 
   return (
     <div className="container flex flex-col gap-2 bg-background py-8">
       <h1 className="text-4xl font-bold">Webhook Monitor</h1>
-      <h2 className="text-2xl font-medium">Today&apos;s Webhook Performance</h2>
+      <h2 className="text-xl">Today&apos;s Webhook Performance</h2>
       <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-background py-4">
         <div className="space-y-8">
-          <WebhookGraph data={mockGraphData} totalSuccess={totalSuccess} />
+          <WebhookGraph
+            data={graphData}
+            totalSuccess={totalSuccess}
+            loading={loadingWebhooks.current}
+          />
+
           <ErrorDialog
             error={selectedError}
             open={isDialogOpen}
@@ -129,16 +205,13 @@ function Dashboard() {
             onResolve={error => setIsDialogOpen}
           />
         </div>
-        {/* <FadeIn delay={0.3}> */}
-        <motion.div
-          whileHover={{ y: -5 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="h-full max-h-[478px]"
-        >
-          <Card className="p-6 h-full">
-            <h3 className="text-lg font-semibold mb-4">
-              Failure Reason Breakdown
-            </h3>
+        <Card className="h-full max-h-[478px] flex flex-col justify-between p-6">
+          <CardTitle className="text-xl font-semibold mb-6">
+            Top 5 Event Type Distribution
+          </CardTitle>
+          {loadingWebhooks.current ? (
+            <Loader />
+          ) : (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={failureReasonsData} barSize={40}>
                 <XAxis
@@ -160,48 +233,49 @@ function Dashboard() {
                 />
               </BarChart>
             </ResponsiveContainer>
-          </Card>
-        </motion.div>
-        {/* </FadeIn> */}
-        <motion.div
-          whileHover={{ y: -5 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <Card className="p-4 h-full">
-            {mockErrors.length > 0 ? (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-semibold">Failed Webhooks</h2>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-                  {mockErrors.map(error => (
-                    <ErrorCard
-                      key={error.eventId}
-                      error={error}
-                      onClick={() => {
-                        setSelectedError(error);
-                        setIsDialogOpen(true);
-                      }}
-                    />
-                  ))}
-                </div>
+          )}
+        </Card>
+
+        <Card className="p-4 h-full flex flex-col gap-6">
+          <CardTitle className="text-xl font-semibold">
+            Webhook errors
+          </CardTitle>
+          {loadingWebhooks.current ? (
+            <Loader />
+          ) : errors.length > 0 ? (
+            <div className="flex flex-col justify-between">
+              <div className="max-h-[300px] grid gap-4 md:grid-cols-2 lg:grid-cols-1 pr-4 overflow-auto">
+                {errors.map(error => (
+                  <ErrorCard
+                    key={error.eventId}
+                    error={error}
+                    onClick={() => {
+                      setSelectedError(error);
+                      setIsDialogOpen(true);
+                    }}
+                  />
+                ))}
               </div>
-            ) : (
-              <div className="flex gap-2">
-                <CheckCircle2 className="w-6 h-6 text-success" />
-                <p className="text-lg text-muted-foreground">
-                  All the webhooks are running smoothly! 🚀
-                </p>
-              </div>
-            )}
-          </Card>
-        </motion.div>
-        <motion.div
-          whileHover={{ y: -5 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">
-              Webhooks sent over time
-            </h3>
+            </div>
+          ) : (
+            <div className="w-full h-full flex gap-2  justify-center items-center">
+              <CheckCircle2 className="w-6 h-6 text-success" />
+              <p className="text-lg text-muted-foreground">
+                All the webhooks are running smoothly! 🚀
+              </p>
+            </div>
+          )}
+        </Card>
+
+        <Card className="p-6">
+          <h3 className="text-xl font-semibold mb-4">
+            Webhooks sent over time
+          </h3>
+          {loadingWebhooks.current ? (
+            <div className="h-[300px]">
+              <Loader />
+            </div>
+          ) : (
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={eventVolumeData}>
                 <defs>
@@ -233,8 +307,8 @@ function Dashboard() {
                 />
               </AreaChart>
             </ResponsiveContainer>
-          </Card>
-        </motion.div>
+          )}
+        </Card>
       </div>
     </div>
   );

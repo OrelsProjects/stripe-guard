@@ -14,7 +14,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
         <toast.ToastContainer
           stacked
           newestOnTop
-          theme={resolvedTheme}
+          theme={resolvedTheme === "dark" ? "light" : "dark"}
           autoClose={2500}
           draggablePercent={60}
           className="!mb-16 z-[51]"

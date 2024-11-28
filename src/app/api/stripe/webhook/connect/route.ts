@@ -107,6 +107,7 @@ async function handleWebhookResolution(
       pendingWebHooks: webhooksPending,
       requestId: event.request?.id,
       requestIdempotencyKey: event.request?.idempotency_key,
+      succeeded: webhooksPending === 0,
     },
   });
 

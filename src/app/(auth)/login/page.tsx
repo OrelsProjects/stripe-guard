@@ -1,33 +1,43 @@
 "use client";
 
-import AppleLogin from "@/components/auth/appleLogin";
+import SecurityFeatures from "@/app/(auth)/login/components/security-features";
 import GoogleLogin from "@/components/auth/googleLogin";
-import CustomLink from "@/components/customLink";
-import { Button } from "@/components/ui/button";
-
-
+import Logo from "@/components/ui/Logo";
+import { motion } from "framer-motion";
 
 const Auth = () => {
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center text-center overflow-hidden px-6 lg:px-0 ">
-      <div className="w-full flex flex-col gap-3 lg:max-w-[420px] rounded-xl p-8 bg-card">
-        <GoogleLogin signInTextPrefix="Sign in with" />
-        <AppleLogin signInTextPrefix="Sign in with" />
-      </div>
-      <div className="flex flex-row gap-1 justify-center items-center">
-        <span className="text-muted-foreground">
-          Don&apos;t have an account?
-        </span>
-        <Button
-          variant="link"
-          className="text-base underline text-muted-foreground !p-0"
-          asChild
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4 font-['Montserrat']">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full flex justify-center"
+      >
+        <motion.div
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-xl aspect-video bg-card rounded-2xl shadow-lg shadow-primary/5 p-8 border border-border/50 backdrop-blur-sm"
         >
-          <CustomLink href="/register" preserveQuery>
-            Sign up
-          </CustomLink>
-        </Button>
-      </div>
+          <div className="flex justify-center mb-8">
+            <div className="bg-muted p-4 rounded-2xl shadow-lg shadow-muted/20">
+              <Logo />
+            </div>
+          </div>
+
+          <h1 className="text-2xl font-bold text-center text-foreground mb-2">
+            Welcome to StripeGuard
+          </h1>
+
+          <p className="text-muted-foreground text-center mb-8">
+            Monitor your webhooks status and get instant alerts
+          </p>
+
+          <GoogleLogin />
+          <SecurityFeatures />
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

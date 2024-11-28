@@ -47,7 +47,7 @@ export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {
                 Failed Webhooks:
               </strong>{" "}
               <span className="text-destructive font-semibold">
-                {error.pendingWebHooks}
+                {error.failedWebhooks}
               </span>
             </p>
             <p>

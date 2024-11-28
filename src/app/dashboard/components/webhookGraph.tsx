@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Loader } from "@/components/ui/loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -24,9 +25,14 @@ interface WebhookGraphProps {
     failed: number;
   }[];
   totalSuccess: number;
+  loading?: boolean;
 }
 
-export function WebhookGraph({ data, totalSuccess }: WebhookGraphProps) {
+export function WebhookGraph({
+  data,
+  totalSuccess,
+  loading,
+}: WebhookGraphProps) {
   const [dateRangeType, setDateRangeType] = useState<DateRange>("daily");
   const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>({
     from: new Date(),
@@ -109,60 +115,49 @@ export function WebhookGraph({ data, totalSuccess }: WebhookGraphProps) {
       {/* </div> */}
       <Card className="w-full max-h-[478px]">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-xl font-bold">
+          <CardTitle className="text-xl font-semibold">
             Webhook Performance
           </CardTitle>
-          {isAllSuccessful && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            >
-              <Badge
-                variant="default"
-                className="bg-green-500/10 text-green-500 flex items-center gap-1"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                All Webhooks Successful
-              </Badge>
-            </motion.div>
-          )}
         </CardHeader>
         <CardContent className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={data}
-              margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
-            >
-              <XAxis
-                dataKey="timestamp"
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
-              />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(var(--background))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "var(--radius)",
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="succeeded"
-                stroke="hsl(var(--success))"
-                strokeWidth={2}
-                dot={false}
-              ></Line>
-              <Line
-                type="monotone"
-                dataKey="failed"
-                stroke="hsl(var(--destructive))"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          {loading ? (
+            <Loader />
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={data}
+                margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+              >
+                <XAxis
+                  dataKey="timestamp"
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--background))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="succeeded"
+                  stroke="hsl(var(--success))"
+                  strokeWidth={2}
+                  dot={false}
+                ></Line>
+                <Line
+                  type="monotone"
+                  dataKey="failed"
+                  stroke="hsl(var(--destructive))"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
     </motion.div>

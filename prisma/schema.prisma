@@ -112,6 +112,8 @@ model UserWebhooks {
   created         Int     @map("created")
   pendingWebHooks Int     @map("pending_web_hooks")
 
+  succeeded Boolean @map("succeeded")
+
   requestId             String? @map("request_id")
   requestIdempotencyKey String? @map("request_idempotency_key")
 

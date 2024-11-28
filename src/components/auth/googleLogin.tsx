@@ -1,11 +1,15 @@
 import React from "react";
 import useAuth from "@/lib/hooks/useAuth";
-import { FcGoogle } from "react-icons/fc";
 import { InvalidCredentialsError } from "@/models/errors/InvalidCredentialsError";
 import { toast } from "react-toastify";
 import { UnknownUserError } from "@/models/errors/UnknownUserError";
 import UserAlreadyExistsError from "@/models/errors/UserAlreadyExistsError";
-import Loading from "@/components/ui/loading";
+import Image from "next/image";
+import CustomLink from "@/components/customLink";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 
 interface GoogleLoginProps {
   className?: string;
@@ -37,13 +41,24 @@ export default function GoogleLogin({
   };
 
   return (
-    <div
-      className={`w-full h-12 flex flex-row gap-2 bg-background dark:bg-card-foreground dark:text-card justify-center items-center rounded-lg hover:cursor-pointer ${className}`}
-      onClick={handleGoogleLogin}
-    >
-      {loading && <Loading className="w-7 h-7" />}
-      <FcGoogle className="w-7 h-7" />
-      <h1 className="uppercase">{signInTextPrefix} Google</h1>
-    </div>
+    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <Button
+        onClick={handleGoogleLogin}
+        className="w-full bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-3 py-6"
+        asChild
+      >
+        <CustomLink href="/register" preserveQuery>
+          {loading && <Loader />}
+          <Image
+            src="https://www.google.com/favicon.ico"
+            alt="Google"
+            fill
+            className="!relative !w-5 !h-5"
+          />
+          Continue with Google
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </CustomLink>
+      </Button>
+    </motion.div>
   );
 }

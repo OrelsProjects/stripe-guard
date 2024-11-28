@@ -85,7 +85,7 @@ export default function AuthProvider({
         pathname.includes("register") ||
         pathname === "/"
       ) {
-        router.push("/plans", { preserveQuery: true });
+        // router.push("/plans", { preserveQuery: true });
       }
     } else {
       if (!pathname.includes("login") && !pathname.includes("register")) {
@@ -93,7 +93,10 @@ export default function AuthProvider({
       }
     }
   }, [status]);
-  if (status === "loading") {
+  if (
+    status === "loading" &&
+    (!pathname.includes("login") || !pathname.includes("stripe-setup"))
+  ) {
     return (
       <div className="w-screen h-screen flex items-center justify-center">
         <Loading className="w-20 h-20" />
