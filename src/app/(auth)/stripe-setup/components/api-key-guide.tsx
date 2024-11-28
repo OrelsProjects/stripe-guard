@@ -68,7 +68,7 @@ const steps: Step[] = [
     title: "Configure Key Details",
     description: (
       <div className="space-y-2">
-        <p>1. Enter "StripeGuard" as the name</p>
+        <p>1. Enter &quot;StripeGuard&quot; as the name</p>
         <p>
           2. Set the URL to:{" "}
           <TooltipProvider delayDuration={150}>
@@ -84,7 +84,7 @@ const steps: Step[] = [
           </TooltipProvider>
         </p>
         <p className="font-bold text-foreground">
-          3. Important: Check "Customize permissions for this key"
+          3. Important: Check &quot;Customize permissions for this key&quot;
         </p>
         <p>
           (
