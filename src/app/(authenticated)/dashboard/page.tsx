@@ -1,13 +1,12 @@
 "use client";
 
-import { ErrorCard } from "@/app/dashboard/components/errorCard";
-import { ErrorDialog } from "@/app/dashboard/components/errorDialog";
-import { WebhookGraph } from "@/app/dashboard/components/webhookGraph";
+import { ErrorCard } from "./components/errorCard";
+import { ErrorDialog } from "./components/errorDialog";
+import { WebhookGraph } from "./components/webhookGraph";
 import { Card, CardTitle } from "@/components/ui/card";
-import useUserWebhookEvents from "@/lib/hooks/useWebhooks";
+import useStripeCredentials from "@/lib/hooks/useWebhooks";
 import { UserWebhookEvent } from "@prisma/client";
-import { motion } from "framer-motion";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -59,7 +58,7 @@ function Dashboard() {
 
   const loadingWebhooks = useRef(false);
 
-  const { getUserWebhookEvents } = useUserWebhookEvents();
+  const { getUserWebhookEvents } = useStripeCredentials();
 
   useEffect(() => {
     if (loadingWebhooks.current) return;

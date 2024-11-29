@@ -17,6 +17,7 @@ import axios from "axios";
 import { Loader } from "@/components/ui/loader";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { encrypt } from "@/lib/utils/encryption";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 const stripeKeysUrl = process.env
@@ -138,16 +139,10 @@ export default function ApiKeyGuide() {
     }
     if (loading) return;
     setLoading(true);
-
-    const publicKeyPem = process.env
-      .NEXT_PUBLIC_STRIPE_KEY_ENCRYPTION_KEY as string;
-    const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
-    const encryptedData = publicKey.encrypt(apiKey, "RSA-OAEP", {
-      md: forge.md.sha256.create(),
-    });
+    const encryptedData = encrypt(apiKey);
     try {
       await axios.post("/api/stripe/user/setup", {
-        apiKey: forge.util.encode64(encryptedData),
+        apiKey: encryptedData,
       });
       toast.success("API key saved securely! 🚀");
       router.push("/dashboard");

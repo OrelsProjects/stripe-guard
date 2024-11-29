@@ -45,19 +45,16 @@ export default function GoogleLogin({
       <Button
         onClick={handleGoogleLogin}
         className="w-full bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-3 py-6"
-        asChild
       >
-        <CustomLink href="/register" preserveQuery>
-          {loading && <Loader />}
-          <Image
-            src="https://www.google.com/favicon.ico"
-            alt="Google"
-            fill
-            className="!relative !w-5 !h-5"
-          />
-          Continue with Google
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </CustomLink>
+        {loading && <Loader />}
+        <Image
+          src="https://www.google.com/favicon.ico"
+          alt="Google"
+          fill
+          className="!relative !w-5 !h-5"
+        />
+        Continue with Google
+        <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
     </motion.div>
   );

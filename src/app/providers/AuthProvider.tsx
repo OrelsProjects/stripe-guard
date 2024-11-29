@@ -12,10 +12,11 @@ import Loading from "@/components/ui/loading";
 import { setUserEventTracker } from "@/eventTracker";
 import { setUserLogger } from "@/logger";
 import { useSession } from "next-auth/react";
-import AppUser from "@/models/appUser";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 import axios from "axios";
+import { AppUser, UserSettings } from "@/models/user";
+import { Session } from "next-auth";
 
 export default function AuthProvider({
   children,
@@ -30,21 +31,23 @@ export default function AuthProvider({
 
   const loading = useRef(false);
 
-  const setUser = (user?: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    userId?: string | null;
-  }) => {
+  const setUser = async (data?: Session) => {
     try {
+      debugger;
+      if (!data) {
+        dispatch(setUserAction(null));
+        return;
+      }
+
+      const settings = await axios.get<UserSettings>("/api/user/settings");
+
+      const { user } = data;
       const appUser: AppUser = {
-        displayName: user?.name || null,
-        email: user?.email || "",
-        photoURL: user?.image || null,
-        userId: user?.userId || "",
-        settings: {
-          showNotifications: true,
-        },
+        id: user.userId,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        settings: settings.data,
       };
       dispatch(setUserAction(appUser));
     } catch (error: any) {
@@ -62,9 +65,8 @@ export default function AuthProvider({
     if (!isInOnboarding) {
       loading.current = true;
     }
-
     if (session?.user) {
-      setUser(session.user);
+      setUser(session);
       try {
         const isUserOnboarded = await axios.get<boolean>(
           "/api/stripe/user/onboarded",
@@ -75,7 +77,9 @@ export default function AuthProvider({
             router.push("/stripe-setup");
           }
         } else {
-          router.push("/dashboard");
+          if (pathname.includes("/login")) {
+            router.push("/dashboard");
+          }
         }
       } catch (error: any) {
         console.error(error);
@@ -95,6 +99,7 @@ export default function AuthProvider({
         break;
       case "unauthenticated":
         setUser(undefined);
+        router.push("/");
         break;
       default:
         break;
@@ -107,10 +112,10 @@ export default function AuthProvider({
   }, [currentUser]);
 
   if (
-    (status === "loading" &&
-      !pathname.includes("login") &&
-      !pathname.includes("stripe-setup")) ||
-    loading.current
+    status === "loading" &&
+    !pathname.includes("login") &&
+    !pathname.includes("stripe-setup")
+    // || loading.current
   ) {
     return (
       <div className="w-screen h-screen flex items-center justify-center">

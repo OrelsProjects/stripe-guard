@@ -48,11 +48,11 @@ model User {
   accounts          Account[]
   sessions          Session[]
   settings          UserSettings?
-  stripe            UserStripeCredentials?
-  orders            UserOrders[]
+  stripeCredentials UserStripeCredentials?
   subscription      Subscription[]
   meta              UserMetadata?
   userWebhookEvents UserWebhookEvent[]
+  Payment           Payment[]
 
   @@map("user")
 }
@@ -78,9 +78,12 @@ model VerificationToken {
 }
 
 model UserSettings {
-  appUserSettingsId String  @id @default(cuid()) @map("app_user_settings_id")
-  userId            String  @unique @map("user_id")
-  showNotifications Boolean @default(true) @map("show_notifications")
+  appUserSettingsId String @id @default(cuid()) @map("app_user_settings_id")
+  userId            String @unique @map("user_id")
+
+  emailWebhookNotifications Boolean @default(true) @map("email_webhook_notifications")
+  emailToNotify             String? @map("email_to_notify")
+  frequency                 String? @map("frequency") // daily, weekly, monthly
 
   appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -96,6 +99,7 @@ model UserStripeCredentials {
   publishableKey String? @map("publishable_key")
 
   apiKey        String? @map("api_key") // For non-connect users
+  webhookUrl    String? @map("webhook_url") // For non-connect users
   webhookId     String? @map("webhook_id") // For non-connect users
   webhookSecret String? @map("webhook_secret") // For non-connect users
 
@@ -135,60 +139,40 @@ model UserWebhookEvent {
   @@map("user_webhook_event")
 }
 
-model CartItems {
-  id       String @id @default(cuid()) @map("id")
-  name     String @map("name")
-  currency String @map("currency")
-  price    Float  @map("price")
-
-  orders UserOrders[]
-
-  @@map("cart_items")
-}
-
-model UserOrders {
-  id         String   @id @default(cuid()) @map("id")
-  orderId    String   @unique @map("order_id")
-  userId     String   @map("user_id")
-  cartItemId String   @map("cart_item_id")
-  quantity   Int      @map("quantity")
-  total      Float    @map("total")
-  status     String   @default("pending") @map("status") // pending, completed, cancelled
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
-  appUser  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cartItem CartItems @relation(fields: [cartItemId], references: [id], onDelete: Cascade)
-
-  @@map("user_orders")
-}
-
 model Subscription {
-  id                String    @id @default(cuid()) @map("id")
-  userId            String?   @map("user_id")
-  planId            String    @map("plan_id")
-  subscriptionId    String    @unique @map("subscription_id")
-  startDate         DateTime  @map("start_date")
-  status            String    @map("status")
-  nextBillingDate   DateTime? @map("next_billing_date")
-  lastPaymentDate   DateTime? @map("last_payment_date")
-  lastPaymentAmount Float?    @map("last_payment_amount")
+  id         String @id @default(cuid()) @map("id")
+  sessionId  String @map("session_id")
+  userId     String @map("user_id")
+  productId  String @map("product_id")
+  priceId    String @map("price_id")
+  customerId String @map("customer_id")
+  status     String @map("status")
 
-  appUser  User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  payments Payment[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  canceledAt DateTime? @map("canceled_at")
+
+  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
 }
 
 model Payment {
-  id             String   @id @default(cuid()) @map("id")
-  paymentId      String   @unique @map("payment_id")
-  subscriptionId String   @map("subscription_id")
-  paidAmount     Float    @map("paid_amount")
-  paymentStatus  String   @map("payment_status")
-  paymentDate    DateTime @map("payment_date")
+  id        String @id @default(cuid()) @map("id")
+  userId    String @map("user_id")
+  invoiceId String @map("invoice_id")
+  priceId   String @map("price_id")
 
-  subscription Subscription @relation(fields: [subscriptionId], references: [subscriptionId], onDelete: Cascade)
+  amountReceived  Int     @map("amount_received")
+  currency        String  @map("currency")
+  status          String  @map("status")
+  paymentMethodId String? @map("payment_method_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }

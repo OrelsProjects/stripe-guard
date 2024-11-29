@@ -6,11 +6,7 @@ interface RootLayoutProps {
 }
 
 export default function AuthLayout({ children }: RootLayoutProps) {
-  return (
-    <main>
-      <AuthProvider>{children}</AuthProvider>
-    </main>
-  );
+  return <main>{children}</main>;
 }
 
 export const viewport: Viewport = {

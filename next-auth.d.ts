@@ -1,11 +1,13 @@
+import { UserSettings } from "@/models/user";
 import { DefaultSession } from "next-auth";
 
+// Extend the SessionUser interface
 declare module "next-auth" {
   interface SessionUser {
     userId: string;
-    meta: Partial<UserMetaData>;
   }
 
+  // Extend the Session interface
   interface Session {
     user: SessionUser & DefaultSession["user"];
   }

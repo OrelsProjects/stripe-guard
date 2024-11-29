@@ -1,12 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { signIn, signOut as signOutAuth } from "next-auth/react";
 import { useCallback, useState } from "react";
-import { clearUser, setError } from "@/lib/features/auth/authSlice";
+import {
+  clearUser,
+  setError,
+  updateUserSettings as updateUserSettingsAction,
+} from "@/lib/features/auth/authSlice";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { EventTracker } from "@/eventTracker";
 import { Logger } from "@/logger";
 import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { UserSettings } from "@/models/user";
 
 const useAuth = () => {
   const router = useRouter();
@@ -119,11 +124,26 @@ const useAuth = () => {
     }
   }, []);
 
+  const updateUserSettings = useCallback(
+    async (settings: Partial<UserSettings>) => {
+      try {
+        await axios.patch("/api/user/settings", settings);
+        dispatch(updateUserSettingsAction(settings));
+      } catch (error: any) {
+        Logger.error("Error updating user settings", { error });
+        dispatch(setError("Failed to update settings"));
+        throw error;
+      }
+    },
+    [],
+  );
+
   return {
     authenticateWithStripe,
     signInWithGoogle,
     signInWithApple,
     signUpWithEmail,
+    updateUserSettings,
     deleteUser,
     signOut,
     loading,

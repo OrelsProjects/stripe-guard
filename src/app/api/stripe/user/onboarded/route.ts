@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(isUserOnboarded, { status: 200 });
   } catch (error: any) {
     loggerServer.error(
-      "Error getting webhook details",
+      "Error getting onboarded status",
       session?.user?.userId || "Unknown user",
       error,
     );

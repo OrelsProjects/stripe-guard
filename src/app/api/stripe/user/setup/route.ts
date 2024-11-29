@@ -5,7 +5,9 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/api/_db/db";
 import Stripe from "stripe";
+import { decrypt } from "@/lib/utils/encryption";
 
+type WebookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
 type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
 
 const paymentIntentEvents: EnabledEvent[] = [
@@ -81,7 +83,10 @@ const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   ...invoiceEvents,
 ];
 
-const createWebhook = async (key: string, userId: string) => {
+const createWebhook = async (
+  key: string,
+  userId: string,
+): Promise<WebookCreationResponse | undefined> => {
   const webhookEndpoint =
     (process.env.STRIPE_WEBHOOK_ENDPOINT as string) + "/" + userId;
   const stripe = new Stripe(key);
@@ -104,12 +109,7 @@ export async function POST(req: NextRequest) {
   }
   try {
     const { apiKey } = await req.json();
-    const privateKeyPem = process.env.STRIPE_KEY_ENCRYPTION_KEY as string;
-    const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
-    const encryptedBytes = forge.util.decode64(apiKey);
-    const decryptedApiKey = privateKey.decrypt(encryptedBytes, "RSA-OAEP", {
-      md: forge.md.sha256.create(),
-    });
+    const decryptedApiKey = decrypt(apiKey);
 
     const webhook = await createWebhook(decryptedApiKey, session.user.userId);
     if (!webhook) {
@@ -121,6 +121,7 @@ export async function POST(req: NextRequest) {
         userId: session.user.userId,
         apiKey: decryptedApiKey,
         webhookId: webhook.id,
+        webhookUrl: webhook.url,
         webhookSecret: webhook.secret,
         connected: false,
       },
@@ -128,7 +129,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "API key saved" }, { status: 201 });
   } catch (error: any) {
     loggerServer.error(
-      "Error getting webhook details",
+      "Error saving webhook details",
       session?.user?.userId || "Unknown user",
       error,
     );
