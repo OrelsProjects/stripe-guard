@@ -5,7 +5,6 @@ import "react-toastify/dist/ReactToastify.css";
 import SizeContext from "@/lib/context/sizeContext";
 import { ThemeProvider } from "./ThemeProvider";
 import * as toast from "react-toastify";
-import SettingsComponent from "@/components/settingsContainer";
 import { useAppSelector } from "@/lib/hooks/redux";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
@@ -63,7 +62,6 @@ const ContentProvider: React.FC<ContentProviderProps> = ({ children }) => {
             />
           </div>
           <div className="w-full h-full flex flex-col relative z-10 overflow-auto scrollbar-hide md:scrollbar-visible md:px-4">
-            {user && <SettingsComponent />}
             {children}
           </div>
         </ThemeProvider>

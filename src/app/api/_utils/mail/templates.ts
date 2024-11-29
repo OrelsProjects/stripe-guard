@@ -1,7 +1,7 @@
-import { EventAccountNotNull } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
+import { Event } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
 export function generateWebhookFailureEmail(
-  event: EventAccountNotNull,
+  event: Event,
   eventTime: Date,
   failedWebhooks: number,
 ) {
