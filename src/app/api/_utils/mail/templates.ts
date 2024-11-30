@@ -104,3 +104,111 @@ export function generateWebhookFailureEmail(
       </html>
     `;
 }
+
+export function baseEmailTemplate(content: string) {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Stripe Guard Notification</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: hsl(0, 0%, 3.9%);
+          background-color: hsl(0, 0%, 98%);
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          max-width: 600px;
+          margin: 20px auto;
+          background-color: hsl(0, 0%, 100%);
+          border: 1px solid hsl(0, 0%, 89.8%);
+          border-radius: 0.5rem;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+          background-color: hsl(221.2, 83.2%, 53.3%);
+          color: hsl(210, 40%, 98%);
+          padding: 20px;
+          text-align: center;
+          border-top-left-radius: 0.5rem;
+          border-top-right-radius: 0.5rem;
+        }
+        .content {
+          padding: 20px;
+        }
+        .button {
+          display: inline-block;
+          background-color: hsl(221.2, 83.2%, 53.3%);
+          color: hsl(210, 40%, 98%);
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 0.25rem;
+          margin-top: 20px;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px;
+          color: hsl(0, 0%, 45.1%);
+          font-size: 12px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Stripe Guard</h1>
+        </div>
+        <div class="content">
+          ${content}
+        </div>
+        <div class="footer">
+          <p>This is an automated message from Stripe Guard. Please do not reply to this email.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+export function generateInvoicePaymentFailedEmail(
+  invoiceId: string,
+  amount: number,
+  currency: string,
+) {
+  const content = `
+    <h2>Payment Failed</h2>
+    <p>We were unable to process your payment for invoice ${invoiceId}.</p>
+    <p>Amount due: ${(amount / 100).toFixed(2)} ${currency.toUpperCase()}</p>
+    <p>Please update your payment method to avoid any interruption in your service.</p>
+    <a href="https://dashboard.stripe.com/invoices/${invoiceId}" class="button">View Invoice</a>
+  `;
+  return baseEmailTemplate(content);
+}
+
+export function generateSubscriptionCanceledEmail(subscriptionId: string) {
+  const content = `
+    <h2>Subscription Canceled</h2>
+    <p>Your subscription ${subscriptionId} has been canceled.</p>
+    <p>We're sorry to see you go. If you have any feedback or questions, please don't hesitate to contact us.</p>
+    <p>You can reactivate your subscription at any time from your account dashboard.</p>
+    <a href="https://your-app-url.com/account" class="button">Manage Account</a>
+  `;
+  return baseEmailTemplate(content);
+}
+export function generateSubscriptionTrialEndingEmail(
+  subscriptionId: string,
+  trialEndDate: Date,
+) {
+  const content = `
+    <h2>Your Trial is Ending Soon</h2>
+    <p>Your trial for subscription ${subscriptionId} will end on ${trialEndDate.toLocaleDateString()}.</p>
+    <p>To continue enjoying our services, please ensure you have a valid payment method on file.</p>
+    <a href="https://dashboard.stripe.com/subscriptions/${subscriptionId}" class="button">Manage Subscription</a>
+  `;
+  return baseEmailTemplate(content);
+}

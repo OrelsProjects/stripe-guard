@@ -185,7 +185,7 @@ export function HeroSection() {
                       className="gap-2"
                       asChild
                     >
-                      <Link href="#features">Learn more</Link>
+                      <Link href="/blog">Learn more</Link>
                     </Button>
                   </motion.div>
                 </div>

@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/api/_db/db";
 import Stripe from "stripe";
 import { decrypt } from "@/lib/utils/encryption";
+import { getStripeInstance } from "@/app/api/_payment/stripe";
 
 type WebookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
 type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
@@ -89,7 +90,7 @@ const createWebhook = async (
 ): Promise<WebookCreationResponse | undefined> => {
   const webhookEndpoint =
     (process.env.STRIPE_WEBHOOK_ENDPOINT as string) + "/" + userId;
-  const stripe = new Stripe(key);
+  const stripe = getStripeInstance({ apiKey: key });
   try {
     const webhook = await stripe.webhookEndpoints.create({
       url: webhookEndpoint,

@@ -9,21 +9,22 @@ import { AnalyticsSection } from "@/components/sections/analytics";
 import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
 import SignUpSection from "@/components/sections/sign-up";
+import { LampContainer } from "@/components/ui/lamp-effect";
 
 export default function Home() {
-  const darkSectionRef = useRef(null);
+  const darkSectionRef = useRef<HTMLDivElement>(null);
   const [isDarkSectionVisible, setIsDarkSectionVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsDarkSectionVisible(
-          entry.intersectionRatio > 0.3 && entry.intersectionRatio < 0.8,
+          entry.intersectionRatio > 0.3 && entry.intersectionRatio < 0.8
         );
       },
       {
         threshold: [0.3, 0.8],
-      },
+      }
     );
 
     if (darkSectionRef.current) {
@@ -40,7 +41,9 @@ export default function Home() {
   return (
     <motion.div
       className="min-h-screen flex flex-col"
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
     >
       <NavigationBar />
       <motion.div
@@ -51,15 +54,6 @@ export default function Home() {
         <FeaturesSection />
         <HowItWorksSection />
       </motion.div>
-      {/* <Button
-        className="fixed bottom-4 right-4"
-        onClick={authenticateWithStripe}
-      >
-        Stripe auth
-      </Button>
-      <Button className="fixed bottom-4 right-40" onClick={getStripeEvents}>
-        Stripe events
-      </Button> */}
       <div ref={darkSectionRef}>
         <AnalyticsSection />
       </div>
@@ -69,9 +63,9 @@ export default function Home() {
         transition={{ duration: 0.4 }}
       >
         <SignUpSection />
-        {/* <PricingSection /> */}
       </motion.div>
       <Footer />
     </motion.div>
   );
 }
+

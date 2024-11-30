@@ -1,4 +1,5 @@
 import prisma from "@/app/api/_db/db";
+import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
 import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
 import {
@@ -44,11 +45,13 @@ function initializeStripe(
   userStripeCredentials: UserStripeCredentials,
 ): Stripe | null {
   if (!userStripeCredentials.apiKey && userStripeCredentials.accountId) {
-    return new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-      stripeAccount: userStripeCredentials.accountId,
+    return getStripeInstance({
+      accountId: userStripeCredentials.accountId as string,
     });
   } else if (userStripeCredentials.apiKey) {
-    return new Stripe(userStripeCredentials.apiKey);
+    return getStripeInstance({
+      apiKey: (userStripeCredentials.apiKey as string) || "",
+    });
   }
 
   return null;
@@ -206,9 +209,7 @@ export async function POST(
     }
 
     const userStripeCredentials = await getUserStripeCredentials(
-      accountId 
-        ? { accountId } 
-        : { userId: userId! }
+      accountId ? { accountId } : { userId: userId! },
     );
 
     if (!userStripeCredentials) {

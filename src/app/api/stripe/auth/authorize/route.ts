@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { authOptions } from "@/auth/authOptions";
 import { getServerSession } from "next-auth";
 import prisma from "@/app/api/_db/db";
+import { getStripeInstance } from "@/app/api/_payment/stripe";
 
 async function saveAccountId(data: Stripe.OAuthToken, userId: string) {
   await prisma.userStripeCredentials.upsert({
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const stripe = getStripeInstance();
     const { searchParams } = req.nextUrl;
     const code = searchParams.get("code") as string;
     const state = searchParams.get("state") as string;

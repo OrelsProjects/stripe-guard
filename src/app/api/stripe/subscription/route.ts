@@ -1,3 +1,4 @@
+import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { authOptions } from "@/auth/authOptions";
 import loggerServer from "@/loggerServer";
 import { getServerSession } from "next-auth";
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
   }
   try {
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const stripe = getStripeInstance();
     const products = stripe.products.list();
 
   } catch (error: any) {

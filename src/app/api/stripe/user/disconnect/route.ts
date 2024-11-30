@@ -1,4 +1,5 @@
 import prisma from "@/app/api/_db/db";
+import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { authOptions } from "@/auth/authOptions";
 import loggerServer from "@/loggerServer";
 import { getServerSession } from "next-auth";
@@ -28,8 +29,8 @@ export async function DELETE(req: NextRequest) {
 
     // if isConnected, use process.env.STRIPE_SECRET_KEY and accountId to create Stripe
     if (userStripeCredentials.connected) {
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-        stripeAccount: userStripeCredentials.accountId as string,
+      const stripe = getStripeInstance({
+        accountId: userStripeCredentials.accountId || "",
       });
 
       await stripe.oauth.deauthorize({
@@ -37,7 +38,7 @@ export async function DELETE(req: NextRequest) {
         stripe_user_id: userStripeCredentials.accountId as string,
       });
     } else {
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+      const stripe = getStripeInstance();
       stripe.webhookEndpoints.del(userStripeCredentials.webhookId as string);
     }
 

@@ -1,3 +1,4 @@
+import { getStripeInstance } from "@/app/api/_payment/stripe";
 import loggerServer from "@/loggerServer";
 import { Interval, Product } from "@/models/payment";
 import { NextRequest, NextResponse } from "next/server";
@@ -5,7 +6,7 @@ import Stripe from "stripe";
 
 export async function GET(req: NextRequest) {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const stripe = getStripeInstance();
     const { data: stripeProducts } = await stripe.products.list();
 
     const products: Product[] = [];
