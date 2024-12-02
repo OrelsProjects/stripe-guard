@@ -2,7 +2,8 @@ import { getStripeInstance } from "@/app/api/_payment/stripe";
 import loggerServer from "@/loggerServer";
 import { Interval, Product } from "@/models/payment";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+
+const appName = process.env.NEXT_PUBLIC_APP_NAME as string;
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,12 +12,17 @@ export async function GET(req: NextRequest) {
 
     const products: Product[] = [];
 
-    for (const stripeProduct of stripeProducts) {
+    const appProducts = stripeProducts.filter(stripeProduct =>
+      stripeProduct.metadata.app?.toLowerCase().includes(appName.toLowerCase()),
+    );
+
+    for (const stripeProduct of appProducts) {
       const { data: stripePrices } = await stripe.prices.list({
         product: stripeProduct.id,
       });
       stripePrices
         .filter(stripePrice => stripePrice.active && stripePrice.unit_amount)
+        // only those that have StripeGuard
         .map(stripePrice => {
           const product: Product = {
             id: stripeProduct.id,

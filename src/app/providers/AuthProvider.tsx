@@ -74,7 +74,7 @@ export default function AuthProvider({
 
         if (!isUserOnboarded.data) {
           if (!isInOnboarding) {
-            router.push("/stripe-setup");
+            // router.push("/stripe-setup");
           }
         } else {
           if (pathname.includes("/login")) {

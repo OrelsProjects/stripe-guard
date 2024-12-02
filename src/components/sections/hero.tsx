@@ -195,7 +195,7 @@ export function HeroSection() {
           <div className="w-full px-4 lg:w-1/2">
             <FadeIn direction="left" delay={0.3}>
               <motion.div
-                className="relative mx-auto border rounded-lg shadow-lg bg-card max-w-max"
+                className="relative mx-auto border round ed-lg shadow-lg bg-card max-w-max"
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
                 <div className="p-6">

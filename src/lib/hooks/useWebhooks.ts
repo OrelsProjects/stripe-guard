@@ -8,8 +8,10 @@ export default function useStripeCredentials() {
     UserWebhookEvent[] | null
   > => {
     try {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const urlParams = new URLSearchParams({ timeZone });
       const getUserWebhookEvents = await axios.get<UserWebhookEvent[]>(
-        "/api/stripe/user/webhooks-details",
+        "/api/stripe/user/webhooks-details?" + urlParams,
       );
       return getUserWebhookEvents.data;
     } catch (error: any) {

@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Bell } from "lucide-react";
+import { AlertCircle, Bell, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { UserWebhookEvent } from "@prisma/client";
 import { WebhookError } from "@/models/webhook";
@@ -17,8 +17,19 @@ interface ErrorDialogProps {
   onResolve: (error: WebhookError) => void;
 }
 
-export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {
+export function ErrorDialog({
+  error,
+  open,
+  onOpenChange,
+  onResolve,
+}: ErrorDialogProps) {
   if (!error) return null;
+
+  const navigateToStripeEvent = () => {
+    // Replace 'YOUR_STRIPE_DASHBOARD_URL' with the actual base URL for your Stripe dashboard
+    const stripeEventUrl = `https://dashboard.stripe.com/events/${error.eventId}`;
+    window.open(stripeEventUrl, "_blank");
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,7 +48,13 @@ export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {
           <div className="space-y-2">
             <p>
               <strong className="text-muted-foreground">Event ID:</strong>{" "}
-              <span className="font-mono text-sm">{error.eventId}</span>
+              <Button
+                variant="link"
+                onClick={navigateToStripeEvent}
+                className="font-mono text-sm !p-0 h-fit"
+              >
+                {error.eventId}
+              </Button>
             </p>
             <p>
               <strong className="text-muted-foreground">Type:</strong>{" "}
@@ -73,7 +90,7 @@ export function ErrorDialog({ error, open, onOpenChange }: ErrorDialogProps) {
           <Button
             size="lg"
             onClick={() => {
-              // Resolve the error here
+              onResolve(error);
               onOpenChange(false);
             }}
           >

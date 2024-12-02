@@ -27,3 +27,19 @@ export type FailureReason = {
   reason: string;
   count: number;
 };
+
+export type WebhookCardStatsTitles =
+  | "Total Webhooks"
+  | "Failed Webhooks"
+  | "Success Rate";
+
+// element (Icon) with className as props
+type Icon = React.FC<React.SVGProps<SVGSVGElement>>;
+
+export type WebhookCardStats = {
+  title: WebhookCardStatsTitles;
+  value: number;
+  description: string;
+  icon: Icon;
+  variant?: "destructive" | "success";
+};

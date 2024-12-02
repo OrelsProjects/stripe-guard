@@ -196,9 +196,11 @@ export async function POST(
 ) {
   const signature = req.headers.get("stripe-signature");
   let event = (await req.json()) as Event;
+  const stripe = getStripeInstance();
 
   const userId = params.userId?.[0];
   const accountId = event.account; // If accountId is null, it's a non-connected account
+
   try {
     if (!accountId && !userId) {
       loggerServer.error("No account or user id in webhook", "Unknown", event);

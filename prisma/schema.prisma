@@ -126,8 +126,8 @@ model UserWebhookEvent {
 
   succeeded Boolean @map("succeeded")
 
-  requestId             String? @map("request_id")
-  requestIdempotencyKey String? @map("request_idempotency_key")
+  requestId             String @map("request_id")
+  requestIdempotencyKey String @map("request_idempotency_key")
 
   userNotifiedAt DateTime? @map("user_notified_at")
 

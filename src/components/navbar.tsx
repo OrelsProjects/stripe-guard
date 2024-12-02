@@ -45,7 +45,7 @@ export function Navbar() {
             );
           })}
         </div>
-        <div className="ml-auto flex items-center space-x-4">
+        {/* <div className="ml-auto flex items-center space-x-4">
           <Button
             variant="outline"
             className="flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-colors hover:text-primary"
@@ -55,7 +55,7 @@ export function Navbar() {
               3
             </span>
           </Button>
-        </div>
+        </div> */}
       </div>
     </nav>
   );
