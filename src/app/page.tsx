@@ -10,6 +10,10 @@ import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
 import SignUpSection from "@/components/sections/sign-up";
 import { LampContainer } from "@/components/ui/lamp-effect";
+import { ProblemAgitationSection } from "@/components/sections/problem-agitation";
+import { SocialProofSection } from "@/components/sections/social-proof";
+import { AboutUsSection } from "@/components/sections/about-us";
+import { FAQSection } from "@/components/sections/faq";
 
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
@@ -19,12 +23,12 @@ export default function Home() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsDarkSectionVisible(
-          entry.intersectionRatio > 0.3 && entry.intersectionRatio < 0.8
+          entry.intersectionRatio > 0.5 && entry.intersectionRatio < 0.8,
         );
       },
       {
-        threshold: [0.3, 0.8],
-      }
+        threshold: [0.5, 0.8],
+      },
     );
 
     if (darkSectionRef.current) {
@@ -51,8 +55,8 @@ export default function Home() {
         transition={{ duration: 0.4 }}
       >
         <HeroSection />
+        <ProblemAgitationSection />
         <FeaturesSection />
-        <HowItWorksSection />
       </motion.div>
       <div ref={darkSectionRef}>
         <AnalyticsSection />
@@ -62,10 +66,13 @@ export default function Home() {
         animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
         transition={{ duration: 0.4 }}
       >
+        <HowItWorksSection />
+        <SocialProofSection />
+        <AboutUsSection />
+        <FAQSection />
         <SignUpSection />
       </motion.div>
       <Footer />
     </motion.div>
   );
 }
-

@@ -120,7 +120,7 @@ model UserWebhookEvent {
   livemode        Boolean @map("livemode")
   type            String  @map("type") // checkout.session.completed, payment_intent.succeeded, etc
   created         Int     @map("created")
-  pendingWebHooks Int     @map("pending_web_hooks")
+  pendingWebhooks Int     @map("pending_web_hooks")
 
   connected Boolean @default(true) @map("connected")
 

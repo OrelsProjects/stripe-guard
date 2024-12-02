@@ -29,7 +29,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-muted/50">
+    <section id="features" className="py-24">
       <div className="container px-4 mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">

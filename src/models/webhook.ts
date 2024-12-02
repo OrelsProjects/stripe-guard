@@ -38,8 +38,21 @@ type Icon = React.FC<React.SVGProps<SVGSVGElement>>;
 
 export type WebhookCardStats = {
   title: WebhookCardStatsTitles;
-  value: number;
+  value: number | string;
   description: string;
   icon: Icon;
   variant?: "destructive" | "success";
+};
+
+export type Statistics = {
+  cardsData: WebhookCardStats[];
+  errors: WebhookError[];
+  failureReasonsData: FailureReason[];
+  eventVolumeData: EventVolumeData[];
+  graphData: GraphData[];
+  totalSuccess: string | number;
+};
+
+export type StatisticsServer = Omit<Statistics, "cardsData"> & {
+  cardsData: Omit<WebhookCardStats, "icon">[];
 };

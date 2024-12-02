@@ -10,11 +10,12 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Loader } from "@/components/ui/loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
+import EmptyGraph from "@/app/(authenticated)/dashboard/components/emptyGraph";
 
 type DateRange = "daily" | "weekly" | "monthly" | "custom";
 
@@ -24,11 +25,11 @@ interface WebhookGraphProps {
     succeeded: number;
     failed: number;
   }[];
-  totalSuccess: number;
+  totalSuccess: string | number;
   loading?: boolean;
 }
 
-export function WebhookGraph({
+export default function WebhookGraph({
   data,
   totalSuccess,
   loading,
@@ -39,7 +40,7 @@ export function WebhookGraph({
   });
   const [calendarOpen, setCalendarOpen] = useState(false); // State to control Calendar visibility
 
-  const isAllSuccessful = totalSuccess === 100;
+  // const isAllSuccessful = totalSuccess === 100;
 
   const tabsTriggerClassname = useMemo(
     () => "text-lg py-0 4k:font-medium 4k:text-4xl 4k:px-8 4k:py-2",
@@ -122,6 +123,8 @@ export function WebhookGraph({
         <CardContent className="h-[400px]">
           {loading ? (
             <Loader />
+          ) : data.length === 0 ? (
+            <EmptyGraph />
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart

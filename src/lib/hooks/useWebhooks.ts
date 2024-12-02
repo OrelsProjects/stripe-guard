@@ -1,19 +1,33 @@
 import { Logger } from "@/logger";
-import { UserWebhookEvent } from "@prisma/client";
+import { Statistics, StatisticsServer } from "@/models/webhook";
 import axios from "axios";
+import { Activity, AlertTriangle, CheckCircle } from "lucide-react";
 import { useCallback } from "react";
+
+const iconMapping = {
+  "Total Webhooks": Activity,
+  "Failed Webhooks": AlertTriangle,
+  "Success Rate": CheckCircle,
+};
 
 export default function useStripeCredentials() {
   const getUserWebhookEvents = useCallback(async (): Promise<
-    UserWebhookEvent[] | null
+    Statistics | null
   > => {
     try {
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const urlParams = new URLSearchParams({ timeZone });
-      const getUserWebhookEvents = await axios.get<UserWebhookEvent[]>(
+      const getUserWebhookEvents = await axios.get<StatisticsServer>(
         "/api/stripe/user/webhooks-details?" + urlParams,
       );
-      return getUserWebhookEvents.data;
+      const cardsData = getUserWebhookEvents.data.cardsData.map(card => ({
+        ...card,
+        icon: iconMapping[card.title],
+      }));
+      return {
+        ...getUserWebhookEvents.data,
+        cardsData,
+      }
     } catch (error: any) {
       Logger.error("Error getting webhook details", error);
       return null;

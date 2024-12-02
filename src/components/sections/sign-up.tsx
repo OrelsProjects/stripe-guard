@@ -1,38 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { MontserratAlternates } from "@/lib/utils/fonts";
-import axios from "axios";
 import { motion } from "framer-motion";
-import { Loader2, CheckCircle } from "lucide-react";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { ArrowRight } from 'lucide-react';
+import Link from "next/link";
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    try {
-      e.preventDefault();
-      setIsLoading(true);
-      // Simulate API call
-      await axios.post("/api/registerUser", { interestedUser: email });
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error registering user", { error });
-      toast.error("Something went wrong... 🤔 try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <motion.div
       id="sign-up"
-      className="w-full py-48 bg-muted/50 flex flex-col items-center"
-      initial={{ opacity: 0, y: 10 }}
+      className="w-full py-24 md:py-32 bg-gradient-to-b from-background to-muted/50 flex flex-col items-center"
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{
@@ -41,62 +19,57 @@ export default function SignUp() {
       }}
     >
       {/* Heading and Description */}
-      <motion.h1
-        className={cn("text-6xl font-bold mb-4 text-primary")}
+      <motion.h2
+        className={cn("text-4xl md:text-5xl font-bold mb-6 text-center text-primary")}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        Get Hooked Now!
-      </motion.h1>
+        Ready to Transform Your Payment Operations?
+      </motion.h2>
       <motion.p
         className={cn(
-          "text-lg text-muted-foreground mb-8 text-center max-w-md",
+          "text-xl text-muted-foreground mb-10 text-center max-w-2xl px-4",
           MontserratAlternates.className,
         )}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        Be the first to know when our product launches! <br />
-        Sign up for exclusive updates and special deals.
+        Join the growing community of businesses that have optimized their webhook monitoring. 
+        Experience the difference in your payment processing and cash flow today.
       </motion.p>
 
-      {/* Sign-Up Form */}
-      <motion.form
-        className={cn(
-          "w-96 flex flex-col gap-2",
-          MontserratAlternates.className,
-        )}
-        onSubmit={handleSubmit}
+      {/* CTA Button */}
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <Input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-          className="flex-grow py-6 text-lg"
-        />
         <Button
-          disabled={isLoading || isSubmitted}
-          className="bg-primary text-primary-foreground hover:bg-primary/70 py-5"
+          asChild
+          size="lg"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
         >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Submitting...
-            </>
-          ) : isSubmitted ? (
-            <>
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Subscribed!
-            </>
-          ) : (
-            "Register to Free Trial"
-          )}
+          <Link href="/login">
+            Start Your Free Trial
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
         </Button>
-      </motion.form>
+      </motion.div>
+
+      {/* Additional Information */}
+      <motion.p
+        className={cn(
+          "mt-8 text-sm text-muted-foreground text-center",
+          MontserratAlternates.className,
+        )}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        Join satisfied users worldwide. No credit card required. 14-day free trial. Cancel anytime.
+      </motion.p>
     </motion.div>
   );
 }
+

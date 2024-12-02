@@ -13,6 +13,8 @@ import { User, UserStripeCredentials } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
+export const maxDuration = 60; // 1 minute
+
 type LeanUser = {
   id: string;
   email?: string | null;
@@ -140,7 +142,7 @@ async function handleWebhookResolution(
       livemode: event.livemode,
       type: event.type,
       created: event.created,
-      pendingWebHooks: webhooksPending,
+      pendingWebhooks: webhooksPending,
       requestId: event.request?.id,
       requestIdempotencyKey: event.request?.idempotency_key,
       succeeded: webhooksPending === 0,
