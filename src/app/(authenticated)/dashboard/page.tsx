@@ -5,13 +5,14 @@ import { toast } from "react-toastify";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loader";
-import useStripeCredentials from "@/lib/hooks/useWebhooks";
+import useWebhooks from "@/lib/hooks/useWebhooks";
 import { WebhookError, Statistics } from "@/models/webhook";
 import { ErrorDialog } from "@/app/(authenticated)/dashboard/components/errorDialog";
 import TopEventTypeDistributionGraph from "@/app/(authenticated)/dashboard/components/graphs.tsx/topEventTypeDistributionGraph";
 import WebhookErrorsCard from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhooksErrorsCard";
 import WebhooksSentOverTimeChart from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhooksSentOverTimeChart";
 import WebhookGraph from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhookGraph";
+import { UserWebhookEvent } from "@prisma/client";
 
 function Dashboard() {
   const [selectedError, setSelectedError] = useState<WebhookError | null>(null);
@@ -20,7 +21,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
 
   const loadingWebhooks = useRef(false);
-  const { getUserWebhookEvents } = useStripeCredentials();
+  const { getUserWebhookEvents, resolveWebhook } = useWebhooks();
 
   useEffect(() => {
     if (loadingWebhooks.current) return;
@@ -41,6 +42,33 @@ function Dashboard() {
   const eventVolumeData = statistics?.eventVolumeData ?? [];
   const graphData = statistics?.graphData ?? [];
   const totalSuccess = statistics?.totalSuccess ?? 0;
+
+  const handleResolveWebhookError = async (webhookError: WebhookError) => {
+    const { userWebhookEvent } = webhookError;
+    const removedError = errors.find(
+      error => error.userWebhookEvent.id === userWebhookEvent.id,
+    );
+    if (!removedError || !statistics) return;
+
+    try {
+      setStatistics({
+        ...statistics,
+        errors:
+          errors.filter(
+            error => error.userWebhookEvent.id !== userWebhookEvent.id,
+          ) || [],
+      });
+      await resolveWebhook(userWebhookEvent.id);
+    } catch {
+      toast.error("Failed to resolve webhook error");
+      if (statistics) {
+        setStatistics({
+          ...statistics,
+          errors: [...errors],
+        });
+      }
+    }
+  };
 
   return (
     <div className="w-full h-full flex justify-center">
@@ -92,7 +120,7 @@ function Dashboard() {
                 error={selectedError}
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
-                onResolve={error => setIsDialogOpen}
+                onResolve={handleResolveWebhookError}
               />
             </div>
 
@@ -108,6 +136,7 @@ function Dashboard() {
                 setSelectedError(error);
                 setIsDialogOpen(true);
               }}
+              onResolve={handleResolveWebhookError}
             />
 
             <WebhooksSentOverTimeChart

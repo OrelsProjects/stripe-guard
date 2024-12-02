@@ -26,7 +26,7 @@ export default function FreeTrialProvider({ children }: ProviderProps) {
     if (!user) {
       return;
     }
-    const isFreeTrial = searchParams.has("ft") && !!user?.settings.plan;
+    const isFreeTrial = searchParams.has("ft") && !user?.settings.plan;
     setIsFreeTrial(isFreeTrial);
     setLoading(isFreeTrial);
     if (!isFreeTrial) {
@@ -52,7 +52,7 @@ export default function FreeTrialProvider({ children }: ProviderProps) {
     return (
       <div className="w-screen h-screen flex flex-col items-center justify-center gap-2">
         <Loader className="w-20 h-20" />
-        {isFreeTrial && <p>Getting your plan ready</p>}
+        {isFreeTrial && <p>Getting your plan ready...</p>}
       </div>
     );
   }

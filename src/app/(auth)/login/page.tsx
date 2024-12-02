@@ -5,6 +5,8 @@ import GoogleLogin from "@/components/auth/googleLogin";
 import Logo from "@/components/ui/Logo";
 import { motion } from "framer-motion";
 
+const appName = process.env.NEXT_PUBLIC_APP_NAME;
+
 const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4 font-['Montserrat']">
@@ -27,7 +29,7 @@ const Auth = () => {
           </div>
 
           <h1 className="text-2xl font-bold text-center text-foreground mb-2">
-            Welcome to StripeGuard
+            Welcome to {appName}
           </h1>
 
           <p className="text-muted-foreground text-center mb-8">

@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { encrypt } from "@/lib/utils/encryption";
 
+const appName = process.env.NEXT_PUBLIC_APP_NAME;
 const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 const stripeKeysUrl = process.env
   .NEXT_PUBLIC_STRIPE_API_KEYS_ENDPOINT as string;
@@ -69,7 +70,7 @@ const steps: Step[] = [
     title: "Configure Key Details",
     description: (
       <div className="space-y-2">
-        <p>1. Enter &quot;StripeGuard&quot; as the name</p>
+        <p>1. Enter &quot;{appName}&quot; as the name</p>
         <p>
           2. Set the URL to:{" "}
           <TooltipProvider delayDuration={150}>
@@ -175,7 +176,7 @@ export default function ApiKeyGuide() {
         <Key className="w-12 h-12 text-primary mx-auto" />
         <h1 className="text-3xl font-bold">Generate Your API Key</h1>
         <p className="text-muted-foreground">
-          Follow these steps to create a restricted API key for StripeGuard
+          Follow these steps to create a restricted API key for {appName}
         </p>
       </motion.div>
 

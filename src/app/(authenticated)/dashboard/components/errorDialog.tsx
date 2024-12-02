@@ -5,9 +5,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Bell, ExternalLink } from "lucide-react";
+import { AlertCircle, Bell } from "lucide-react";
 import { format } from "date-fns";
-import { UserWebhookEvent } from "@prisma/client";
 import { WebhookError } from "@/models/webhook";
 
 interface ErrorDialogProps {

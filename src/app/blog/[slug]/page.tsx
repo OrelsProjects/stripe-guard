@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { marked } from "marked";
 import Image from "next/image";
-import { CalendarIcon, ClockIcon, ArrowLeft } from 'lucide-react';
+import { CalendarIcon, ClockIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { blogs } from "@/lib/blogs";
@@ -38,16 +38,16 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       setShowTopBar(scrollPosition > 100);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative">
       {/* Top Bar */}
-      <div 
+      <div
         className={`fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-md transition-transform duration-300 z-10 ${
-          showTopBar ? 'translate-y-0' : '-translate-y-full'
+          showTopBar ? "translate-y-0" : "-translate-y-full"
         }`}
       >
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
@@ -56,7 +56,9 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blogs
             </Button>
           </Link>
-          <h2 className="text-sm font-semibold truncate max-w-[50%]">{blog.title}</h2>
+          <h2 className="text-sm font-semibold truncate max-w-[50%]">
+            {blog.title}
+          </h2>
         </div>
       </div>
 
@@ -82,7 +84,9 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
             <div className="flex items-center">
               <CalendarIcon className="w-4 h-4 mr-2" />
               <time dateTime={blog.publishedAt}>
-                {formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true })}
+                {formatDistanceToNow(new Date(blog.publishedAt), {
+                  addSuffix: true,
+                })}
               </time>
             </div>
             <div className="flex items-center">
@@ -98,9 +102,8 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
             <Image
               src={blog.author.avatar}
               alt={blog.author.name}
-              width={80}
-              height={80}
-              className="rounded-full"
+              fill
+              className="!relative !w-20 !h-20 rounded-full object-cover"
             />
             <div>
               <h2 className="text-xl font-semibold">{blog.author.name}</h2>
@@ -110,7 +113,10 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         </div>
 
         {/* Render HTML content with styled typography */}
-        <article className="prose prose-lg dark:prose-invert max-w-none" ref={contentRef}>
+        <article
+          className="prose prose-lg dark:prose-invert max-w-none"
+          ref={contentRef}
+        >
           <div
             className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8"
             dangerouslySetInnerHTML={{ __html: contentHtml }}
@@ -120,7 +126,11 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         {/* Back to Blogs Link (Bottom) */}
         <div className="mt-12 text-center">
           <Link href="/blog" passHref>
-            <Button variant="outline" size="lg" className="flex items-center mx-auto">
+            <Button
+              variant="outline"
+              size="lg"
+              className="flex items-center mx-auto"
+            >
               <ArrowLeft className="mr-2 h-5 w-5" /> Back to Blogs
             </Button>
           </Link>
@@ -129,4 +139,3 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     </div>
   );
 }
-

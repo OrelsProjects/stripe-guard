@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     try {
       await sendMail(
         "orelsmail@gmail.com",
-        "StripeGuard",
+        process.env.NEXT_PUBLIC_APP_NAME as string,
         "NEW USER HAS REGISTERED",
         `User ${interestedUser} has registered to the platform`,
       );

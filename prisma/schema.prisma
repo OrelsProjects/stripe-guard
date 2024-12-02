@@ -126,13 +126,15 @@ model UserWebhookEvent {
 
   succeeded Boolean @map("succeeded")
 
-  requestId             String @map("request_id")
-  requestIdempotencyKey String @map("request_idempotency_key")
+  requestId             String? @map("request_id")
+  requestIdempotencyKey String? @map("request_idempotency_key")
 
   userNotifiedAt DateTime? @map("user_notified_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  resolvedAt DateTime? @map("resolved_at")
 
   appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

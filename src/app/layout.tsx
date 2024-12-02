@@ -82,7 +82,7 @@ export default function Layout({ children }: RootLayoutProps) {
       <body className="antialiased">
         <Suspense
           fallback={
-            <Loading spinnerClassName="absolute top-1/2 left-1/2 h-10 w-10" />
+            <Loading spinnerClassName="absolute top-1/2 left-1/2 h-16 w-16" />
           }
         >
           <ThemeProvider>

@@ -95,7 +95,7 @@ const createWebhook = async (
     const webhook = await stripe.webhookEndpoints.create({
       url: webhookEndpoint,
       enabled_events: allEvents,
-      description: "StripeGuard",
+      description: process.env.NEXT_PUBLIC_APP_NAME as string,
     });
     return webhook;
   } catch (error: any) {

@@ -21,6 +21,7 @@ export type WebhookError = {
   type: string;
   created: number;
   failedWebhooks: number;
+  userWebhookEvent: UserWebhookEvent;
 };
 
 export type FailureReason = {

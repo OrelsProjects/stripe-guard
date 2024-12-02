@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
-import useStripeCredentials from "@/lib/hooks/useWebhooks";
+import useWebhooks from "@/lib/hooks/useWebhooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -28,7 +28,7 @@ export function DisconnectDialog({
   onOpenChange,
 }: DisconnectDialogProps) {
   const router = useRouter();
-  const { disconnectUser } = useStripeCredentials();
+  const { disconnectUser } = useWebhooks();
   const [loading, setLoading] = useState(false);
 
   const handleDisconnect = async () => {

@@ -3,13 +3,15 @@ import { format } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { WebhookError } from "@/models/webhook";
+import { Button } from "@/components/ui/button";
 
 interface ErrorCardProps {
   error: WebhookError;
   onClick: () => void;
+  onResolve: (error: WebhookError) => void;
 }
 
-export function ErrorCard({ error, onClick }: ErrorCardProps) {
+export function ErrorCard({ error, onClick, onResolve }: ErrorCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -34,6 +36,16 @@ export function ErrorCard({ error, onClick }: ErrorCardProps) {
                 {format((error.created as number) * 1000, "PPpp")}
               </p>
             </div>
+            <Button
+              size="lg"
+              onClick={e => {
+                e.stopPropagation();
+                onResolve(error);
+              }}
+              className="my-auto"
+            >
+              Resolved
+            </Button>
           </div>
         </CardContent>
       </Card>

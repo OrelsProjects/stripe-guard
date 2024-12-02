@@ -1,9 +1,10 @@
 export const blogs = {
-    "understanding-webhooks-stripe": {
-      slug: "understanding-webhooks-stripe",
-      title: "Understanding Webhooks: How Stripe Uses Them for Real-time Events",
-      excerpt: "Explore the world of webhooks and how Stripe leverages them for efficient, real-time payment processing and event handling.",
-      content: `
+  "understanding-webhooks-stripe": {
+    slug: "understanding-webhooks-stripe",
+    title: "Understanding Webhooks: How Stripe Uses Them for Real-time Events",
+    excerpt:
+      "Explore the world of webhooks and how Stripe leverages them for efficient, real-time payment processing and event handling.",
+    content: `
   # Understanding Webhooks and Stripe Integration
   
   Webhooks are a crucial component of modern web applications, enabling real-time communication between different services. In this comprehensive guide, we'll explore what webhooks are, how they work, and specifically how Stripe utilizes them for payment processing.
@@ -57,19 +58,20 @@ export const blogs = {
   
   Webhooks are essential for building robust, real-time applications. Understanding how to properly implement and handle webhooks, especially in the context of Stripe payments, is crucial for modern web developers.
       `,
-      publishedAt: "2024-03-20T12:00:00Z",
-      readingTime: "8 min read",
-      author: {
-        name: "Sarah Chen",
-        role: "Technical Lead",
-        avatar: "/placeholder.svg?height=80&width=80",
-      },
+    publishedAt: "2024-12-02T12:00:00Z",
+    readingTime: "8 min read",
+    author: {
+      name: "Orel Zilberman",
+      role: "Starter",
+      avatar: "/founder-image.jpg",
     },
-    "introduction-to-nextjs": {
-      slug: "introduction-to-nextjs",
-      title: "An Introduction to Next.js: The React Framework for Production",
-      excerpt: "Discover the power of Next.js, a popular React framework that simplifies the process of building fast and scalable web applications.",
-      content: `
+  },
+  "introduction-to-nextjs": {
+    slug: "introduction-to-nextjs",
+    title: "An Introduction to Next.js: The React Framework for Production",
+    excerpt:
+      "Discover the power of Next.js, a popular React framework that simplifies the process of building fast and scalable web applications.",
+    content: `
   # An Introduction to Next.js: The React Framework for Production
   
   Next.js has quickly become one of the most popular frameworks for building React applications. In this article, we'll explore what makes Next.js special and why you might want to use it for your next project.
@@ -109,15 +111,14 @@ export const blogs = {
   
   Next.js provides a powerful set of tools for building modern web applications with React. Its focus on developer experience, performance, and scalability makes it an excellent choice for projects of all sizes.
       `,
-      publishedAt: "2024-03-15T10:00:00Z",
-      readingTime: "6 min read",
-      author: {
-        name: "Alex Johnson",
-        role: "Frontend Developer",
-        avatar: "/placeholder.svg?height=80&width=80",
-      },
+    publishedAt: "2024-12-01T10:00:00Z",
+    readingTime: "6 min read",
+    author: {
+      name: "Orel Zilberman",
+      role: "Starter",
+      avatar: "/founder-image.jpg",
     },
-  };
-  
-  export type Blog = typeof blogs[keyof typeof blogs];
-  
+  },
+};
+
+export type Blog = (typeof blogs)[keyof typeof blogs];

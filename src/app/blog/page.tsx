@@ -26,9 +26,8 @@ export default function BlogsPage() {
                     <Image
                       src={blog.author.avatar}
                       alt={blog.author.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
+                      fill
+                      className="!relative !w-10 !h-10 rounded-full object-cover"
                     />
                     <div>
                       <p className="text-sm font-medium">{blog.author.name}</p>

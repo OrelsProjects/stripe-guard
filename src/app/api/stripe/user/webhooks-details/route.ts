@@ -56,23 +56,24 @@ export async function GET(req: NextRequest) {
     });
 
     // Group events by `requestIdempotencyKey` to handle duplicates
-    const eventsByKey = userWebhookEvents.reduce((acc, event) => {
-      const key = event.requestIdempotencyKey || event.id;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(event);
-      return acc;
-    }, {} as Record<string, UserWebhookEvent[]>);
+    const eventsByKey = userWebhookEvents.reduce(
+      (acc, event) => {
+        const key = event.requestIdempotencyKey || event.id;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(event);
+        return acc;
+      },
+      {} as Record<string, UserWebhookEvent[]>,
+    );
 
     // Handle duplicates and select the most relevant event per key
     const processedEvents: UserWebhookEvent[] = [];
 
     for (const key in eventsByKey) {
       const events = eventsByKey[key];
-      const successfulEvent = events.find(
-        (event) => event.pendingWebhooks === 0
-      );
+      const successfulEvent = events.find(event => event.pendingWebhooks === 0);
 
       if (successfulEvent) {
         processedEvents.push(successfulEvent);
@@ -91,8 +92,8 @@ export async function GET(req: NextRequest) {
       const reasonsMap: Record<string, number> = {};
 
       processedEvents
-        .filter((webhook) => webhook.pendingWebhooks > 0)
-        .forEach((error) => {
+        .filter(webhook => webhook.pendingWebhooks > 0)
+        .forEach(error => {
           const reason = error.type || "Unknown";
           reasonsMap[reason] = (reasonsMap[reason] || 0) + 1;
         });
@@ -101,7 +102,7 @@ export async function GET(req: NextRequest) {
         .map(([reason, count]) => ({ reason, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5)
-        .map((reason) => ({
+        .map(reason => ({
           reason:
             reason.reason.split(".")[0].slice(0, 2) +
             "." +
@@ -112,27 +113,28 @@ export async function GET(req: NextRequest) {
 
     // Compute errors array
     const errors: WebhookError[] = processedEvents
-      .filter((webhook) => webhook.pendingWebhooks > 0)
-      .map((webhook) => ({
+      .filter(webhook => webhook.pendingWebhooks > 0)
+      .filter(webhook => !webhook.resolvedAt)
+      .map(webhook => ({
         eventId: webhook.eventId,
         type: webhook.type || "Unknown",
         created: webhook.created,
         failedWebhooks: webhook.pendingWebhooks,
+        userWebhookEvent: webhook,
       }));
 
     // Compute cards data for dashboard summary
     const totalWebhooks = processedEvents.length;
     const failedWebhooks = processedEvents.filter(
-      (w) => w.pendingWebhooks > 0
+      w => w.pendingWebhooks > 0,
     ).length;
 
     const successRate =
       totalWebhooks === 0
         ? "0%"
-        : `${(
-            ((totalWebhooks - failedWebhooks) / totalWebhooks) *
-            100
-          ).toFixed(2)}%`;
+        : `${(((totalWebhooks - failedWebhooks) / totalWebhooks) * 100).toFixed(
+            2,
+          )}%`;
 
     const cardsData: Omit<WebhookCardStats, "icon">[] = [
       {
@@ -155,7 +157,7 @@ export async function GET(req: NextRequest) {
     ];
 
     // Compute event volume data and graph data for charts
-    const timestamps = processedEvents.map((w) => w.created);
+    const timestamps = processedEvents.map(w => w.created);
     const maxTime = Math.max(...timestamps);
     const minTime = Math.min(...timestamps);
     const timeSpan = maxTime - minTime;
@@ -166,7 +168,7 @@ export async function GET(req: NextRequest) {
       { succeeded: number; failed: number }
     > = {};
 
-    processedEvents.forEach((webhook) => {
+    processedEvents.forEach(webhook => {
       const date = moment.unix(webhook.created);
       const key =
         timeSpan > 86400 ? date.format("YYYY-MM-DD") : date.format("HH:00");
@@ -219,13 +221,13 @@ export async function GET(req: NextRequest) {
     loggerServer.error(
       "Error getting webhook details",
       session?.user?.userId || "Unknown user",
-      error
+      error,
     );
 
     // Return an internal server error response
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

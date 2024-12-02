@@ -143,8 +143,8 @@ async function handleWebhookResolution(
       type: event.type,
       created: event.created,
       pendingWebhooks: webhooksPending,
-      requestId: event.request?.id || "",
-      requestIdempotencyKey: event.request?.idempotency_key || "",
+      requestId: event.request?.id,
+      requestIdempotencyKey: event.request?.idempotency_key,
       succeeded: webhooksPending === 0,
       connected: userStripeCredentials?.connected,
     },
@@ -160,7 +160,7 @@ async function handleWebhookResolution(
 async function handleWebhookSuccess(event: Event, userEmail: string) {
   await sendMail(
     userEmail,
-    "StripeGuard",
+    process.env.NEXT_PUBLIC_APP_NAME as string,
     "Webhook Failed",
     generateWebhookFailureEmail(
       event,
