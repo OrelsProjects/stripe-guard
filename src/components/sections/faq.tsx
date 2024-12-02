@@ -8,24 +8,24 @@ import {
 
 const faqs = [
   {
-    question: "How does your webhook monitoring service work?",
-    answer: "Our service integrates with your existing webhook infrastructure to monitor all incoming events. We track successful deliveries, failures, and retries, providing real-time alerts and detailed analytics to help you quickly identify and resolve issues.",
+    question: "How will this service benefit my business?",
+    answer: "Our service helps you prevent revenue loss by instantly detecting and alerting you to payment failures. This means you can resolve issues quickly, keeping your cash flow healthy and your customers satisfied.",
   },
   {
     question: "Is there a limit to the number of webhooks I can monitor?",
-    answer: "Our plans offer different levels of webhook monitoring. The Starter plan allows up to 1,000 events per month, while the Pro plan supports up to 10,000. For businesses with higher volumes, our Enterprise plan offers unlimited webhook monitoring.",
+    answer: "Our plans are designed to grow with your business. The Starter plan covers up to 1,000 events per month, while the Pro plan supports up to 10,000. For high-volume businesses, our Enterprise plan offers unlimited webhook monitoring.",
   },
   {
     question: "Can I integrate your service with my existing tools?",
-    answer: "Yes, we offer integrations with any popular tool you want. Send me an email and I'll take care of it at orelsmail@gmail.com",
+    answer: "We offer integrations with popular tools and platforms. If you need a specific integration, just reach out to us at support@ourcompany.com, and we'll work on making it happen for you.",
   },
   {
-    question: "Do you offer a free trial?",
-    answer: "Yes, we offer a 14-day free trial for all our plans. You can sign up and start monitoring your webhooks immediately, with no credit card required for the trial period.",
+    question: "How quickly can I get started?",
+    answer: "You can be up and running in less than 5 minutes. Our simple setup process involves either logging in with your payment gateway or generating an API key using our step-by-step guide.",
   },
   {
-    question: "How easy is it to set up your service?",
-    answer: "Our service is designed for easy setup. You either login with Stripe or generate an API using our guide. It takes less than 2 minutes.",
+    question: "What kind of support do you offer?",
+    answer: "We provide comprehensive support to ensure your success. This includes 24/7 email support, detailed documentation, and for our Pro and Enterprise customers, priority phone support.",
   },
 ];
 
@@ -35,10 +35,10 @@ export function FAQSection() {
       <div className="container px-4 mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">
-            Frequently Asked Questions
+            Questions? We&apos;ve Got Answers
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16">
-            Got questions? We&apos;ve got answers. If you can&apos;t find what you&apos;re looking for, feel free to contact our support team.
+            Here are some common questions about our service. If you need more information, our support team is always here to help.
           </p>
         </FadeIn>
 

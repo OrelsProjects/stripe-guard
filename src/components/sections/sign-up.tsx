@@ -18,13 +18,12 @@ export default function SignUp() {
         ease: [0.21, 0.47, 0.32, 0.98],
       }}
     >
-      {/* Heading and Description */}
       <motion.h2
         className={cn("text-4xl md:text-5xl font-bold mb-6 text-center text-primary")}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        Ready to Transform Your Payment Operations?
+        Ready to Secure Your Revenue?
       </motion.h2>
       <motion.p
         className={cn(
@@ -34,11 +33,10 @@ export default function SignUp() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        Join the growing community of businesses that have optimized their webhook monitoring. 
-        Experience the difference in your payment processing and cash flow today.
+        Join thousands of businesses that have optimized their payment processes and boosted their bottom line.
+        Experience the difference in your cash flow today.
       </motion.p>
 
-      {/* CTA Button */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -50,14 +48,13 @@ export default function SignUp() {
           size="lg"
           className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
         >
-          <Link href="/login">
+          <Link href="/login?ft=true">
             Start Your Free Trial
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </Button>
       </motion.div>
 
-      {/* Additional Information */}
       <motion.p
         className={cn(
           "mt-8 text-sm text-muted-foreground text-center",
@@ -67,7 +64,7 @@ export default function SignUp() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        Join satisfied users worldwide. No credit card required. 14-day free trial. Cancel anytime.
+        No credit card required. 14-day free trial. Cancel anytime.
       </motion.p>
     </motion.div>
   );

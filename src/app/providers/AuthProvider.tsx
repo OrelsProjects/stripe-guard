@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   selectAuth,
@@ -28,12 +28,12 @@ export default function AuthProvider({
   const dispatch = useAppDispatch();
   const { user: currentUser } = useSelector(selectAuth);
   const { data: session, status } = useSession();
+  const [loadingUser, setLoadingUser] = useState(false);
 
   const loading = useRef(false);
 
   const setUser = async (data?: Session) => {
     try {
-      debugger;
       if (!data) {
         dispatch(setUserAction(null));
         return;
@@ -64,6 +64,7 @@ export default function AuthProvider({
 
     if (!isInOnboarding) {
       loading.current = true;
+      setLoadingUser(true);
     }
     if (session?.user) {
       setUser(session);
@@ -86,6 +87,7 @@ export default function AuthProvider({
         router.push("/stripe-setup");
       } finally {
         loading.current = false;
+        setLoadingUser(false);
       }
     }
   };
@@ -112,10 +114,10 @@ export default function AuthProvider({
   }, [currentUser]);
 
   if (
-    status === "loading" &&
-    !pathname.includes("login") &&
-    !pathname.includes("stripe-setup")
-    // || loading.current
+    (status === "loading" &&
+      !pathname.includes("login") &&
+      !pathname.includes("stripe-setup")) ||
+    loadingUser
   ) {
     return (
       <div className="w-screen h-screen flex items-center justify-center">

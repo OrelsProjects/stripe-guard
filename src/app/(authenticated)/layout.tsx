@@ -1,5 +1,7 @@
-import type { Viewport } from "next";
+"use client";
+
 import AuthProvider from "@/app/providers/AuthProvider";
+import FreeTrialProvider from "@/app/providers/FreeTrialProvider";
 import { Navbar } from "@/components/navbar";
 
 interface RootLayoutProps {
@@ -9,10 +11,12 @@ interface RootLayoutProps {
 export default function AuthLayout({ children }: RootLayoutProps) {
   return (
     <main className="space-y-16">
-      <Navbar />
-      <div className="w-full h-full">
-        <AuthProvider>{children}</AuthProvider>
-      </div>
+      <AuthProvider>
+        <FreeTrialProvider>
+          <Navbar />
+          <div className="w-full h-full">{children}</div>
+        </FreeTrialProvider>
+      </AuthProvider>
     </main>
   );
 }

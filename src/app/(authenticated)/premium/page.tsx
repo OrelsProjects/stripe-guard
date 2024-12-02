@@ -13,10 +13,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Interval, Product } from "@/models/payment";
 import { Loader } from "@/components/ui/loader";
 import { toast } from "react-toastify";
+import { useAppSelector } from "@/lib/hooks/redux";
 
 export default function PremiumPage() {
   const { getProducts, goToCheckout } = usePayments();
-  const [products, setProducts] = useState<Product[]>([]);
+  const { products } = useAppSelector(state => state.products);
   const [loading, setLoading] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const loadingRef = useRef(false);
@@ -30,8 +31,7 @@ export default function PremiumPage() {
       loadingRef.current = true;
       setLoading(true);
       try {
-        const products = await getProducts();
-        setProducts(products);
+        if (products.length === 0) await getProducts();
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {

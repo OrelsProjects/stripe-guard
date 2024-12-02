@@ -9,15 +9,20 @@ import { AnalyticsSection } from "@/components/sections/analytics";
 import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
 import SignUpSection from "@/components/sections/sign-up";
-import { LampContainer } from "@/components/ui/lamp-effect";
 import { ProblemAgitationSection } from "@/components/sections/problem-agitation";
 import { SocialProofSection } from "@/components/sections/social-proof";
 import { AboutUsSection } from "@/components/sections/about-us";
 import { FAQSection } from "@/components/sections/faq";
+import usePayments from "@/lib/hooks/usePayments";
 
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
   const [isDarkSectionVisible, setIsDarkSectionVisible] = useState(false);
+  const { getProducts } = usePayments();
+
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

@@ -7,7 +7,7 @@ export interface LoaderProps {
 
 export function Loader({ className }: LoaderProps) {
   return (
-    <div className="flex items-center justify-center h-full">
+    <div className="flex items-center justify-center">
       <Loader2 className={cn("w-8 h-8 animate-spin text-primary", className)} />
     </div>
   );

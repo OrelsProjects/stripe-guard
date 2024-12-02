@@ -10,20 +10,25 @@ import { useAppDispatch } from "@/lib/hooks/redux";
 import { EventTracker } from "@/eventTracker";
 import { Logger } from "@/logger";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { UserSettings } from "@/models/user";
 
 const useAuth = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
   const signInWithGoogle = useCallback(async () => {
     try {
+      let redirect = "/dashboard";
+      if (searchParams.has("ft")) {
+        redirect = "/dashboard?ft=true";
+      }
       setLoading(true);
       await signIn("google", {
         redirect: true,
-        callbackUrl: "/dashboard",
+        callbackUrl: redirect,
       });
     } catch (error: any) {
       if (error?.name === "UserAlreadyAuthenticatedException") {

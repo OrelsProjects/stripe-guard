@@ -11,18 +11,19 @@ const steps = [
     icon: Plug,
     title: "Connect Your Account",
     description:
-      "Securely connect your Stripe account with OAuth authentication.",
+      "Securely connect your Stripe account with OAuth authentication or an API key.",
   },
   {
     icon: Search,
     title: "Monitor Events",
     description:
-      "We automatically track all webhook events and identify failures.",
+      "Our system continuously tracks all your webhook events, identifying any issues instantly.",
   },
   {
     icon: Zap,
-    title: "Instant Alerts",
-    description: "Receive real-time notifications when issues are detected.",
+    title: "You Stay Informed",
+    description:
+      "Receive real-time alerts when we detect any payment failures, allowing for immediate action.",
   },
 ];
 
@@ -50,7 +51,7 @@ export function HowItWorksSection() {
               >
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-primary/10"
+                  className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10"
                 >
                   <step.icon className="w-8 h-8 text-primary" />
                 </motion.div>
