@@ -8,7 +8,7 @@ import Loading from "@/components/ui/loading";
 import { initLogger } from "@/logger";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
-import { Poppins } from "@/lib/utils/fonts";
+import { Gabarito, Poppins } from "@/lib/utils/fonts";
 import { Viewport } from "next";
 import AnimationProvider from "@/app/providers/AnimationProvider";
 import { cn } from "@/lib/utils";
@@ -72,7 +72,7 @@ export default function Layout({ children }: RootLayoutProps) {
     <html
       lang="en"
       // className="antialiased font-satoshi"
-      className={cn("antialiased", Poppins.className)}
+      className={cn("antialiased", Gabarito.className)}
     >
       <head>
         <meta name="mobile-web-app-capable" content="yes" />

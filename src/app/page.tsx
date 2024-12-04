@@ -19,11 +19,6 @@ import { TracingBeam } from "@/components/ui/tracing-beam";
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
   const [isDarkSectionVisible, setIsDarkSectionVisible] = useState(false);
-  const { getProducts } = usePayments();
-
-  useEffect(() => {
-    getProducts();
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

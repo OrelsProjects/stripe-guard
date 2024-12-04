@@ -3,11 +3,9 @@ import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { authOptions } from "@/auth/authOptions";
 import { encrypt } from "@/lib/utils/encryption";
 import loggerServer from "@/loggerServer";
-import { Interval } from "@/models/payment";
-import { Plan, UserSettings } from "@/models/user";
+import { UserSettings } from "@/models/user";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -53,29 +51,36 @@ export async function GET(req: NextRequest) {
     };
 
     if (userData.subscription && userData.subscription.length > 0) {
-      const product = await getStripeInstance().products.retrieve(
+      const stripe = getStripeInstance();
+      const product = await stripe.products.retrieve(
         userData.subscription[0].productId,
       );
-      const price = await getStripeInstance().prices.retrieve(
+      const price = await stripe.prices.retrieve(
         userData.subscription[0].priceId,
       );
-      const session = await getStripeInstance().checkout.sessions.retrieve(
+      const stripeSession = await stripe.checkout.sessions.retrieve(
         userData.subscription[0].sessionId,
       );
-      const subscription = await getStripeInstance().subscriptions.retrieve(
-        session.subscription as string,
+      const subscription = await stripe.subscriptions.retrieve(
+        stripeSession.subscription as string,
       );
 
       const productName = product.name;
       const planPrice = (price.unit_amount || 0) / 100;
-      const planInterval = (price.recurring?.interval || "month") as Interval;
-      const planRenewsAt = new Date(subscription.current_period_end * 1000);
+
+      const tokens = await prisma.userTokens.findUnique({
+        where: {
+          userId: session.user.userId,
+        },
+        select: {
+          tokensLeft: true,
+        },
+      });
 
       userSettings.plan = {
         name: productName,
         price: planPrice,
-        interval: planInterval,
-        renewsAt: planRenewsAt,
+        tokens: tokens?.tokensLeft || 0,
       };
     }
 

@@ -10,62 +10,6 @@ import Logo from "@/components/ui/Logo";
 import { NotificationComponent } from "@/components/sections/notification";
 import { FlipWords } from "@/components/ui/flipWords";
 
-// Overview component for displaying the product explanation
-function ProductOverview() {
-  return (
-    <section className="py-10 bg-secondary text-secondary-foreground">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl font-bold sm:text-4xl">
-            Never Miss a Failed Stripe Payment Again
-          </h2>
-          <p className="text-lg">
-            Introducing your ultimate tool for monitoring Stripe webhook
-            failures. Get instant alerts for missed payments and take control of
-            your payment operations. Stay ahead of issues, safeguard your
-            revenue, and ensure seamless customer experiences.
-          </p>
-          <ul className="space-y-4 text-left">
-            <li>
-              <strong className="block font-semibold">
-                1. Real-Time Webhook Monitoring
-              </strong>
-              - Detect and log Stripe webhook failures automatically. - Capture
-              critical details like event type, timestamp, failure reason, and
-              retry attempts.
-            </li>
-            <li>
-              <strong className="block font-semibold">
-                2. Instant Notifications
-              </strong>
-              - Receive alerts the moment a webhook fails. - Get detailed
-              insights, including failure causes and actionable next steps. -
-              Stay informed through your preferred channels—email, Slack, or
-              SMS.
-            </li>
-            <li>
-              <strong className="block font-semibold">
-                3. Insightful Dashboard
-              </strong>
-              - View comprehensive webhook logs in a user-friendly interface. -
-              Track metrics such as failure counts, resolutions, and recurring
-              issues.
-            </li>
-            <li>
-              <strong className="block font-semibold">
-                4. Custom Alert Configurations
-              </strong>
-              - Tailor notifications to match your workflow. - Set preferences
-              for alert types, delivery channels, and urgency levels. - Empower
-              your team to act swiftly on critical failures.
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 interface Error {
   title: string;
   type: string;
@@ -154,7 +98,7 @@ export function HeroSection() {
           <div className="space-y-8">
             {/* Badge */}
             <div className="flex justify-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary backdrop-blur-sm px-3 py-1 text-sm text-muted-foreground">
+              <div className="inline-flex items-center gap-3 rounded-full border border-primary backdrop-blur-sm px-3 py-1 text-sm text-muted-foreground">
                 <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_3px_hsl(var(--primary))]"></div>
                 <p>Never lose revenue again</p>
               </div>
@@ -162,14 +106,10 @@ export function HeroSection() {
             {/* Main heading */}
             <FadeIn direction="up">
               <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-wide text-foreground">
-                <p>Never Miss a </p>
-                <motion.span
-                  className="text-primary inline-block"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
+                <p>Never Miss</p>
+                <motion.span className="text-primary inline-block">
                   <div>
-                  <FlipWords words={webhookErrors} />
+                    <FlipWords words={webhookErrors} delay={2.5} />
                   </div>
                 </motion.span>{" "}
                 <p>Again</p>
@@ -220,10 +160,17 @@ export function HeroSection() {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
+                  <motion.path
+                    id="path-left"
                     d="M0.5 1.5H23C34.0457 1.5 43 10.4543 43 21.5V182C43 193.046 51.9543 202 63 202H387.5C398.546 202 410.5 210.954 410.5 222V295M0.5 74H24.5C34.7173 74 43 82.2827 43 92.5"
                     stroke="url(#paint0_linear_0_54)"
-                    stroke-width="2"
+                    strokeWidth="2"
+                    initial={{ pathLength: 0, strokeDashoffset: 0 }}
+                    animate={{ pathLength: 1, strokeDashoffset: 1 }}
+                    transition={{
+                      duration: 2, // Duration for the animation
+                      ease: "easeInOut", // Smoothing effect
+                    }}
                   />
                   <defs>
                     <linearGradient
@@ -245,7 +192,7 @@ export function HeroSection() {
                   </defs>
                 </svg>
 
-                <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
+                <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
                   <NotificationComponent
                     type="failed"
                     message="Payment failed"
@@ -253,7 +200,7 @@ export function HeroSection() {
                     time="2m ago"
                   />
                 </div>
-                <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15rem)] top-[calc(92.5px-94px)] w-68 h-[10px]">
+                <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-94px)] w-68 h-[10px]">
                   <NotificationComponent
                     type="retry"
                     message="Retry Attempted"
@@ -270,7 +217,11 @@ export function HeroSection() {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
+                  <motion.path
+                    id="path-right"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, ease: "easeInOut" }}
                     d="M414 1.5H391.5C380.454 1.5 371.5 10.4543 371.5 21.5V182C371.5 193.046 362.546 202 351.5 202H27C15.9543 202 1.5 210.954 1.5 222V295M414 74H390C379.783 74 371.5 82.2827 371.5 92.5"
                     stroke="url(#paint0_linear_0_55)"
                     stroke-width="2"
@@ -295,7 +246,7 @@ export function HeroSection() {
                   </defs>
                 </svg>
 
-                <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
+                <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
                   <NotificationComponent
                     type="failed"
                     message="Payment failed"
@@ -303,7 +254,7 @@ export function HeroSection() {
                     time="2m ago"
                   />
                 </div>
-                <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15rem)] top-[calc(92.5px-94px)] w-68 h-[10px]">
+                <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-94px)] w-68 h-[10px]">
                   <NotificationComponent
                     type="retry"
                     message="Retry Attempted"

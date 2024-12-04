@@ -9,12 +9,18 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   const { resolvedTheme } = useTheme();
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="dark" {...props}>
+    <NextThemesProvider
+      attribute="class"
+      forcedTheme="light"
+      defaultTheme="light"
+      {...props}
+    >
       <div className="relative z-[51]">
         <toast.ToastContainer
           stacked
           newestOnTop
-          theme={resolvedTheme === "dark" ? "light" : "dark"}
+          // theme={resolvedTheme === "dark" ? "light" : "dark"}
+          theme="light"
           autoClose={2500}
           draggablePercent={60}
           className="!mb-16 z-[51]"

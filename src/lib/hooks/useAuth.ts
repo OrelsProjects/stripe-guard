@@ -23,7 +23,7 @@ const useAuth = () => {
     try {
       let redirect = "/dashboard";
       if (searchParams.has("ft")) {
-        redirect = "/dashboard?ft=true";
+        redirect = "/premium";
       }
       setLoading(true);
       await signIn("google", {

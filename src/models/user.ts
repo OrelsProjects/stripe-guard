@@ -1,5 +1,3 @@
-import { Interval } from "@/models/payment";
-
 export const UserSettingsDefault: UserSettings = {
   notificationChannels: {
     email: {
@@ -20,8 +18,7 @@ export type BillingHistory = {
 export type Plan = {
   name: string;
   price: number;
-  interval: Interval;
-  renewsAt?: Date;
+  tokens: number;
   billingHistory?: BillingHistory[];
 };
 

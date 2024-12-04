@@ -16,31 +16,21 @@ export async function POST(req: NextRequest) {
 
     const product = await stripe.products.retrieve(productId);
 
-    const noCreditCard = product.metadata.noCreditCard === "true";
-
     const stripeSession = await stripe.checkout.sessions.create({
-      payment_method_types: noCreditCard ? [] : ["card"],
+      payment_method_types: ["card"],
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      mode: "subscription",
-      subscription_data: {
-        trial_period_days: 14,
-        trial_settings: {
-          end_behavior: {
-            missing_payment_method: "cancel",
-          },
-        },
-      },
-      payment_method_collection: "if_required",
+      mode: "payment",
       success_url: `${nextUrl.origin}/api/stripe/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${nextUrl.origin}/cancel`,
       client_reference_id: session.user.userId,
       customer_email: session.user.email || "",
       metadata: {
+        clientName: session.user.name || "",
         productId,
         priceId,
       },

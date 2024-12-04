@@ -8,77 +8,29 @@ import Stripe from "stripe";
 import { decrypt } from "@/lib/utils/encryption";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 
-type WebookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
+type WebhookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
 type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
 
 const paymentIntentEvents: EnabledEvent[] = [
   "payment_intent.succeeded",
   "payment_intent.payment_failed",
-  "payment_intent.created",
-  "payment_intent.canceled",
-  "payment_intent.amount_capturable_updated",
-  "payment_intent.processing",
-  "payment_intent.requires_action",
-  "payment_intent.partially_funded",
 ];
 
-const paymentMethodEvents: EnabledEvent[] = [
-  "payment_method.attached",
-  "payment_method.detached",
-  "payment_method.updated",
-  "payment_method.automatically_updated",
-];
-
-const setupIntentEvents: EnabledEvent[] = [
-  "setup_intent.created",
-  "setup_intent.succeeded",
-  "setup_intent.canceled",
-  "setup_intent.requires_action",
-  "setup_intent.setup_failed",
-];
-
-const chargeEvents: EnabledEvent[] = [
-  "charge.succeeded",
-  "charge.failed",
-  "charge.refunded",
-  "charge.expired",
-  "charge.captured",
-  "charge.updated",
-];
+const chargeEvents: EnabledEvent[] = ["charge.succeeded", "charge.failed"];
 
 const subscriptionEvents: EnabledEvent[] = [
   "customer.subscription.created",
   "customer.subscription.updated",
   "customer.subscription.deleted",
-  "customer.subscription.paused",
-  "customer.subscription.resumed",
-  "customer.subscription.pending_update_applied",
-  "customer.subscription.pending_update_expired",
-  "customer.subscription.trial_will_end",
 ];
 
 const invoiceEvents: EnabledEvent[] = [
-  "invoice.created",
-  "invoice.deleted",
-  "invoice.finalization_failed",
-  "invoice.finalized",
-  "invoice.marked_uncollectible",
-  "invoice.overdue",
-  "invoice.paid",
-  "invoice.payment_action_required",
   "invoice.payment_failed",
   "invoice.payment_succeeded",
-  "invoice.sent",
-  "invoice.upcoming",
-  "invoice.updated",
-  "invoice.voided",
-  "invoice.will_be_due",
 ];
 
 const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   ...paymentIntentEvents,
-  ...paymentMethodEvents,
-  ...setupIntentEvents,
   ...chargeEvents,
   ...subscriptionEvents,
   ...invoiceEvents,
@@ -87,7 +39,7 @@ const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
 const createWebhook = async (
   key: string,
   userId: string,
-): Promise<WebookCreationResponse | undefined> => {
+): Promise<WebhookCreationResponse | undefined> => {
   const webhookEndpoint =
     (process.env.STRIPE_WEBHOOK_ENDPOINT as string) + "/" + userId;
   const stripe = getStripeInstance({ apiKey: key });

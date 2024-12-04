@@ -7,10 +7,12 @@ export const FlipWords = ({
   words,
   duration = 3000,
   className,
+  delay,
 }: {
   words: string[];
   duration?: number;
   className?: string;
+  delay?: number;
 }) => {
   const [currentWord, setCurrentWord] = useState(words[0]);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -66,7 +68,7 @@ export const FlipWords = ({
             initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{
-              delay: wordIndex * 0.3,
+              delay: (wordIndex + (delay || 0)) * 0.3,
               duration: 0.3,
             }}
             className="inline-block whitespace-nowrap"

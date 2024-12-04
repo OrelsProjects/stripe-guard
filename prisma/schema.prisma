@@ -143,8 +143,8 @@ model UserWebhookEvent {
 
 model Subscription {
   id         String @id @default(cuid()) @map("id")
-  sessionId  String @map("session_id")
   userId     String @map("user_id")
+  sessionId  String @map("session_id")
   productId  String @map("product_id")
   priceId    String @map("price_id")
   customerId String @map("customer_id")
@@ -161,10 +161,11 @@ model Subscription {
 }
 
 model Payment {
-  id        String @id @default(cuid()) @map("id")
-  userId    String @map("user_id")
-  invoiceId String @map("invoice_id")
-  priceId   String @map("price_id")
+  id         String @id @default(cuid()) @map("id")
+  userId     String @map("user_id")
+  priceId    String @map("price_id")
+  sessionId  String @map("session_id")
+  productId  String @map("product_id")
 
   amountReceived  Int     @map("amount_received")
   currency        String  @map("currency")
@@ -177,6 +178,18 @@ model Payment {
   appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payments")
+}
+
+model UserTokens {
+  id     String @id @default(cuid())
+  userId String @unique @map("user_id")
+
+  tokensLeft Int @map("tokens_left")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_tokens")
 }
 
 model InterestedUser {

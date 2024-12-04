@@ -2,7 +2,7 @@
 
 import AuthProvider from "@/app/providers/AuthProvider";
 import NewSubscriberProvider from "@/app/providers/NewSubscriberProvider";
-import FreeTrialProvider from "@/app/providers/FreeTrialProvider";
+import NewTokensProvider from "@/app/providers/NewTokensProvider";
 import { Navbar } from "@/components/navbar";
 
 interface RootLayoutProps {
@@ -13,11 +13,10 @@ export default function AuthLayout({ children }: RootLayoutProps) {
   return (
     <main className="space-y-16">
       <AuthProvider>
-        <FreeTrialProvider>
-          <NewSubscriberProvider />
-          <Navbar />
-          <div className="w-full h-full">{children}</div>
-        </FreeTrialProvider>
+        <NewSubscriberProvider />
+        <NewTokensProvider />
+        <Navbar />
+        <div className="w-full h-full">{children}</div>
       </AuthProvider>
     </main>
   );

@@ -1,9 +1,7 @@
-export type Interval = "month" | "year";
-
 export interface PriceStructure {
   id: string;
   price: number;
-  interval: Interval;
+  tokens: number;
   currency: string;
 }
 

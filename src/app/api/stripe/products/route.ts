@@ -1,6 +1,6 @@
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import loggerServer from "@/loggerServer";
-import { Interval, Product } from "@/models/payment";
+import { Product } from "@/models/payment";
 import { NextRequest, NextResponse } from "next/server";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME as string;
@@ -12,9 +12,13 @@ export async function GET(req: NextRequest) {
 
     const products: Product[] = [];
 
-    const appProducts = stripeProducts.filter(stripeProduct =>
-      stripeProduct.metadata.app?.toLowerCase().includes(appName.toLowerCase()),
-    );
+    const appProducts = stripeProducts
+      .filter(stripeProduct => stripeProduct.active)
+      .filter(stripeProduct =>
+        stripeProduct.metadata.app
+          ?.toLowerCase()
+          .includes(appName.toLowerCase()),
+      );
 
     for (const stripeProduct of appProducts) {
       const { data: stripePrices } = await stripe.prices.list({
@@ -31,7 +35,7 @@ export async function GET(req: NextRequest) {
               id: stripePrice.id,
               currency: stripePrice.currency,
               price: stripePrice.unit_amount! / 100,
-              interval: stripePrice.recurring?.interval as Interval,
+              tokens: parseInt(stripeProduct.metadata.tokens),
             },
             noCreditCard: stripeProduct.metadata.noCreditCard === "true",
             features: stripeProduct.marketing_features.map(
@@ -44,7 +48,7 @@ export async function GET(req: NextRequest) {
     }
 
     const productsSortedByPrice = products.sort(
-      (a, b) => a.priceStructure.price - b.priceStructure.price,
+      (a, b) => b.priceStructure.price - a.priceStructure.price,
     );
 
     return NextResponse.json(productsSortedByPrice, { status: 200 });
