@@ -28,7 +28,7 @@ export default function StripeSetup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4 font-['Montserrat']">
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

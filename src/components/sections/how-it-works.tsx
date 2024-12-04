@@ -29,7 +29,10 @@ const steps = [
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="py-24">
+    <section
+      id="how-it-works"
+      className="py-24 bg-gradient-to-b from-muted to-background"
+    >
       <div className="container px-4 mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">

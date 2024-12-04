@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import { Poppins } from "@/lib/utils/fonts";
 import { Viewport } from "next";
 import AnimationProvider from "@/app/providers/AnimationProvider";
+import { cn } from "@/lib/utils";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -68,7 +69,11 @@ export default function Layout({ children }: RootLayoutProps) {
   initLogger();
 
   return (
-    <html lang="en" className={Poppins.className}>
+    <html
+      lang="en"
+      // className="antialiased font-satoshi"
+      className={cn("antialiased", Poppins.className)}
+    >
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

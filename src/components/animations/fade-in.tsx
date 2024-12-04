@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
@@ -8,6 +9,8 @@ interface FadeInProps {
   delay?: number;
   direction?: "up" | "down" | "left" | "right";
   fullWidth?: boolean;
+  className?: string;
+  viewport?: boolean;
 }
 
 export function FadeIn({
@@ -15,6 +18,8 @@ export function FadeIn({
   delay = 0,
   direction,
   fullWidth,
+  className,
+  viewport = true,
 }: FadeInProps) {
   const getDirection = () => {
     switch (direction) {
@@ -39,14 +44,14 @@ export function FadeIn({
         x: 0,
         y: 0,
       }}
-      viewport={{ once: true }}
+      viewport={{ once: viewport }}
       transition={{
         duration: 0.7,
         delay,
         ease: [0.21, 0.47, 0.32, 0.98],
       }}
       style={{ width: fullWidth ? "100%" : "auto" }}
-      className="w-full h-full"
+      className={cn("w-full h-full", className)}
     >
       {children}
     </motion.div>

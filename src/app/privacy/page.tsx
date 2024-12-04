@@ -1,7 +1,7 @@
 import React from "react";
 
-const COMPANY_NAME = "buildquick.app";
-const WEBSITE_URL = "https://buildquick.app";
+const COMPANY_NAME = "StripeGuard";
+const WEBSITE_URL = "https://stripe-guard.vercel.app";
 const POLICY_EFFECTIVE_DATE = "07 Nov 2024";
 
 const PrivacyPolicy: React.FC = () => {
