@@ -1,6 +1,7 @@
 "use client";
 
 import AuthProvider from "@/app/providers/AuthProvider";
+import NewSubscriberProvider from "@/app/providers/NewSubscriberProvider";
 import FreeTrialProvider from "@/app/providers/FreeTrialProvider";
 import { Navbar } from "@/components/navbar";
 
@@ -13,6 +14,7 @@ export default function AuthLayout({ children }: RootLayoutProps) {
     <main className="space-y-16">
       <AuthProvider>
         <FreeTrialProvider>
+          <NewSubscriberProvider />
           <Navbar />
           <div className="w-full h-full">{children}</div>
         </FreeTrialProvider>

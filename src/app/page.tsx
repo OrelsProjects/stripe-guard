@@ -14,6 +14,7 @@ import { SocialProofSection } from "@/components/sections/social-proof";
 import { AboutUsSection } from "@/components/sections/about-us";
 import { FAQSection } from "@/components/sections/faq";
 import usePayments from "@/lib/hooks/usePayments";
+import { TracingBeam } from "@/components/ui/tracing-beam";
 
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
@@ -48,7 +49,7 @@ export default function Home() {
   }, []);
 
   return (
-    <motion.div
+    <motion.main
       className="min-h-screen flex flex-col"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -60,24 +61,31 @@ export default function Home() {
         transition={{ duration: 0.4 }}
       >
         <HeroSection />
-        <ProblemAgitationSection />
-        <FeaturesSection />
       </motion.div>
-      <div ref={darkSectionRef}>
-        <AnalyticsSection />
-      </div>
-      <motion.div
-        initial={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-        animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        <HowItWorksSection />
-        <SocialProofSection />
-        <AboutUsSection />
-        <FAQSection />
-        <SignUpSection />
-      </motion.div>
-      <Footer />
-    </motion.div>
+      <TracingBeam className="w-full">
+        <motion.div
+          animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <ProblemAgitationSection />
+          <FeaturesSection />
+        </motion.div>
+        <div ref={darkSectionRef}>
+          <AnalyticsSection />
+        </div>
+        <motion.div
+          initial={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+          animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <HowItWorksSection />
+          <SocialProofSection />
+          <AboutUsSection />
+          <FAQSection />
+          <SignUpSection />
+        </motion.div>
+        <Footer />
+      </TracingBeam>
+    </motion.main>
   );
 }

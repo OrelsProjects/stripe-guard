@@ -52,7 +52,9 @@ export async function GET(req: NextRequest) {
         paidStatus: "paid",
       },
     });
-    return NextResponse.redirect(req.nextUrl.origin + "/dashboard");
+    return NextResponse.redirect(
+      req.nextUrl.origin + `/checkout/success?name=${session.customer}`,
+    );
   } catch (error: any) {
     loggerServer.error(
       "Failed to complete subscription",

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Activity, ArrowRight, Bell, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/fade-in";
 import Link from "next/link";
+import Logo from "@/components/ui/Logo";
 
 // Overview component for displaying the product explanation
 function ProductOverview() {
@@ -14,32 +14,48 @@ function ProductOverview() {
     <section className="py-10 bg-secondary text-secondary-foreground">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl font-bold sm:text-4xl">Never Miss a Failed Stripe Payment Again</h2>
+          <h2 className="text-3xl font-bold sm:text-4xl">
+            Never Miss a Failed Stripe Payment Again
+          </h2>
           <p className="text-lg">
-            Introducing your ultimate tool for monitoring Stripe webhook failures. Get instant alerts for missed payments and take control of your payment operations. Stay ahead of issues, safeguard your revenue, and ensure seamless customer experiences.
+            Introducing your ultimate tool for monitoring Stripe webhook
+            failures. Get instant alerts for missed payments and take control of
+            your payment operations. Stay ahead of issues, safeguard your
+            revenue, and ensure seamless customer experiences.
           </p>
           <ul className="space-y-4 text-left">
             <li>
-              <strong className="block font-semibold">1. Real-Time Webhook Monitoring</strong>
-              - Detect and log Stripe webhook failures automatically.
-              - Capture critical details like event type, timestamp, failure reason, and retry attempts.
+              <strong className="block font-semibold">
+                1. Real-Time Webhook Monitoring
+              </strong>
+              - Detect and log Stripe webhook failures automatically. - Capture
+              critical details like event type, timestamp, failure reason, and
+              retry attempts.
             </li>
             <li>
-              <strong className="block font-semibold">2. Instant Notifications</strong>
-              - Receive alerts the moment a webhook fails.
-              - Get detailed insights, including failure causes and actionable next steps.
-              - Stay informed through your preferred channels—email, Slack, or SMS.
+              <strong className="block font-semibold">
+                2. Instant Notifications
+              </strong>
+              - Receive alerts the moment a webhook fails. - Get detailed
+              insights, including failure causes and actionable next steps. -
+              Stay informed through your preferred channels—email, Slack, or
+              SMS.
             </li>
             <li>
-              <strong className="block font-semibold">3. Insightful Dashboard</strong>
-              - View comprehensive webhook logs in a user-friendly interface.
-              - Track metrics such as failure counts, resolutions, and recurring issues.
+              <strong className="block font-semibold">
+                3. Insightful Dashboard
+              </strong>
+              - View comprehensive webhook logs in a user-friendly interface. -
+              Track metrics such as failure counts, resolutions, and recurring
+              issues.
             </li>
             <li>
-              <strong className="block font-semibold">4. Custom Alert Configurations</strong>
-              - Tailor notifications to match your workflow.
-              - Set preferences for alert types, delivery channels, and urgency levels.
-              - Empower your team to act swiftly on critical failures.
+              <strong className="block font-semibold">
+                4. Custom Alert Configurations
+              </strong>
+              - Tailor notifications to match your workflow. - Set preferences
+              for alert types, delivery channels, and urgency levels. - Empower
+              your team to act swiftly on critical failures.
             </li>
           </ul>
         </div>
@@ -77,7 +93,11 @@ function ShowMoreSection({ error }: { error: Error | null }) {
         onClick={() => setShowMore(!showMore)}
       >
         <span>{showMore ? "Show Less" : "Show More"}</span>
-        {showMore ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        {showMore ? (
+          <ChevronUp className="w-4 h-4" />
+        ) : (
+          <ChevronDown className="w-4 h-4" />
+        )}
       </Button>
       <motion.div
         initial="hidden"
@@ -88,16 +108,20 @@ function ShowMoreSection({ error }: { error: Error | null }) {
       >
         <div className="mt-4 space-y-2">
           <p>
-            <strong className="text-muted-foreground">Customer:</strong> {error?.customer}
+            <strong className="text-muted-foreground">Customer:</strong>{" "}
+            {error?.customer}
           </p>
           <p>
-            <strong className="text-muted-foreground">Amount:</strong> {error?.amount}
+            <strong className="text-muted-foreground">Amount:</strong>{" "}
+            {error?.amount}
           </p>
           <p>
-            <strong className="text-muted-foreground">Payment Method:</strong> {error?.paymentMethod}
+            <strong className="text-muted-foreground">Payment Method:</strong>{" "}
+            {error?.paymentMethod}
           </p>
           <p>
-            <strong className="text-muted-foreground">Invoice ID:</strong> {error?.invoiceId}
+            <strong className="text-muted-foreground">Invoice ID:</strong>{" "}
+            {error?.invoiceId}
           </p>
         </div>
       </motion.div>
@@ -106,195 +130,88 @@ function ShowMoreSection({ error }: { error: Error | null }) {
 }
 
 export function HeroSection() {
-  const [selectedError, setSelectedError] = useState<Error | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const errors: Error[] = [
-    {
-      title: "Payment Failed",
-      type: "invoice.payment_failed",
-      iconColor: "text-red-500",
-      details: "The payment failed due to insufficient funds. Ensure the customer has enough balance and try again.",
-      timestamp: "2m ago",
-      customer: "John Doe",
-      amount: "$120.00",
-      paymentMethod: "Visa **** 4242",
-      invoiceId: "INV-00123",
-    },
-    {
-      title: "Retry Attempted",
-      type: "charge.failed",
-      iconColor: "text-yellow-500",
-      details: "The charge failed on retry due to an invalid card. Verify the card details or contact the customer.",
-      timestamp: "5m ago",
-      customer: "Jane Smith",
-      amount: "$45.00",
-      paymentMethod: "MasterCard **** 5432",
-      invoiceId: "INV-00456",
-    },
-  ];
-
-  const handleCardClick = (error: Error) => {
-    setSelectedError(error);
-    setIsDialogOpen(true);
-  };
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const notificationVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-  };
-
   return (
-    <section className="relative py-20 overflow-hidden bg-background">
-      <div className="container px-4 mx-auto">
-        {/* <ProductOverview /> */}
-        <div className="flex flex-wrap items-center -mx-4">
-          <div className="w-full px-4 mb-16 lg:w-1/2 lg:mb-0">
-            <div className="max-w-lg flex flex-col items-center sm:items-start">
-              <FadeIn direction="up">
-                <h1 className="mb-6 text-4xl font-bold tracking-tight text-center sm:text-start sm:text-5xl lg:text-6xl">
-                  Never Miss a{" "}
-                  <motion.span
-                    className="text-primary inline-block"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    Failed Payment
-                  </motion.span>{" "}
-                  Again
-                </h1>
-              </FadeIn>
-              <FadeIn direction="up" delay={0.1}>
-                <p className="mb-8 text-lg text-muted-foreground text-center sm:text-start">
-                  Monitor your webhooks effortlessly, get instant notifications on failures, and maintain smooth payment operations. Keep your revenue flowing without interruption.
-                </p>
-              </FadeIn>
-              <FadeIn direction="up" delay={0.2}>
-                <div className="flex flex-col space-y-4 items-center sm:flex-row sm:space-y-0 sm:space-x-4">
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button size="lg" className="gap-2" asChild>
-                      <Link href="/login">
-                        Start Monitoring Now <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button size="lg" variant="outline" className="gap-2" asChild>
-                      <Link href="/blog">Learn more</Link>
-                    </Button>
-                  </motion.div>
-                </div>
-              </FadeIn>
+    <section className="relative min-h-screen flex flex-col items-center justify-start bg-background pt-20 sm:pt-40 overflow-hidden">
+      {/* Background gradient effect */}
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
+      <div className="container px-4 mx-auto relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary backdrop-blur-sm px-3 py-1 text-sm text-muted-foreground">
+                <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_3px_hsl(var(--primary))]"></div>
+                <p>Never lose revenue again</p>
+              </div>
             </div>
-          </div>
-          <div className="w-full px-4 lg:w-1/2">
-            <FadeIn direction="left" delay={0.3}>
-              <motion.div
-                className="relative mx-auto border rounded-lg shadow-lg bg-card max-w-max"
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              >
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-xl font-semibold">Webhook Monitor</h3>
-                    <motion.div whileHover={{ scale: 1.1, rotate: 15 }} whileTap={{ scale: 0.9 }}>
-                      <Bell className="w-6 h-6 text-primary" />
-                    </motion.div>
-                  </div>
-                  <motion.div
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    className="space-y-6 w-80"
-                  >
-                    {errors.map((error, index) => (
-                      <motion.div
-                        key={index}
-                        variants={notificationVariants}
-                        className="p-4 border rounded-lg relative select-none cursor-pointer"
-                        whileHover={{ x: 5 }}
-                        onClick={() => handleCardClick(error)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <Activity className={`w-5 h-5 ${error.iconColor}`} />
-                            <div>
-                              <p className="font-medium">{error.title}</p>
-                              <p className="text-sm text-muted-foreground">{error.type}</p>
-                            </div>
-                          </div>
-                        </div>
-                        <span className="absolute bottom-2 right-2 text-sm text-muted-foreground/70">{error.timestamp}</span>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </div>
-              </motion.div>
+            {/* Main heading */}
+            <FadeIn direction="up">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-wide text-foreground">
+                Never Miss a{" "}
+                <motion.span
+                  className="text-primary inline-block"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  Failed Payment
+                </motion.span>{" "}
+                Again
+              </h1>
+            </FadeIn>
+
+            {/* Description */}
+            <FadeIn direction="up" delay={0.1}>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Monitor your webhooks effortlessly, get instant notifications on
+                failures, and maintain smooth payment operations. Keep your
+                revenue flowing without interruption.
+              </p>
+            </FadeIn>
+
+            {/* CTA Buttons */}
+            <FadeIn direction="up" delay={0.2}>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button
+                  size="lg"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-8"
+                  asChild
+                >
+                  <Link href="/login">Start Monitoring now</Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-transparent border border-foreground text-foreground px-8"
+                  asChild
+                >
+                  <Link href="/blog">Learn more</Link>
+                </Button>
+              </div>
+            </FadeIn>
+
+            {/* Connected Line Effect */}
+            <FadeIn direction="up" delay={0.3}>
+              <div className="relative mt-8 h-20 flex justify-center">
+                <svg
+                  className="absolute w-full h-full"
+                  viewBox="0 0 400 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 0 Q200 50 300 0 T500 0"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.2)"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
             </FadeIn>
           </div>
         </div>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="border rounded-lg shadow-lg">
-          <DialogHeader>
-            <div className="flex items-center space-x-4">
-              <div
-                className={`p-3 rounded-full ${
-                  selectedError?.iconColor === "text-red-500"
-                    ? "bg-red-100"
-                    : selectedError?.iconColor === "text-yellow-500"
-                    ? "bg-yellow-100"
-                    : "bg-gray-100"
-                }`}
-              >
-                <Activity
-                  className={`w-6 h-6 ${
-                    selectedError?.iconColor || "text-gray-500"
-                  }`}
-                />
-              </div>
-              <DialogTitle className="text-xl font-bold">
-                {selectedError?.title}
-              </DialogTitle>
-            </div>
-          </DialogHeader>
-          <div className="p-4 space-y-4">
-            <div>
-              <p>
-                <strong className="text-muted-foreground">Type:</strong>{" "}
-                <span className="text-primary">{selectedError?.type}</span>
-              </p>
-              <p>
-                <strong className="text-muted-foreground">Details:</strong>{" "}
-                {selectedError?.details}
-              </p>
-            </div>
-            <ShowMoreSection error={selectedError} />
-            <div className="w-full flex items-center justify-end space-x-2 text-sm text-muted-foreground/80">
-              <Bell className="w-4 h-4" />
-              <span>{selectedError?.timestamp}</span>
-            </div>
-          </div>
-          <div className="mt-6">
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => setIsDialogOpen(false)}
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+
+      {/* Logo at bottom */}
+      <Logo />
     </section>
   );
 }

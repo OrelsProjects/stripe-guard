@@ -2,9 +2,9 @@
 
 import { Loader } from "@/components/ui/loader";
 import { useAppSelector } from "@/lib/hooks/redux";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 import usePayments from "@/lib/hooks/usePayments";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ProviderProps {
@@ -12,7 +12,7 @@ interface ProviderProps {
 }
 
 export default function FreeTrialProvider({ children }: ProviderProps) {
-  const router = useRouter();
+  const router = useCustomRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { products } = useAppSelector(state => state.products);
@@ -30,7 +30,10 @@ export default function FreeTrialProvider({ children }: ProviderProps) {
     setIsFreeTrial(isFreeTrial);
     setLoading(isFreeTrial);
     if (!isFreeTrial) {
-      router.push(pathname);
+      router.push(pathname, {
+        preserveQuery: true,
+        paramsToRemove: ["ft"],
+      });
       return;
     }
     if (isFreeTrial && products.length === 0) {
