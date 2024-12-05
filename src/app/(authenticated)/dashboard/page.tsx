@@ -13,6 +13,8 @@ import WebhookErrorsCard from "@/app/(authenticated)/dashboard/components/graphs
 import WebhooksSentOverTimeChart from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhooksSentOverTimeChart";
 import WebhookGraph from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhookGraph";
 import { UserWebhookEvent } from "@prisma/client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
 
 function Dashboard() {
   const [selectedError, setSelectedError] = useState<WebhookError | null>(null);
@@ -78,34 +80,49 @@ function Dashboard() {
         <div className="w-full h-full flex flex-col gap-8 relative">
           {/* Cards Mapping */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 z-10">
-            {cardsData.map(stat => (
-              <Card key={stat.title}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {stat.title}
-                  </CardTitle>
-                  {stat.icon && (
-                    <stat.icon
-                      className={`h-6 w-6 ${
-                        stat.variant === "destructive"
-                          ? "text-destructive"
-                          : stat.variant === "success"
-                            ? "text-success"
-                            : "text-foreground"
-                      }`}
-                    />
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold flex justify-start">
-                    {loading ? <Loader className="h-6 w-6" /> : stat.value}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {stat.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+            {loading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton className="h-32 w-full" key={i} />
+                ))
+              : cardsData.map(stat => (
+                  <motion.div
+                    key={stat.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  >
+                    <Card key={stat.title}>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                          {stat.title}
+                        </CardTitle>
+                        {stat.icon && (
+                          <stat.icon
+                            className={`h-6 w-6 ${
+                              stat.variant === "destructive"
+                                ? "text-destructive"
+                                : stat.variant === "success"
+                                  ? "text-success"
+                                  : "text-foreground"
+                            }`}
+                          />
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold flex justify-start">
+                          {loading ? (
+                            <Loader className="h-6 w-6" />
+                          ) : (
+                            stat.value
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {stat.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
           </div>
           {/* Modularized Components */}
           <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-background py-4">

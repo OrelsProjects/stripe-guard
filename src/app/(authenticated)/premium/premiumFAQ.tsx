@@ -72,7 +72,7 @@ export function PremiumFAQ() {
   };
   return (
     <div className="mx-auto py-12 px-4 w-[90%] space-y-6">
-      <h2 className="text-5xl font-extrabold text-center">
+      <h2 className="text-5xl font-extrabold text-center text-secondary">
         Frequently Asked Questions
       </h2>
       <Accordion type="multiple" className="w-full">

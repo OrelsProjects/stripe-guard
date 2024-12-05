@@ -3,9 +3,10 @@ import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { authOptions } from "@/auth/authOptions";
 import { encrypt } from "@/lib/utils/encryption";
 import loggerServer from "@/loggerServer";
-import { UserSettings } from "@/models/user";
+import { BillingHistory, UserSettings } from "@/models/user";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
         id: session.user.userId,
       },
       select: {
-        subscription: true,
+        payments: true,
         settings: {
           select: {
             emailWebhookNotifications: true,
@@ -50,24 +51,7 @@ export async function GET(req: NextRequest) {
       },
     };
 
-    if (userData.subscription && userData.subscription.length > 0) {
-      const stripe = getStripeInstance();
-      const product = await stripe.products.retrieve(
-        userData.subscription[0].productId,
-      );
-      const price = await stripe.prices.retrieve(
-        userData.subscription[0].priceId,
-      );
-      const stripeSession = await stripe.checkout.sessions.retrieve(
-        userData.subscription[0].sessionId,
-      );
-      const subscription = await stripe.subscriptions.retrieve(
-        stripeSession.subscription as string,
-      );
-
-      const productName = product.name;
-      const planPrice = (price.unit_amount || 0) / 100;
-
+    if (userData.payments && userData.payments.length > 0) {
       const tokens = await prisma.userTokens.findUnique({
         where: {
           userId: session.user.userId,
@@ -77,10 +61,33 @@ export async function GET(req: NextRequest) {
         },
       });
 
+      const userPayments = await prisma.payment.findMany({
+        where: {
+          userId: session.user.userId,
+        },
+        select: {
+          amountReceived: true,
+          currency: true,
+          status: true,
+          productName: true,
+          createdAt: true,
+          tokensAdded: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const billingHistory: BillingHistory[] = userPayments.map(payment => ({
+        amount: payment.amountReceived,
+        date: payment.createdAt,
+        planName: payment.productName,
+        tokensPurchased: payment.tokensAdded || 0,
+      }));
+
       userSettings.plan = {
-        name: productName,
-        price: planPrice,
-        tokens: tokens?.tokensLeft || 0,
+        tokensLeft: tokens?.tokensLeft || 0,
+        billingHistory,
       };
     }
 
@@ -95,6 +102,10 @@ export async function GET(req: NextRequest) {
       "Error getting user settings",
       session?.user?.userId || "Unknown user",
       error,
+    );
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
     );
   }
 }
@@ -130,6 +141,10 @@ export async function PATCH(req: NextRequest) {
       "Error updating webhook details",
       session?.user?.userId || "Unknown user",
       error,
+    );
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
     );
   }
 }

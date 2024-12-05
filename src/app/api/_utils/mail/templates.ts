@@ -181,7 +181,7 @@ export function generateInvoicePaymentFailedEmail(
   currency: string,
 ) {
   const content = `
-    <h2>Payment Failed</h2>
+    <h2>Failed Payment</h2>
     <p>We were unable to process your payment for invoice ${invoiceId}.</p>
     <p>Amount due: ${(amount / 100).toFixed(2)} ${currency.toUpperCase()}</p>
     <p>Please update your payment method to avoid any interruption in your service.</p>

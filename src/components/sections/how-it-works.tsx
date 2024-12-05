@@ -31,7 +31,7 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="py-24 bg-gradient-to-b from-muted to-background"
+      className="py-24 bg-gradient-to-b from-background to-muted"
     >
       <div className="container px-4 mx-auto">
         <FadeIn>
@@ -46,7 +46,7 @@ export function HowItWorksSection() {
 
         <div className="grid gap-12 md:grid-cols-3 mb-16">
           {steps.map((step, index) => (
-            <FadeIn key={step.title} delay={index * 0.1}>
+            <FadeIn key={step.title} delay={index * 0.1} className="bg-background p-4 rounded-lg">
               <motion.div
                 className="text-center"
                 whileHover={{ scale: 1.02 }}

@@ -9,17 +9,15 @@ export const UserSettingsDefault: UserSettings = {
 };
 
 export type BillingHistory = {
-  invoiceId: string;
   amount: number;
   date: Date;
   planName: string;
+  tokensPurchased: number;
 };
 
 export type Plan = {
-  name: string;
-  price: number;
-  tokens: number;
-  billingHistory?: BillingHistory[];
+  tokensLeft: number;
+  billingHistory: BillingHistory[];
 };
 
 export type NotificationsChannel = {

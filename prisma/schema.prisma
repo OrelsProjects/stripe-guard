@@ -52,7 +52,7 @@ model User {
   subscription      Subscription[]
   meta              UserMetadata?
   userWebhookEvents UserWebhookEvent[]
-  Payment           Payment[]
+  payments          Payment[]
 
   @@map("user")
 }
@@ -161,12 +161,14 @@ model Subscription {
 }
 
 model Payment {
-  id         String @id @default(cuid()) @map("id")
-  userId     String @map("user_id")
-  priceId    String @map("price_id")
-  sessionId  String @map("session_id")
-  productId  String @map("product_id")
+  id        String @id @default(cuid()) @map("id")
+  userId    String @map("user_id")
+  priceId   String @map("price_id")
+  sessionId String @map("session_id")
+  productId String @map("product_id")
 
+  tokensAdded     Int     @map("tokens_added")
+  productName     String  @map("product_name")
   amountReceived  Int     @map("amount_received")
   currency        String  @map("currency")
   status          String  @map("status")

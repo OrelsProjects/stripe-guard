@@ -77,7 +77,7 @@ function ShowMoreSection({ error }: { error: Error | null }) {
 
 export function HeroSection() {
   const [webhookErrors] = useState<string[]>([
-    "Payment Failed",
+    "Failed Payment",
     "Card Declined",
     "Insufficient Funds",
     "Expired Card",
@@ -195,8 +195,8 @@ export function HeroSection() {
                 <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
                   <NotificationComponent
                     type="failed"
-                    message="Payment failed"
-                    subtext="Invoice payment failed"
+                    message="Failed Payment"
+                    subtext="Invoice Failed Payment"
                     time="2m ago"
                   />
                 </div>
@@ -249,8 +249,8 @@ export function HeroSection() {
                 <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
                   <NotificationComponent
                     type="failed"
-                    message="Payment failed"
-                    subtext="Invoice payment failed"
+                    message="Failed Payment"
+                    subtext="Invoice Failed Payment"
                     time="2m ago"
                   />
                 </div>

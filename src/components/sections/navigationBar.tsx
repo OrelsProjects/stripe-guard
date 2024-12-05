@@ -46,22 +46,6 @@ export default function NavigationBar() {
             <Link href="/login">Sign up</Link>
           </Button>
         </nav>
-        {/* <motion.div
-          className="flex items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        > */}
-        {/* <ModeToggle /> */}
-        {/* <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" className="mr-2">
-              Log in
-            </Button>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button>Sign up</Button>
-          </motion.div> */}
-        {/* </motion.div> */}
       </div>
     </motion.header>
   );

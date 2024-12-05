@@ -150,14 +150,31 @@ async function handleWebhookResolution(
     },
   });
 
+  try {
+    await prisma.userTokens.update({
+      where: {
+        userId,
+      },
+      data: {
+        tokensLeft: {
+          decrement: 1,
+        },
+      },
+    });
+  } catch (error) {
+    loggerServer.error("Error decrementing tokens", userId, error);
+  }
   if (succeeded) {
     await handleWebhookSuccess(event, email || "");
   } else {
-    await handleWebhookFailure(event);
+    await handleWebhookFailure(event, email || "");
   }
 }
 
-async function handleWebhookSuccess(event: Event, userEmail: string) {
+async function handleWebhookSuccess(event: Event, userEmail: string) {}
+
+async function handleWebhookFailure(event: Event, userEmail: string) {
+  const failedWebhooks = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
   await sendMail(
     userEmail,
     process.env.NEXT_PUBLIC_APP_NAME as string,
@@ -165,13 +182,9 @@ async function handleWebhookSuccess(event: Event, userEmail: string) {
     generateWebhookFailureEmail(
       event,
       new Date(),
-      event.pending_webhooks - REGISTERED_CONNECTED_HOOKS,
+      failedWebhooks,
     ),
   );
-}
-
-async function handleWebhookFailure(event: Event) {
-  const failedWebhooks = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
 }
 
 async function processStripeEvent(

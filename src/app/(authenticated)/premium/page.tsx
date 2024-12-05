@@ -1,9 +1,9 @@
-import { PremiumDialog } from "@/app/(authenticated)/premium/premiumDialog";
+import { PremiumDialog } from "@/components/premium-dialog";
 
 export default function PremiumPage() {
   return (
     <div className="w-full h-full">
-      <PremiumDialog />;
+      <PremiumDialog text="Upgrade to Premium" />;
     </div>
   );
 }

@@ -1,102 +1,100 @@
 "use client";
 
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Coins } from "lucide-react";
 import { Plan } from "@/models/user";
+import { PremiumDialog } from "@/components/premium-dialog";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 export interface BillingSettingsProps {
-  plan?: Plan; // Optional, to handle cases where no plan is provided
+  plan?: Plan;
 }
 
-export function BillingSettings(props: BillingSettingsProps) {
-  const { plan } = props;
-
+export function BillingSettings({ plan }: BillingSettingsProps) {
   return (
     <Card className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Billing & Subscription</h2>
-      <div className="space-y-6">
-        {plan ? (
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-medium">Current Plan</h3>
-                <Badge>{plan.name}</Badge>
-              </div>
-              {(plan.price || plan.interval || plan.renewsAt) && (
-                <p className="text-sm text-muted-foreground">
-                  {plan.price && `$${plan.price}`}
-                  {plan.interval && `/${plan.interval}`}
-                  {plan.renewsAt &&
-                    ` • Renews on ${new Date(plan.renewsAt).toLocaleDateString()}`}
-                </p>
-              )}
-            </div>
-            <Button
-              variant="outline"
-              className="border-destructive/50 hover:bg-destructive/20 hover:text-destructive"
-            >
-              Stop plan
-            </Button>
+      <div className="flex justify-between items-center">
+        <div className="w-full flex flex-col justify-start items-start">
+          <div className="flex items-center justify-start gap-2 mb-4">
+            <Coins className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold">Tokens</h2>
           </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-medium">Current Plan</h3>
-                <Badge>Free</Badge>
+          <div className="space-y-6 w-full">
+            {plan ? (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2 text-xl">
+                      <h3 className="font-medium">Available Tokens</h3>
+                      <Badge
+                        variant="secondary"
+                        className="text-base sm:text-lg"
+                      >
+                        {plan.tokensLeft.toLocaleString()}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Access basic features. Upgrade to unlock premium benefits.
-              </p>
-            </div>
-            <Button
-              variant="default"
-              className="bg-primary hover:bg-primary/90 text-white"
-              onClick={() => (window.location.href = "/premium")}
-            >
-              Subscribe Now
-            </Button>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2 text-xl">
+                    <h3 className="font-medium">No Tokens Available</h3>
+                    <Badge variant="secondary">0 tokens</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Purchase tokens to start using our services
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-
-        {plan?.billingHistory?.length ||
-          (0 > 0 && (
-            <div className="border-t pt-4">
-              <h3 className="font-medium mb-2">Billing History</h3>
+        </div>
+        <PremiumDialog text="Add More Tokens" />
+      </div>
+      {plan && plan.billingHistory && plan.billingHistory.length > 0 && (
+        <Accordion type="single" collapsible className="border-t border-muted-foreground/20 mt-6">
+          <AccordionItem value="history">
+            <AccordionTrigger>Token Purchase History</AccordionTrigger>
+            <AccordionContent>
               <div className="space-y-2">
-                {plan?.billingHistory?.map(history => (
+                {plan.billingHistory.map((history, index) => (
                   <div
-                    key={history.invoiceId}
-                    className="flex items-center justify-between text-sm"
+                    key={index}
+                    className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-muted/50"
                   >
                     <div>
-                      {history.date && (
-                        <p>{history.date.toLocaleDateString()}</p>
-                      )}
-                      {(history.planName || history.date) && (
-                        <p className="text-muted-foreground">
-                          {history.planName && `${history.planName} • `}
-                          {history.date &&
-                            history.date.toLocaleString("default", {
-                              month: "long",
-                              year: "numeric",
-                            })}
-                        </p>
-                      )}
+                      <p className="font-medium">
+                        +{history.tokensPurchased.toLocaleString()} tokens
+                      </p>
+                      <p className="text-muted-foreground">
+                        {new Date(history.date).toLocaleDateString()}
+                      </p>
                     </div>
                     <div className="text-right">
-                      {history.amount && <p>${history.amount.toFixed(2)}</p>}
-                      <Button variant="link" size="sm" className="h-auto p-0">
-                        Download
-                      </Button>
+                      <p className="font-medium">
+                        ${history.amount.toFixed(2)}
+                      </p>
+                      {/* <Button variant="link" size="sm" className="h-auto p-0">
+                              View Receipt
+                            </Button> */}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          ))}
-      </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
     </Card>
   );
 }

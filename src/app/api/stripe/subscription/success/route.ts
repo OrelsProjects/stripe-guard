@@ -39,6 +39,8 @@ export async function GET(req: NextRequest) {
         sessionId,
         productId,
         priceId,
+        productName: product.name,
+        tokensAdded: tokens,
         status: session.payment_status,
         amountReceived: (price.unit_amount as number) / 100,
         currency: price.currency as string,
@@ -84,7 +86,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect(
       req.nextUrl.origin +
-        `/dashboard?success=true&tokens=${tokens}&total=${newUserTokens?.tokensLeft || tokens}&name=${product.name}`,
+        `/dashboard?success=true&tokens=${tokens}&total=${newUserTokens?.tokensLeft || tokens}`,
     );
   } catch (error: any) {
     loggerServer.error(

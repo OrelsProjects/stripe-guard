@@ -47,12 +47,15 @@ export async function handleInvoicePaymentSucceeded(event: Stripe.Event) {
       await prisma.payment.create({
         data: {
           userId: userId,
-          invoiceId: invoice.id,
           priceId: invoice.lines.data[0].price?.id || "",
           amountReceived: invoice.amount_paid,
           currency: invoice.currency,
           status: "succeeded",
           paymentMethodId: paymentIntent.payment_method as string,
+          sessionId: "", // Add appropriate value
+          productId: "", // Add appropriate value
+          tokensAdded: 0, // Add appropriate value
+          productName: "", // Add appropriate value
         },
       });
     } catch (err) {
@@ -86,7 +89,7 @@ export async function handleInvoicePaymentFailed(event: Stripe.Event) {
     await sendMail(
       user.settings.emailToNotify || user.email!,
       "Stripe Guard",
-      "Payment Failed",
+      "Failed Payment",
       emailTemplate,
     );
   }

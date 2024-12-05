@@ -28,7 +28,7 @@ export default function NewTokensProvider() {
       router.push(pathname);
     }
   };
-  
+
   return (
     <Dialog onOpenChange={handleOpenCheckout} open={success}>
       <DialogContent>
@@ -54,16 +54,16 @@ export default function NewTokensProvider() {
           Your total is{" "}
           {new Intl.NumberFormat("en-US").format(parseInt(total || "0"))}.
         </p>
+        <DialogFooter className="relative flex justify-center z-20">
+          <Button
+            size="lg"
+            className="w-fit sm:w-auto"
+            onClick={() => handleOpenCheckout(false)}
+          >
+            Let&apos;s Go!
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogFooter className="relative flex justify-center z-20">
-        <Button
-          size="lg"
-          className="w-fit sm:w-auto"
-          onClick={() => handleOpenCheckout(false)}
-        >
-          Let&apos;s Go!
-        </Button>
-      </DialogFooter>
     </Dialog>
   );
 }

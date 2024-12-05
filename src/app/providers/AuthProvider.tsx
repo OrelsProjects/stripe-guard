@@ -69,18 +69,8 @@ export default function AuthProvider({
     if (session?.user) {
       setUser(session);
       try {
-        const isUserOnboarded = await axios.get<boolean>(
-          "/api/stripe/user/onboarded",
-        ); // Did the user provide Stripe details
-
-        if (!isUserOnboarded.data) {
-          if (!isInOnboarding) {
-            // router.push("/stripe-setup");
-          }
-        } else {
-          if (pathname.includes("/login")) {
-            router.push("/dashboard");
-          }
+        if (pathname.includes("/login")) {
+          router.push("/dashboard");
         }
       } catch (error: any) {
         console.error(error);
