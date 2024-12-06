@@ -49,23 +49,11 @@ export default function SignUp() {
           className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-6"
         >
           <Link href="/login?ft=true">
-            Start Your Free Trial
+            Start Protecting Your Revenue
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </Button>
       </motion.div>
-
-      <motion.p
-        className={cn(
-          "mt-8 text-sm text-muted-foreground text-center",
-          MontserratAlternates.className,
-        )}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
-        No credit card required. 14-day free trial. Cancel anytime.
-      </motion.p>
     </motion.div>
   );
 }
