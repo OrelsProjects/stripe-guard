@@ -90,7 +90,7 @@ export function HeroSection() {
   ]);
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-start bg-background pt-20 sm:pt-20 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-start bg-background pt-20 sm:pt-10 overflow-hidden">
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
       <div className="container px-4 mx-auto relative z-10">
@@ -111,7 +111,7 @@ export function HeroSection() {
                   <div>
                     <FlipWords words={webhookErrors} delay={2.5} />
                   </div>
-                </motion.span>{" "}
+                </motion.span>
                 <p>Again</p>
               </h1>
             </FadeIn>
@@ -159,15 +159,19 @@ export function HeroSection() {
                   viewBox="0 0 412 295"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="absolute z-10"
                 >
                   <motion.path
                     id="path-left"
                     d="M0.5 1.5H23C34.0457 1.5 43 10.4543 43 21.5V182C43 193.046 51.9543 202 63 202H387.5C398.546 202 410.5 210.954 410.5 222V295M0.5 74H24.5C34.7173 74 43 82.2827 43 92.5"
                     stroke="url(#paint0_linear_0_54)"
                     strokeWidth="2"
-                    initial={{ pathLength: 0, strokeDashoffset: 0 }}
-                    animate={{ pathLength: 1, strokeDashoffset: 1 }}
+                    initial={{ pathLength: 0, pathOffset: 1 }}
+                    animate={{ pathLength: 1, pathOffset: 0 }}
+                    // exit={{ pathLength: 0 }}
                     transition={{
+                      // repeat: 1,
+                      // repeatType: "reverse",
                       duration: 2, // Duration for the animation
                       ease: "easeInOut", // Smoothing effect
                     }}
@@ -187,11 +191,14 @@ export function HeroSection() {
                         stop-opacity="0.05"
                       />
                       <stop offset="0.547993" stop-color="#2563EB" />
-                      <stop offset="1" stop-color="#626262" stop-opacity="0" />
+                      <stop
+                        offset="1"
+                        stop-color="#2563EB"
+                        stop-opacity="0.015"
+                      />
                     </linearGradient>
                   </defs>
                 </svg>
-
                 <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
                   <NotificationComponent
                     type="failed"
@@ -219,8 +226,8 @@ export function HeroSection() {
                 >
                   <motion.path
                     id="path-right"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
+                    initial={{ pathLength: 0, pathOffset: 1 }}
+                    animate={{ pathLength: 1, pathOffset: 0 }}
                     transition={{ duration: 2, ease: "easeInOut" }}
                     d="M414 1.5H391.5C380.454 1.5 371.5 10.4543 371.5 21.5V182C371.5 193.046 362.546 202 351.5 202H27C15.9543 202 1.5 210.954 1.5 222V295M414 74H390C379.783 74 371.5 82.2827 371.5 92.5"
                     stroke="url(#paint0_linear_0_55)"
@@ -241,7 +248,11 @@ export function HeroSection() {
                         stop-opacity="0.05"
                       />
                       <stop offset="0.547993" stop-color="#2563EB" />
-                      <stop offset="1" stop-color="#626262" stop-opacity="0" />
+                      <stop
+                        offset="1"
+                        stop-color="#2563EB"
+                        stop-opacity="0.015"
+                      />
                     </linearGradient>
                   </defs>
                 </svg>
