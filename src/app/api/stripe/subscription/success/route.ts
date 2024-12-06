@@ -66,12 +66,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    await prisma.userMetadata.update({
+    const user = await prisma.userStripeCredentials.findUnique({ 
       where: {
-        userId,
+        id: userId,
       },
-      data: {
-        paidStatus: "paid",
+      select: {
+        connected: true,
+        apiKey: true,
       },
     });
 
@@ -84,9 +85,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    const shouldOnboard =
+      (!user?.connected || !user?.apiKey) &&
+      (newUserTokens?.tokensLeft || 0) > 0;
+
     return NextResponse.redirect(
       req.nextUrl.origin +
-        `/dashboard?success=true&tokens=${tokens}&total=${newUserTokens?.tokensLeft || tokens}`,
+        `/dashboard?success=true&tokens=${tokens}&total=${newUserTokens?.tokensLeft || tokens}${shouldOnboard ? "&onboard" : ""}`,
     );
   } catch (error: any) {
     loggerServer.error(
@@ -94,7 +99,7 @@ export async function GET(req: NextRequest) {
       "stripe callback",
       error,
     );
-    return NextResponse.redirect(req.nextUrl.origin + "/premium");
+    return NextResponse.redirect(req.nextUrl.origin + "/dashboard?error=true");
   }
 }
 

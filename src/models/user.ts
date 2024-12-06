@@ -6,6 +6,7 @@ export const UserSettingsDefault: UserSettings = {
     },
   },
   connected: false,
+  isOnboarded: false,
 };
 
 export type BillingHistory = {
@@ -39,6 +40,8 @@ export interface UserSettings {
   notificationChannels: NotificationChannels;
 
   plan?: Plan;
+
+  isOnboarded: boolean;
 }
 
 export interface AppUser {

@@ -59,7 +59,7 @@ export function BillingSettings({ plan }: BillingSettingsProps) {
             )}
           </div>
         </div>
-        <PremiumDialog text="Add More Tokens" />
+        <PremiumDialog text="+ Tokens" />
       </div>
       {plan && plan.billingHistory && plan.billingHistory.length > 0 && (
         <Accordion type="single" collapsible className="border-t border-muted-foreground/20 mt-6">

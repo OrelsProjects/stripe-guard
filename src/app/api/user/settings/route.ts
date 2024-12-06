@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
           value: session.user.email || "",
         },
       },
+      isOnboarded: false,
     };
 
     if (userData.payments && userData.payments.length > 0) {
@@ -95,6 +96,10 @@ export async function GET(req: NextRequest) {
       const encryptedApiKey = encrypt(userData.stripeCredentials.apiKey!);
       userSettings.stripeApiKey = encryptedApiKey;
     }
+
+    userSettings.isOnboarded =
+      !!userData.stripeCredentials?.connected ||
+      userSettings.stripeApiKey !== "";
 
     return NextResponse.json(userSettings, { status: 200 });
   } catch (error: any) {

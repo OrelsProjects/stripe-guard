@@ -4,7 +4,6 @@ import { authOptions } from "@/auth/authOptions";
 import loggerServer from "@/loggerServer";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 
 export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -47,6 +46,7 @@ export async function DELETE(req: NextRequest) {
         userId: session.user.userId,
       },
     });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
     loggerServer.error(
       "Error disconnecting Stripe",

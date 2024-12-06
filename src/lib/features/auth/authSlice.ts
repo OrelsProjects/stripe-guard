@@ -61,6 +61,19 @@ const authSlice = createSlice({
         };
       }
     },
+    disconnectStripe: state => {
+      if (state.user) {
+        state.user = {
+          ...state.user,
+          settings: {
+            ...state.user.settings,
+            stripeApiKey: undefined,
+            connected: false,
+            isOnboarded: false,
+          },
+        };
+      }
+    },
     setError: (state, action: PayloadAction<string | null>) => {
       console.error(action.payload);
       state.error = action.payload;
@@ -74,7 +87,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, updateUserSettings, setError, clearUser } =
+export const { setUser, updateUserSettings, setError, clearUser , disconnectStripe} =
   authSlice.actions;
 
 export const selectAuth = (state: RootState): AuthState => state.auth;

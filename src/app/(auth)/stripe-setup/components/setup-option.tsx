@@ -34,16 +34,17 @@ export default function SetupOption({
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay }}
       whileHover={{ scale: 1.02 }}
-      className="bg-card rounded-2xl shadow-lg shadow-primary/5 p-8 border border-border/50"
+      className="h-full flex flex-col justify-between bg-card rounded-2xl shadow-lg shadow-primary/5 p-8 border border-border/50"
     >
-      <div className={`${iconClassName} p-4 rounded-xl inline-block mb-6`}>
-        <Icon className="w-8 h-8 text-primary" />
+      <div className="space-y-6 mb-4">
+        <div className={`${iconClassName} p-4 rounded-xl inline-block`}>
+          <Icon className="w-8 h-8 text-primary" />
+        </div>
+
+        <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+
+        <p className="text-muted-foreground">{description}</p>
       </div>
-
-      <h2 className="text-xl font-semibold mb-4 text-foreground">{title}</h2>
-
-      <p className="text-muted-foreground mb-6">{description}</p>
-
       <Button
         variant={variant}
         onClick={onClick}

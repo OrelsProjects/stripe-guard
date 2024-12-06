@@ -1,3 +1,5 @@
+import { disconnectStripe } from "@/lib/features/auth/authSlice";
+import { useAppDispatch } from "@/lib/hooks/redux";
 import { Logger } from "@/logger";
 import { Statistics, StatisticsServer } from "@/models/webhook";
 import axios from "axios";
@@ -11,6 +13,7 @@ const iconMapping = {
 };
 
 export default function useWebhooks() {
+  const dispatch = useAppDispatch();
   const resolveWebhook = useCallback(async (webhookId: string) => {
     try {
       await axios.patch("/api/webhook/resolve", { webhookId });
@@ -45,6 +48,7 @@ export default function useWebhooks() {
   const disconnectUser = useCallback(async () => {
     try {
       await axios.delete("/api/stripe/user/disconnect");
+      dispatch(disconnectStripe());
     } catch (error: any) {
       Logger.error("Error disconnecting user", error);
       throw new Error("Error disconnecting user");

@@ -1,9 +1,9 @@
 "use client";
 
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import {
@@ -13,25 +13,44 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import LottiePlayer from "@/components/lottiePlayer";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { useAppSelector } from "@/lib/hooks/redux";
+import { selectAuth } from "@/lib/features/auth/authSlice";
 
 export default function NewTokensProvider() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const error = useMemo(() => searchParams.has("error"), [searchParams]);
   const success = useMemo(() => searchParams.has("success"), [searchParams]);
   const total = useMemo(() => searchParams.get("total"), [searchParams]);
   const tokens = useMemo(() => searchParams.get("tokens"), [searchParams]);
+  const shouldOnboard = useMemo(
+    () => searchParams.has("onboard"),
+    [searchParams],
+  );
 
-  const handleOpenCheckout = (open: boolean) => {
+  const handleOpenCheckout = (open: boolean, checkSetup: boolean = true) => {
     if (!open) {
-      router.push(pathname);
+      if (checkSetup && shouldOnboard) {
+        router.push("/stripe-setup");
+      } else {
+        router.push(pathname);
+      }
     }
   };
 
   return (
-    <Dialog onOpenChange={handleOpenCheckout} open={success}>
-      <DialogContent>
+    <Dialog
+      onOpenChange={open => handleOpenCheckout(open, false)}
+      open={success}
+    >
+      <DialogContent hideCloseButton>
+        <DialogClose className="absolute top-4 right-4 z-30">
+          <X className="h-7 w-7 text-muted-foreground" />
+        </DialogClose>
         <DialogHeader>
           <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
           <DialogTitle className="text-3xl font-bold">
@@ -39,28 +58,34 @@ export default function NewTokensProvider() {
           </DialogTitle>
         </DialogHeader>
         {success && (
-          <DotLottieReact
+          <LottiePlayer
             src="/celebration.lottie"
             autoplay
             loop={false}
             className="absolute inset-0 !w-full !h-full mx-auto mb-4 z-20"
+            hideAfterAnimation
           />
         )}
         <p className="text-lg">
           You&apos;ve successfully purchased{" "}
-          {new Intl.NumberFormat("en-US").format(parseInt(tokens || "0"))}{" "}
+          <strong>
+            {new Intl.NumberFormat("en-US").format(parseInt(tokens || "0"))}{" "}
+          </strong>
           tokens.
           <br />
           Your total is{" "}
-          {new Intl.NumberFormat("en-US").format(parseInt(total || "0"))}.
+          <strong>
+            {new Intl.NumberFormat("en-US").format(parseInt(total || "0"))}.
+          </strong>
         </p>
-        <DialogFooter className="relative flex justify-center z-20">
+        {shouldOnboard && <p>The last step is to settings up your account.</p>}
+        <DialogFooter className="relative flex justify-center z-30">
           <Button
             size="lg"
             className="w-fit sm:w-auto"
             onClick={() => handleOpenCheckout(false)}
           >
-            Let&apos;s Go!
+            {!shouldOnboard ? "Let's Go!" : "Setup your account"}
           </Button>
         </DialogFooter>
       </DialogContent>

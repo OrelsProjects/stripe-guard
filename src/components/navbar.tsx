@@ -1,12 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Settings, Home, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/Logo";
+import { useAppSelector } from "@/lib/hooks/redux";
+import { selectAuth } from "@/lib/features/auth/authSlice";
+import { motion } from "framer-motion";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -16,6 +19,14 @@ const navigation = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const { user } = useAppSelector(selectAuth);
+
+  // Only if user has tokens and is not onboarded
+  const shouldShowUserNeedsSetup = useMemo(
+    () =>
+      (user?.settings.plan?.tokensLeft || 0) > 0 && !user?.settings.isOnboarded,
+    [user],
+  );
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,6 +56,21 @@ export function Navbar() {
             );
           })}
         </div>
+        {shouldShowUserNeedsSetup && (
+          <motion.div
+            initial={{ y: -10 }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", bounce: 0.75 }}
+            className="absolute right-4 flex items-center space-x-4 bg-yellow-100 p-2 rounded-md"
+          >
+            <p className="text-sm font-medium text-yellow-800">
+              Your revenue is not protected
+            </p>
+            <Button variant="secondary" size="sm" asChild>
+              <Link href="/stripe-setup">Connect Stripe</Link>
+            </Button>
+          </motion.div>
+        )}
         {/* <div className="ml-auto flex items-center space-x-4">
           <Button
             variant="outline"
