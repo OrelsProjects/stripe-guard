@@ -47,7 +47,7 @@ export default function NewTokensProvider() {
       onOpenChange={open => handleOpenCheckout(open, false)}
       open={success}
     >
-      <DialogContent hideCloseButton>
+      <DialogContent hideCloseButton closeOnOutsideClick={false}>
         <DialogClose className="absolute top-4 right-4 z-30">
           <X className="h-7 w-7 text-muted-foreground" />
         </DialogClose>

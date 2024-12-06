@@ -20,14 +20,15 @@ export function PremiumDialog({
     <Dialog>
       <DialogTrigger asChild className="h-fit">
         {children || (
-          <Button className="text-lg font-semibold tracking-wide px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 rounded-full">
+          <Button className="text-lg font-semibold tracking-wide px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90">
             {text}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent
-      hideCloseButton
-      className="h-[95%] w-full max-w-7xl mx-auto space-y-8 overflow-auto" >
+        hideCloseButton
+        className="h-[95%] w-full max-w-7xl mx-auto space-y-8 overflow-auto"
+      >
         <DialogClose className="absolute top-4 right-4 z-30">
           <X className="h-7 w-7 text-muted-foreground" />
         </DialogClose>

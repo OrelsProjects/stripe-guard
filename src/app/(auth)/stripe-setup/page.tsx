@@ -1,6 +1,6 @@
 "use client";
 
-import SetupOption from "@/app/(auth)/stripe-setup/components/setup-option";
+import SetupOption from "@/app/(auth)/stripe-setup/setup-option";
 import useAuth from "@/lib/hooks/useAuth";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 import { motion } from "framer-motion";

@@ -17,7 +17,7 @@ export function ApiSettings({
   connected = false,
 }: ApiSettingsProps) {
   return (
-    <Card className="p-6">
+    <Card id="api-settings" className="p-6">
       {connected ? (
         <ConnectedView />
       ) : apiKey ? (

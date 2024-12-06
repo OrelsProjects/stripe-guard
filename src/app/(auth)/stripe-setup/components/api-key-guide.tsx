@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import forge from "node-forge";
 import { ExternalLink, Key, Lock, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +12,12 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Loader } from "@/components/ui/loader";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { encrypt } from "@/lib/utils/encryption";
+import { StripePermissionErrorName } from "@/models/errors/StripePermissionError";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME;
 const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -30,14 +30,39 @@ const copyToClipboard = (text: string) => {
 };
 
 interface Step {
+  id: string;
   title: string;
   description: React.ReactNode;
   image?: string | string[];
   action?: React.ReactNode;
 }
 
+const IForgotToCheckDialog = ({
+  text = "I forgot to check",
+}: {
+  text?: string;
+}) => (
+  <Dialog>
+    <DialogTrigger asChild>
+      <span className="text-primary cursor-pointer underline">{text}</span>
+    </DialogTrigger>
+    <DialogContent>
+      <p>
+        Find the key and press: <strong>...</strong> →{" "}
+        <strong>Edit key...</strong>
+      </p>
+      <img
+        src="/generate-api-key/stripe-step-forgot.png"
+        alt="Forgot to check"
+        className="rounded-lg border border-border/50 shadow-md"
+      />
+    </DialogContent>
+  </Dialog>
+);
+
 const steps: Step[] = [
   {
+    id: "create-key",
     title: "Create Restricted Key",
     description: (
       <div className="space-y-2">
@@ -57,6 +82,7 @@ const steps: Step[] = [
     image: "/generate-api-key/stripe-step1.png",
   },
   {
+    id: "select-key-usage",
     title: "Select Key Usage",
     description: (
       <p>
@@ -67,6 +93,7 @@ const steps: Step[] = [
     image: "/generate-api-key/stripe-step2.png",
   },
   {
+    id: "configure-key-details",
     title: "Configure Key Details",
     description: (
       <div className="space-y-2">
@@ -76,7 +103,7 @@ const steps: Step[] = [
           <TooltipProvider delayDuration={150}>
             <Tooltip>
               <TooltipTrigger
-                className="bg-secondary/50 px-2 py-1 rounded cursor-pointer font-mono"
+                className="bg-secondary/30 text-foreground px-2 py-1 rounded cursor-pointer font-mono"
                 onClick={() => copyToClipboard(appUrl!)}
               >
                 {appUrl}
@@ -85,44 +112,38 @@ const steps: Step[] = [
             </Tooltip>
           </TooltipProvider>
         </p>
-        <p className="font-bold text-foreground">
-          3. Important: Check &quot;Customize permissions for this key&quot;
-        </p>
         <p>
-          (
-          <Dialog>
-            <DialogTrigger asChild>
-              <span className="text-primary cursor-pointer underline">
-                I forgot to check
-              </span>
-            </DialogTrigger>
-            <DialogContent>
-              <p>
-                Find the key and press: <strong>...</strong> →{" "}
-                <strong>Edit key...</strong>
-              </p>
-              <img
-                src="/generate-api-key/stripe-step-forgot.png"
-                alt="Forgot to check"
-                className="rounded-lg border border-border/50 shadow-md"
-              />
-            </DialogContent>
-          </Dialog>
-          )
+          3. Press <strong>Continue</strong>
         </p>
+        <p className="font-bold text-foreground">
+          4. Important: Check &quot;Customize permissions for this key&quot;
+        </p>
+        <IForgotToCheckDialog />
       </div>
     ),
     image: ["/generate-api-key/stripe-step3.png"],
   },
   {
+    id: "set-permissions",
     title: "Set Permissions",
     description: (
-      <p>
-        Scroll to <strong>All webhook resources</strong> and select{" "}
-        <strong>Write</strong> permission
-      </p>
+      <div className="flex flex-col">
+        <p>
+          1. Scroll to <strong>All webhook resources</strong> and select{" "}
+          <strong>Write</strong> permission
+        </p>
+        <p className="ml-3">
+          <IForgotToCheckDialog text="Where do I find it?" />
+        </p>
+        <p>
+          2. Press <strong>Apply changes</strong>
+        </p>
+      </div>
     ),
-    image: "/generate-api-key/stripe-step4.png",
+    image: [
+      "/generate-api-key/stripe-step4.png",
+      "/generate-api-key/apply-changes.png",
+    ],
   },
 ];
 
@@ -130,6 +151,30 @@ export default function ApiKeyGuide() {
   const router = useRouter();
   const [apiKey, setApiKey] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const showNoPermissionsError = () => {
+    const errorToastId = toast.error(
+      () => (
+        <p>
+          Did you
+          <Button variant="link" className="!p-0 mx-1 text-base" asChild>
+            <Link
+              href="#set-permissions"
+              onClick={() => {
+                toast.dismiss(errorToastId);
+              }}
+            >
+              set up the permissions{" "}
+            </Link>
+          </Button>
+          correctly?
+        </p>
+      ),
+      {
+        autoClose: false,
+      },
+    );
+  };
 
   const handleSaveApiKey = async () => {
     const isKeyVerified = apiKey.startsWith("rk_");
@@ -147,9 +192,17 @@ export default function ApiKeyGuide() {
       });
       toast.success("API key saved securely! 🚀");
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error("Error saving API key");
+      if (error instanceof AxiosError) {
+        if (error.response?.data.error.name === StripePermissionErrorName) {
+          showNoPermissionsError();
+        } else {
+          toast.error("Error saving API key");
+        }
+      } else {
+        toast.error("Error saving API key");
+      }
       setLoading(false);
       return;
     }
@@ -183,7 +236,8 @@ export default function ApiKeyGuide() {
       <div className="space-y-12">
         {steps.map((step, index) => (
           <motion.div
-            key={index}
+            key={step.id}
+            id={step.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}

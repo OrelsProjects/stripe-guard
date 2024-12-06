@@ -1,4 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+
 import { signIn, signOut as signOutAuth } from "next-auth/react";
 import { useCallback, useState } from "react";
 import {

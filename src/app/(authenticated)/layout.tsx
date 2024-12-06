@@ -17,9 +17,9 @@ export default function AuthLayout({ children }: RootLayoutProps) {
       <Navbar />
       <div className="space-y-8 mt-16">
         <AuthProvider>
+          <PromotionProvider />
           <NewSubscriberProvider />
           <NewTokensProvider />
-          <PromotionProvider />
           <AnimationProvider className="w-full h-full">
             {children}
           </AnimationProvider>

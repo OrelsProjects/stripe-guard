@@ -126,6 +126,34 @@ async function retryPendingWebhooks(
   return false; // Webhook still pending
 }
 
+/**
+ * Logic to avoid taking tokens for the same webhook event with the same outcome.
+ * Also to avoid sending multiple emails for the same webhook event.
+ */
+async function shouldTakeToken(event: Event, succeeded: boolean) {
+  const existingWebhookEvents = await prisma.userWebhookEvent.findMany({
+    where: {
+      requestIdempotencyKey: event.request?.idempotency_key,
+      eventId: event.id,
+    },
+  });
+
+  const hasSameOutcome = existingWebhookEvents.some(
+    existingEvent => existingEvent.succeeded === succeeded,
+  );
+
+  console.log(
+    "Webhook with idempotency key",
+    event.request?.idempotency_key,
+    "And event id: ",
+    event.id,
+    "has same outcome",
+    hasSameOutcome,
+  );
+
+  return !hasSameOutcome;
+}
+
 async function handleWebhookResolution(
   event: Event,
   userStripeCredentials: UserStripeCredentialsWithUser,
@@ -134,6 +162,8 @@ async function handleWebhookResolution(
   const webhooksPending = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
 
   const { id: userId, email } = userStripeCredentials.user;
+
+  const takeToken = await shouldTakeToken(event, succeeded);
 
   await prisma.userWebhookEvent.create({
     data: {
@@ -145,10 +175,15 @@ async function handleWebhookResolution(
       pendingWebhooks: webhooksPending,
       requestId: event.request?.id,
       requestIdempotencyKey: event.request?.idempotency_key,
-      succeeded: webhooksPending === 0,
+      succeeded,
       connected: userStripeCredentials?.connected,
     },
   });
+
+  if (!takeToken) {
+    // No need to update tokens or client about webhook resolution. Webhook already handled for that case.
+    return;
+  }
 
   try {
     await prisma.userTokens.update({
@@ -179,11 +214,7 @@ async function handleWebhookFailure(event: Event, userEmail: string) {
     userEmail,
     process.env.NEXT_PUBLIC_APP_NAME as string,
     "Webhook Failed",
-    generateWebhookFailureEmail(
-      event,
-      new Date(),
-      failedWebhooks,
-    ),
+    generateWebhookFailureEmail(event, new Date(), failedWebhooks),
   );
 }
 
@@ -236,7 +267,7 @@ export async function POST(
       );
     }
 
-    await processStripeEvent(userStripeCredentials, event);
+    processStripeEvent(userStripeCredentials, event);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {

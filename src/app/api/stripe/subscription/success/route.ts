@@ -66,9 +66,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const user = await prisma.userStripeCredentials.findUnique({ 
+    const user = await prisma.userStripeCredentials.findUnique({
       where: {
-        id: userId,
+        userId: userId,
       },
       select: {
         connected: true,
@@ -86,8 +86,7 @@ export async function GET(req: NextRequest) {
     });
 
     const shouldOnboard =
-      (!user?.connected || !user?.apiKey) &&
-      (newUserTokens?.tokensLeft || 0) > 0;
+      !user?.connected && !user?.apiKey && (newUserTokens?.tokensLeft || 0) > 0;
 
     return NextResponse.redirect(
       req.nextUrl.origin +

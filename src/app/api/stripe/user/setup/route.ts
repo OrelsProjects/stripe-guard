@@ -7,6 +7,10 @@ import prisma from "@/app/api/_db/db";
 import Stripe from "stripe";
 import { decrypt } from "@/lib/utils/encryption";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
+import {
+  StripePermissionError,
+  StripePermissionErrorName,
+} from "@/models/errors/StripePermissionError";
 
 type WebhookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
 type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
@@ -51,7 +55,10 @@ const createWebhook = async (
     });
     return webhook;
   } catch (error: any) {
-    debugger;
+    if (error.type === "StripePermissionError") {
+      throw new StripePermissionError();
+    }
+    throw error;
   }
 };
 
@@ -86,5 +93,10 @@ export async function POST(req: NextRequest) {
       session?.user?.userId || "Unknown user",
       error,
     );
+    const returnError =
+      error.name === StripePermissionErrorName
+        ? error
+        : "Internal Server Error";
+    return NextResponse.json({ error: returnError }, { status: 500 });
   }
 }
