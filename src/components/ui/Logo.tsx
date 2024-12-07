@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 const LOGO = "/logo.png";
@@ -9,9 +10,10 @@ export interface LogoProps {
   height?: number;
   width?: number;
   animate?: boolean;
+  className?: string;
 }
 
-export default function Logo({ height, width, animate }: LogoProps) {
+export default function Logo({ height, width, animate, className }: LogoProps) {
   const animation = animate
     ? {
         whileHover: { scale: 1.05 },
@@ -20,7 +22,10 @@ export default function Logo({ height, width, animate }: LogoProps) {
     : {};
 
   return (
-    <motion.div className="flex items-center gap-2 mr-4" {...animation}>
+    <motion.div
+      className={cn("flex items-center gap-2 mr-4", className)}
+      {...animation}
+    >
       <Image
         src={LOGO}
         alt={APP_NAME}

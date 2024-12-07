@@ -6,14 +6,14 @@ import { AlertCircle, Bell, Gauge, Shield } from "lucide-react"
 
 const features = [
   {
-    icon: AlertCircle,
-    title: "Real-Time Monitoring",
-    description: "Track webhook events and detect failures instantly with our advanced monitoring system.",
-  },
-  {
     icon: Bell,
     title: "Instant Notifications",
     description: "Get alerted via email, Slack, or SMS the moment a webhook failure occurs.",
+  },
+  {
+    icon: AlertCircle,
+    title: "Graceful Error Handling",
+    description: "Keep users informed with friendly error messages and proactive updates when issues arise.",
   },
   {
     icon: Gauge,

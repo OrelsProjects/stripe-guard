@@ -126,6 +126,15 @@ function Dashboard() {
           </div>
           {/* Modularized Components */}
           <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-background py-4">
+            <WebhookErrorsCard
+              loading={loading}
+              errors={errors}
+              onErrorClick={error => {
+                setSelectedError(error);
+                setIsDialogOpen(true);
+              }}
+              onResolve={handleResolveWebhookError}
+            />
             <div className="space-y-8">
               <WebhookGraph
                 data={graphData}
@@ -144,16 +153,6 @@ function Dashboard() {
             <TopEventTypeDistributionGraph
               loading={loading}
               failureReasonsData={failureReasonsData}
-            />
-
-            <WebhookErrorsCard
-              loading={loading}
-              errors={errors}
-              onErrorClick={error => {
-                setSelectedError(error);
-                setIsDialogOpen(true);
-              }}
-              onResolve={handleResolveWebhookError}
             />
 
             <WebhooksSentOverTimeChart

@@ -280,7 +280,7 @@ export function HeroSection() {
       </div>
 
       {/* Logo at bottom */}
-      <Logo />
+      <Logo className="hidden md:flex" />
     </section>
   );
 }

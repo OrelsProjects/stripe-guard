@@ -31,7 +31,8 @@ export default function NavigationBar() {
               className={cn({
                 "hidden sm:block":
                   item.toLowerCase() === "how it works" ||
-                  item.toLowerCase() === "analytics",
+                  item.toLowerCase() === "analytics" ||
+                  item.toLowerCase() === "features",
               })}
             >
               <Link
@@ -42,7 +43,7 @@ export default function NavigationBar() {
               </Link>
             </motion.div>
           ))}
-          <Button className="px-16 py-5" asChild>
+          <Button className="md:px-16 md:py-5" asChild>
             <Link href="/login">Sign up</Link>
           </Button>
         </nav>

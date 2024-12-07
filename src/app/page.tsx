@@ -1,5 +1,5 @@
 "use client";
-
+// DO: Show in a section how much time you save by showing what needs to be done to set it up and how much money you save them
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HeroSection } from "@/components/sections/hero";
@@ -13,8 +13,8 @@ import { ProblemAgitationSection } from "@/components/sections/problem-agitation
 import { SocialProofSection } from "@/components/sections/social-proof";
 import { AboutUsSection } from "@/components/sections/about-us";
 import { FAQSection } from "@/components/sections/faq";
-import usePayments from "@/lib/hooks/usePayments";
 import { TracingBeam } from "@/components/ui/tracing-beam";
+import CostComparisonSection from "@/components/sections/cost-comparison";
 
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ export default function Home() {
 
   return (
     <motion.main
-      className="min-h-screen flex flex-col"
+      className="w-screen min-h-screen flex flex-col overflow-x-clip"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -57,30 +57,31 @@ export default function Home() {
       >
         <HeroSection />
       </motion.div>
-      <TracingBeam className="w-full">
-        <motion.div
-          animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          <ProblemAgitationSection />
-          <FeaturesSection />
-        </motion.div>
-        <div ref={darkSectionRef}>
-          <AnalyticsSection />
-        </div>
-        <motion.div
-          initial={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-          animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          <HowItWorksSection />
-          <SocialProofSection />
-          <AboutUsSection />
-          <FAQSection />
-          <SignUpSection />
-        </motion.div>
-        <Footer />
-      </TracingBeam>
+      {/* <TracingBeam className="w-full" hideOnMobile> */}
+      <motion.div
+        animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <CostComparisonSection />
+        <ProblemAgitationSection />
+        <FeaturesSection />
+      </motion.div>
+      <div ref={darkSectionRef} className="hidden md:block">
+        <AnalyticsSection />
+      </div>
+      <motion.div
+        initial={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+        animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <HowItWorksSection />
+        <SocialProofSection />
+        <AboutUsSection />
+        <FAQSection />
+        <SignUpSection />
+      </motion.div>
+      <Footer />
+      {/* </TracingBeam> */}
     </motion.main>
   );
 }

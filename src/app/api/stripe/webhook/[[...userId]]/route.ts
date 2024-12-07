@@ -269,7 +269,7 @@ export async function POST(
 
     processStripeEvent(userStripeCredentials, event);
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: false }, { status: 500 });
   } catch (error: any) {
     loggerServer.error(
       "Error in Stripe webhook connect",

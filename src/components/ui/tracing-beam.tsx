@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import {
   motion,
@@ -12,9 +13,11 @@ import { cn } from "@/lib/utils";
 export const TracingBeam = ({
   children,
   className,
+  hideOnMobile,
 }: {
   children: React.ReactNode;
   className?: string;
+  hideOnMobile?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -52,7 +55,11 @@ export const TracingBeam = ({
       ref={ref}
       className={cn("relative w-full h-full", className)}
     >
-      <div className="absolute">
+      <div
+        className={cn("absolute", {
+          hidden: hideOnMobile && window.innerWidth < 640,
+        })}
+      >
         <motion.div
           transition={{
             duration: 0.2,

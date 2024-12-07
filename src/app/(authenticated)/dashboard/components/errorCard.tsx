@@ -36,7 +36,7 @@ export function ErrorCard({ error, onClick, onResolve }: ErrorCardProps) {
                 {format((error.created as number) * 1000, "PPpp")}
               </p>
             </div>
-            <Button
+            {/* <Button
               size="lg"
               onClick={e => {
                 e.stopPropagation();
@@ -45,7 +45,7 @@ export function ErrorCard({ error, onClick, onResolve }: ErrorCardProps) {
               className="my-auto"
             >
               Resolved
-            </Button>
+            </Button> */}
           </div>
         </CardContent>
       </Card>

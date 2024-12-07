@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function AboutUsSection() {
   return (
-    <section className="py-24 bg-muted/50">
+    <section className="py-24 bg-muted/50 hidden md:block">
       <div className="container px-4 mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">

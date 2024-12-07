@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
 
     for (const key in eventsByKey) {
       const events = eventsByKey[key];
-      const successfulEvent = events.find(event => event.pendingWebhooks === 0);
+      const successfulEvent = events.find(event => event.succeeded);
 
       if (successfulEvent) {
         processedEvents.push(successfulEvent);
@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
       const reasonsMap: Record<string, number> = {};
 
       processedEvents
-        .filter(webhook => webhook.pendingWebhooks > 0)
+        .filter(webhook => !webhook.succeeded)
         .forEach(error => {
           const reason = error.type || "Unknown";
           reasonsMap[reason] = (reasonsMap[reason] || 0) + 1;
@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
 
     // Compute errors array
     const errors: WebhookError[] = processedEvents
-      .filter(webhook => webhook.pendingWebhooks > 0)
+      .filter(webhook => !webhook.succeeded)
       .filter(webhook => !webhook.resolvedAt)
       .map(webhook => ({
         eventId: webhook.eventId,
@@ -125,9 +125,7 @@ export async function GET(req: NextRequest) {
 
     // Compute cards data for dashboard summary
     const totalWebhooks = processedEvents.length;
-    const failedWebhooks = processedEvents.filter(
-      w => w.pendingWebhooks > 0,
-    ).length;
+    const failedWebhooks = processedEvents.filter(w => !w.succeeded).length;
 
     const successRate =
       totalWebhooks === 0
@@ -179,7 +177,7 @@ export async function GET(req: NextRequest) {
         webhooksByTimeDetailed[key] = { succeeded: 0, failed: 0 };
       }
 
-      if (webhook.pendingWebhooks === 0) {
+      if (webhook.succeeded) {
         webhooksByTimeDetailed[key].succeeded += 1;
       } else {
         webhooksByTimeDetailed[key].failed += 1;
@@ -203,7 +201,7 @@ export async function GET(req: NextRequest) {
 
     // Compute total number of successful webhooks
     const totalSuccess = processedEvents.reduce((acc, webhook) => {
-      return webhook.pendingWebhooks === 0 ? acc + 1 : acc;
+      return webhook.succeeded ? acc + 1 : acc;
     }, 0);
 
     const statistics: StatisticsServer = {
