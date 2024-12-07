@@ -1,5 +1,24 @@
 import { Event } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
+export function generatePaymentProcessingIssueEmail() {
+  const content = `
+    <h2>Important Notice: Payment Processing Issue</h2>
+    <p>Hey there!</p>
+    <p>We hope this email finds you well.<br/> We wanted to inform you that we've encountered an issue while processing your recent payment.</p>
+    <p>Our team is actively working on resolving this matter, and we apologize for any inconvenience this may cause. During this time, you may notice that some of our services are temporarily unavailable.</p>
+    <p>Please note:</p>
+    <ul>
+      <li>If you haven't noticed any issues with our services, you can safely disregard this email.</li>
+      <li>No additional action is required from you at this time.</li>
+      <li>We will notify you once the issue has been resolved.</li>
+    </ul>
+    <p>We appreciate your patience and understanding as we work to rectify this situation. If you have any questions or concerns, please don't hesitate to reach out to our customer support team.</p>
+    <p>Thank you for your continued trust in our services.</p>
+    `;
+  // <a href="https://your-support-url.com" class="button">Contact Support</a>
+  return baseEmailTemplate(content);
+}
+
 export function generateWebhookFailureEmail(
   event: Event,
   eventTime: Date,

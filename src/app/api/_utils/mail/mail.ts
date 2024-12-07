@@ -5,23 +5,21 @@ export const sendMail = async (
   from: string,
   subject: string,
   template: string,
+  cc: string[] = [],
 ) => {
-  const data = {
-    from: from + " " + "<alert@mail.stripe-guard.com>",
-    to: to,
-    subject,
-    html: template,
-  };
+  const formData = new FormData();
+  formData.append("from", from + " " + "<alert@mail.stripe-guard.com>");
+  formData.append("to", to);
+  for (const c of cc) {
+    formData.append("to", c);
+  }
+  formData.append("subject", subject);
+  formData.append("html", template);
 
   try {
     const response = await axios.post(
       `https://api.mailgun.net/v3/${process.env.MAILGUN_ORG}/messages`,
-      new URLSearchParams({
-        from: data.from,
-        to: data.to,
-        subject: data.subject,
-        html: data.html,
-      }),
+      formData,
       {
         auth: {
           username: "api",

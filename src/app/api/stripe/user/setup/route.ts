@@ -11,34 +11,7 @@ import {
   StripePermissionError,
   StripePermissionErrorName,
 } from "@/models/errors/StripePermissionError";
-
-type WebhookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
-type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
-
-const paymentIntentEvents: EnabledEvent[] = [
-  "payment_intent.succeeded",
-  "payment_intent.payment_failed",
-];
-
-const chargeEvents: EnabledEvent[] = ["charge.succeeded", "charge.failed"];
-
-const subscriptionEvents: EnabledEvent[] = [
-  "customer.subscription.created",
-  "customer.subscription.updated",
-  "customer.subscription.deleted",
-];
-
-const invoiceEvents: EnabledEvent[] = [
-  "invoice.payment_failed",
-  "invoice.payment_succeeded",
-];
-
-const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
-  ...paymentIntentEvents,
-  ...chargeEvents,
-  ...subscriptionEvents,
-  ...invoiceEvents,
-];
+import { WebhookCreationResponse, allEvents } from "@/models/payment";
 
 const createWebhook = async (
   key: string,

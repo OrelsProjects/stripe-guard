@@ -1,7 +1,10 @@
 import prisma from "@/app/api/_db/db";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
-import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
+import {
+  generatePaymentProcessingIssueEmail,
+  generateWebhookFailureEmail,
+} from "@/app/api/_utils/mail/templates";
 import {
   REGISTERED_CONNECTED_HOOKS,
   RETRIES,
@@ -9,7 +12,8 @@ import {
 } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
 import loggerServer from "@/loggerServer";
-import { User, UserStripeCredentials } from "@prisma/client";
+import { EnabledEvent, sendAlertToUserEvents } from "@/models/payment";
+import { User, UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -127,31 +131,35 @@ async function retryPendingWebhooks(
 }
 
 /**
- * Logic to avoid taking tokens for the same webhook event with the same outcome.
+ * If the webhook event is of interest to the user, and it's the first time it fails, send an email.
+ */
+async function shouldSendEmailToCustomer(
+  event: Event,
+  existingWebhookEvents: UserWebhookEvent[],
+) {
+  const isRightEvent = sendAlertToUserEvents.includes(event.type);
+  const hasFailedBefore = existingWebhookEvents.some(event => !event.succeeded);
+
+  return isRightEvent && !hasFailedBefore;
+}
+
+/**
+ * Logic to avoid taking tokens for the same webhook event with the same outcome (failure retries)
  * Also to avoid sending multiple emails for the same webhook event.
  */
-async function shouldTakeToken(event: Event, succeeded: boolean) {
-  const existingWebhookEvents = await prisma.userWebhookEvent.findMany({
-    where: {
-      requestIdempotencyKey: event.request?.idempotency_key,
-      eventId: event.id,
-    },
-  });
-
+async function shouldTakeToken(
+  existingWebhookEvents: UserWebhookEvent[],
+  succeeded: boolean,
+) {
   const hasSameOutcome = existingWebhookEvents.some(
     existingEvent => existingEvent.succeeded === succeeded,
   );
 
-  console.log(
-    "Webhook with idempotency key",
-    event.request?.idempotency_key,
-    "And event id: ",
-    event.id,
-    "has same outcome",
-    hasSameOutcome,
-  );
-
   return !hasSameOutcome;
+}
+
+async function didSucceed(existingWebhookEvents: UserWebhookEvent[]) {
+  return existingWebhookEvents.some(event => event.succeeded);
 }
 
 async function handleWebhookResolution(
@@ -163,7 +171,19 @@ async function handleWebhookResolution(
 
   const { id: userId, email } = userStripeCredentials.user;
 
-  const takeToken = await shouldTakeToken(event, succeeded);
+  const existingWebhookEvents = await prisma.userWebhookEvent.findMany({
+    where: {
+      requestIdempotencyKey: event.request?.idempotency_key,
+      eventId: event.id,
+    },
+  });
+
+  const didSucceedBefore = await didSucceed(existingWebhookEvents);
+  const takeToken = await shouldTakeToken(existingWebhookEvents, succeeded);
+  const sendEmailToCustomer = await shouldSendEmailToCustomer(
+    event,
+    existingWebhookEvents,
+  );
 
   await prisma.userWebhookEvent.create({
     data: {
@@ -180,7 +200,7 @@ async function handleWebhookResolution(
     },
   });
 
-  if (!takeToken) {
+  if (!takeToken || didSucceedBefore) {
     // No need to update tokens or client about webhook resolution. Webhook already handled for that case.
     return;
   }
@@ -199,16 +219,25 @@ async function handleWebhookResolution(
   } catch (error) {
     loggerServer.error("Error decrementing tokens", userId, error);
   }
+
+  const customerEmail = sendEmailToCustomer
+    ? (event.data.object as any).billing_details?.email
+    : undefined;
+
   if (succeeded) {
     await handleWebhookSuccess(event, email || "");
   } else {
-    await handleWebhookFailure(event, email || "");
+    await handleWebhookFailure(event, email || "", customerEmail);
   }
 }
 
 async function handleWebhookSuccess(event: Event, userEmail: string) {}
 
-async function handleWebhookFailure(event: Event, userEmail: string) {
+async function handleWebhookFailure(
+  event: Event,
+  userEmail: string,
+  customerEmail?: string,
+) {
   const failedWebhooks = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
   await sendMail(
     userEmail,
@@ -216,6 +245,15 @@ async function handleWebhookFailure(event: Event, userEmail: string) {
     "Webhook Failed",
     generateWebhookFailureEmail(event, new Date(), failedWebhooks),
   );
+
+  if (customerEmail) {
+    sendMail(
+      customerEmail,
+      process.env.NEXT_PUBLIC_APP_NAME as string,
+      "Problem processing your payment",
+      generatePaymentProcessingIssueEmail(),
+    );
+  }
 }
 
 async function processStripeEvent(
@@ -269,7 +307,7 @@ export async function POST(
 
     processStripeEvent(userStripeCredentials, event);
 
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
     loggerServer.error(
       "Error in Stripe webhook connect",
