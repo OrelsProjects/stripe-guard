@@ -246,14 +246,15 @@ async function handleWebhookFailure(
     generateWebhookFailureEmail(event, new Date(), failedWebhooks),
   );
 
-  if (customerEmail) {
-    sendMail(
-      customerEmail,
-      process.env.NEXT_PUBLIC_APP_NAME as string,
-      "Problem processing your payment",
-      generatePaymentProcessingIssueEmail(),
-    );
-  }
+  // Possible feature. Send email to customer if webhook failed.
+  // if (customerEmail) {
+  //   sendMail(
+  //     customerEmail,
+  //     process.env.NEXT_PUBLIC_APP_NAME as string,
+  //     "Problem processing your payment",
+  //     generatePaymentProcessingIssueEmail(),
+  //   );
+  // }
 }
 
 async function processStripeEvent(
