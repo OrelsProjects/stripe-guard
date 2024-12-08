@@ -13,8 +13,8 @@ import { ProblemAgitationSection } from "@/components/sections/problem-agitation
 import { SocialProofSection } from "@/components/sections/social-proof";
 import { AboutUsSection } from "@/components/sections/about-us";
 import { FAQSection } from "@/components/sections/faq";
-import { TracingBeam } from "@/components/ui/tracing-beam";
 import CostComparisonSection from "@/components/sections/cost-comparison";
+import { WebhookAnimation } from "@/components/sections/product-animation/webhook-animation";
 
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
@@ -63,6 +63,7 @@ export default function Home() {
         transition={{ duration: 0.4 }}
       >
         <CostComparisonSection />
+        <WebhookAnimation />
         <ProblemAgitationSection />
         <FeaturesSection />
       </motion.div>
