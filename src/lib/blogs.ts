@@ -54,7 +54,7 @@ export const blogs = {
        switch (event.type) {
          case 'payment_intent.succeeded':
            const paymentIntent = event.data.object;
-           console.log(\"PaymentIntent for\" + paymentIntent.amount + \"was successful!\");
+           console.log(\"PaymentIntent for \" + paymentIntent.amount + \" was successful!\");
            break;
          default:
            console.log(\"Unhandled event type: \", event.type);
