@@ -7,11 +7,11 @@ import { blogs } from '@/lib/blogs';
 export default function BlogsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-16 max-w-4xl">
+      <div className="container mx-auto px-4 py-16">
         <h1 className="text-4xl md:text-5xl !leading-[4rem] font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
           Our Blog Posts
         </h1>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-3">
           {Object.values(blogs).map((blog) => (
             <Link 
               href={`/blog/${blog.slug}`} 

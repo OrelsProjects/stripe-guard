@@ -1,10 +1,13 @@
 "use client";
 
+import "highlight.js/styles/atom-one-dark.css"; // Replace 'github' with your preferred style
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
-import { marked } from "marked";
+import { Marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import hljs from "highlight.js";
 import Image from "next/image";
 import { CalendarIcon, ClockIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,8 +24,19 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     notFound();
   }
 
+  const marked = new Marked(
+    markedHighlight({
+      emptyLangClass: "hljs",
+      langPrefix: "language-",
+      highlight(code, lang, info) {
+        const language = hljs.getLanguage(lang) ? lang : "plaintext";
+        console.log("highlighting", lang, language);
+        return hljs.highlight(code, { language, ignoreIllegals: true }).value;
+      },
+    }),
+  );
   // Convert Markdown content to HTML
-  const contentHtml = marked(blog.content);
+  const contentHtml = marked.parse(blog.content);
 
   useEffect(() => {
     const handleScroll = () => {
