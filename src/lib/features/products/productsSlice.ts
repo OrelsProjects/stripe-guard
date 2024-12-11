@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "@/lib/store";
 import { Product } from "@/models/payment";
 
 export interface ProductsState {

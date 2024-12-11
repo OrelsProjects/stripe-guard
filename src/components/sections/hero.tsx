@@ -78,15 +78,15 @@ function ShowMoreSection({ error }: { error: Error | null }) {
 export function HeroSection() {
   const [webhookErrors] = useState<string[]>([
     "Failed Payment",
-    "Card Declined",
-    "Insufficient Funds",
-    "Expired Card",
-    "Incorrect CVC",
-    "Processing Error",
-    "Fraudulent",
-    "Payment Intent Failed",
-    "Chargeback",
-    "Dispute",
+    // "Card Declined",
+    // "Insufficient Funds",
+    // "Expired Card",
+    // "Incorrect CVC",
+    // "Processing Error",
+    // "Fraudulent",
+    // "Payment Intent Failed",
+    // "Chargeback",
+    // "Dispute",
   ]);
 
   return (

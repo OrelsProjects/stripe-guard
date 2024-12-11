@@ -55,7 +55,7 @@ export const WebhookAnimation = () => {
 
     // Simulate shimmer and webhook press animation
     await new Promise(resolve => setTimeout(resolve, 2000));
-    const success = isFirstTime ? false : Math.random() > 0.5;
+    const success = isFirstTime ? false : Math.random() > 0.7;
     setIsFirstTime(false);
     setStage(success ? "success" : "failure");
 
@@ -206,7 +206,7 @@ export const WebhookAnimation = () => {
               repeatType: "reverse",
               duration: 0.7,
               ease: "easeInOut",
-              delay: animationOngoing ? 1 : Infinity,
+              delay: animationOngoing ? 1.5 : Infinity,
             }}
           >
             <img

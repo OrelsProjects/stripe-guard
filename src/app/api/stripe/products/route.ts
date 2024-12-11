@@ -53,6 +53,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(productsSortedByPrice, { status: 200 });
   } catch (error: any) {
-    loggerServer.error("Error getting webhook details", "system", error);
+    loggerServer.error("Error getting products", "system", error);
+    return NextResponse.json(
+      { error: "Error getting products" },
+      { status: 500 },
+    );
   }
 }
