@@ -168,10 +168,7 @@ export function HeroSection() {
                     strokeWidth="2"
                     initial={{ pathLength: 0, pathOffset: 1 }}
                     animate={{ pathLength: 1, pathOffset: 0 }}
-                    // exit={{ pathLength: 0 }}
                     transition={{
-                      // repeat: 1,
-                      // repeatType: "reverse",
                       duration: 2, // Duration for the animation
                       ease: "easeInOut", // Smoothing effect
                     }}

@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 
+export type Event = Stripe.Event;
 export type WebhookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
 export type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
 

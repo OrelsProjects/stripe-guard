@@ -1,5 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { CogIcon, User, UserCog, Webhook } from "lucide-react";
+import {
+  CogIcon,
+  MousePointerClick,
+  User,
+  UserCog,
+  Webhook,
+} from "lucide-react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { ServerIcon } from "./server-icon";
 import { NotificationEmail } from "./notification-email";
@@ -22,6 +28,12 @@ const containerVariants = {
 };
 
 export const WebhookAnimation = () => {
+  const [stripeGuardServerStage, setStripeGuardServerStage] = useState<
+    "initial" | "processing" | "success" | "failure" | "loading" | "triggered"
+  >("initial");
+  const [userServerStage, setUserServerStage] = useState<
+    "initial" | "processing" | "success" | "failure" | "loading"
+  >("initial");
   const [stage, setStage] = useState<
     "initial" | "processing" | "success" | "failure" | "loading"
   >("initial");
@@ -31,6 +43,7 @@ export const WebhookAnimation = () => {
   const [stripeAnimationKey, setStripeAnimationKey] = useState(0);
   const [animationOngoing, setAnimationOngoing] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+  const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
   const [animatingEvent, setAnimatingEvent] = useState<{
     name: string;
     index: number;
@@ -40,6 +53,8 @@ export const WebhookAnimation = () => {
 
   const runAnimation = async (event?: string) => {
     setStage("initial");
+    setStripeGuardServerStage("initial");
+    setUserServerStage("initial");
     setAnimationOngoing(true);
     setShowNotifications(false);
     setStripeAnimationKey(key => key + 1);
@@ -49,23 +64,29 @@ export const WebhookAnimation = () => {
 
     await new Promise(resolve => setTimeout(resolve, 1500));
     setWebhookVisible(false);
-    setStage("processing");
+    setStage("processing"); // Start with user server processing
+    setUserServerStage("processing");
+    setStripeGuardServerStage("processing");
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Simulate shimmer and webhook press animation
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    const success = isFirstTime ? false : Math.random() > 0.7;
-    setIsFirstTime(false);
-    setStage(success ? "success" : "failure");
-
-    if (!success) {
+    const userServerSuccess = Math.random() > 0.5; // Simulate a 50% chance of success
+    if (userServerSuccess && !isFirstTime) {
+      setStage("success");
+      setUserServerStage("success");
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setShowNotifications(true);
-    } else {
+      setStripeGuardServerStage("success");
       setAnimationOngoing(false);
       setSelectedEvent(null);
       setAnimatingEvent(null);
+    } else {
+      setIsFirstTime(false);
+      setStage("failure");
+      setUserServerStage("failure");
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      setStripeGuardServerStage("triggered");
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setShowNotifications(true);
     }
   };
 
@@ -129,23 +150,51 @@ export const WebhookAnimation = () => {
       </motion.h1>
       <div className="relative h-fit w-full flex justify-center">
         <div className="h-60 container relative">
-          <div className="absolute left-0 top-0 p-4 flex flex-col space-y-4">
+          <div className="absolute left-0 top-0 p-4 flex flex-col space-y-4 overflow-visible">
+            <AnimatePresence>
+              {isFirstTime && stage === "initial" && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  viewport={{ once: true }}
+                  className="absolute -left-60 top-24 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg flex items-center gap-3 w-56"
+                >
+                  <p className="text-sm font-medium">
+                    Click an event to see how it works in practice.
+                  </p>
+                  <MousePointerClick className="w-6 h-6 animate-bounce" />
+                </motion.div>
+              )}
+            </AnimatePresence>
             {sendAlertToUserEvents.map((ev, index) => (
-              <Button
-                variant="outline"
-                size="lg"
+              <motion.div
                 key={ev}
-                disabled={selectedEvent !== null && selectedEvent !== ev}
-                onClick={e => {
-                  handleEventClick(ev, index, e.clientX, e.clientY);
-                }}
-                className={cn({
-                  "opacity-30": animationOngoing && selectedEvent !== ev,
-                  "border-primary border-2": selectedEvent === ev,
-                })}
+                whileHover={{ scale: 1.02 }}
+                className="relative"
+                onMouseEnter={() => setHoveredEvent(ev)}
+                onMouseLeave={() => setHoveredEvent(null)}
               >
-                {eventName(ev)}
-              </Button>
+                <Button
+                  variant={hoveredEvent === ev ? "default" : "outline"}
+                  size="lg"
+                  disabled={selectedEvent !== null && selectedEvent !== ev}
+                  onClick={e => {
+                    handleEventClick(ev, index, e.clientX, e.clientY);
+                  }}
+                  className={cn(
+                    "w-full transition-all duration-200 hover:shadow-lg",
+                    {
+                      "opacity-30": animationOngoing && selectedEvent !== ev,
+                      "border-primary border-2": selectedEvent === ev,
+                      "transform hover:-translate-y-0.5": !animationOngoing,
+                    },
+                  )}
+                >
+                  {eventName(ev)}
+                </Button>
+              </motion.div>
             ))}
           </div>
 
@@ -219,26 +268,57 @@ export const WebhookAnimation = () => {
           <AnimatePresence>
             {webhookVisible && (
               <motion.div
-                initial={{ x: -400, opacity: 1 }}
-                animate={{ x: -30, opacity: 1 }}
+                key="stripe-guard-server-webhook"
+                initial={{ x: -400, y: 0, opacity: 1 }}
+                animate={{ x: -30, y: 90, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: 0.6,
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 20,
+                  // duration: 0.6,
+                  // type: "spring",
+                  // stiffness: 100,
+                  // damping: 20,
                   delay: 1,
                 }}
-                className="absolute left-[66%] top-[36%] -translate-x-[200px] bg-primary p-4 rounded-xl"
+                className="absolute left-[66%] top-[36%] bg-primary p-4 rounded-xl duration-300 ease-linear"
+              >
+                <Webhook className="w-12 h-12 text-primary-foreground" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {webhookVisible && (
+              <motion.div
+                id="user-server-webhook"
+                initial={{ x: -400, y: 0, opacity: 1 }}
+                animate={{ x: -30, y: -90, opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  // duration: 1,
+                  // type: "spring",
+                  // stiffness: 100,
+                  // damping: 20,
+                  delay: 1,
+                }}
+                className="absolute left-[66%] top-[36%] bg-primary p-4 rounded-xl duration-300 ease-linear"
               >
                 <Webhook className="w-12 h-12 text-primary-foreground" />
               </motion.div>
             )}
           </AnimatePresence>
 
-          <div className="absolute left-[66%] top-[25%] -translate-x-1/2 flex flex-col">
-            <ServerIcon stage={stage} />
+          <div
+            id="stripe-guard-server"
+            className="absolute left-[66%] top-[65%] -translate-x-1/2 flex flex-col"
+          >
+            <ServerIcon stage={stripeGuardServerStage} />
             <Logo className="w-16 h-16" />
+          </div>
+          <div
+            id="user-server"
+            className="absolute left-[66%] -top-[5%] -translate-x-1/2 flex flex-col items-center"
+          >
+            <ServerIcon stage={userServerStage} />
+            <strong>Your Server</strong>
           </div>
 
           <AnimatePresence>

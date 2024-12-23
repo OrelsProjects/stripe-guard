@@ -45,6 +45,7 @@ export function PremiumTable() {
       await goToCheckout(priceId, productId);
     } catch (error) {
       toast.error("Something went wrong. Try again :)");
+      console.log("Error starting checkout:", error);
     } finally {
       setLoadingCheckout(false);
     }

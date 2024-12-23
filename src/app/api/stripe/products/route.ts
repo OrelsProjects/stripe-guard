@@ -12,12 +12,6 @@ export async function GET(req: NextRequest) {
 
     const products: Product[] = [];
 
-    const productNames = stripeProducts.map(({ name }) => name);
-    const productMetadata = stripeProducts.map(({ metadata }) => metadata);
-
-    console.log("productNames", productNames);
-    console.log("productMetadata", productMetadata);
-
     const appProducts = stripeProducts
       .filter(stripeProduct => stripeProduct.active)
       .filter(stripeProduct =>

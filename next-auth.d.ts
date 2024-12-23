@@ -1,4 +1,3 @@
-import { UserSettings } from "@/models/user";
 import { DefaultSession } from "next-auth";
 
 // Extend the SessionUser interface

@@ -1,4 +1,4 @@
-import { Event } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
+import { Event } from "@/models/payment";
 
 export function generatePaymentProcessingIssueEmail() {
   const content = `
