@@ -1,18 +1,14 @@
 import prisma from "@/app/api/_db/db";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
-import {
-  generatePaymentProcessingIssueEmail,
-  generateWebhookFailureEmail,
-} from "@/app/api/_utils/mail/templates";
+import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
 import {
   REGISTERED_CONNECTED_HOOKS,
   RETRIES,
-  Event,
 } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
 import loggerServer from "@/loggerServer";
-import { EnabledEvent, sendAlertToUserEvents } from "@/models/payment";
+import { EnabledEvent, Event, sendAlertToUserEvents } from "@/models/payment";
 import { User, UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
