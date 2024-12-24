@@ -1,12 +1,22 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
 const Footer = () => {
   return (
-    <footer className="bg-background text-foreground">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-background text-foreground relative flex flex-col">
+      <div className="!text-xs absolute w-full flex justify-center items-center text-foreground/80 gap-1">
+        Theme generated with:{" "}
+        <Button variant="link" asChild className="!p-0 !text-xs">
+          <Link href="https://www.shadcn.studio" target="_blank">
+            ShadcnThemes
+          </Link>
+        </Button>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo and Description */}
           <div>
@@ -18,7 +28,7 @@ const Footer = () => {
               Get notified when your Stripe webhooks fail in real time.
             </p>
           </div>
-          
+
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-semibold">Quick Links</h4>
@@ -41,23 +51,22 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           {/* Contact */}
           <div>
             <h4 className="text-lg font-semibold">Contact</h4>
             <ul className="mt-4 space-y-2">
               <li>
-                <a
+                <Link
                   href="mailto:orelsmail@gmail.com"
                   className="text-muted-foreground hover:underline"
                 >
-                  orelsmail@gmail.com
-                </a>
+                  Contact me
+                </Link>
               </li>
             </ul>
           </div>
         </div>
-        
         {/* Footer Bottom */}
         <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
           <p>

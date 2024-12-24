@@ -6,21 +6,53 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const eventsTrackedAnswer = () =>
+  `   <ul>
+    <li>
+      <strong style="font-size: 20px; display: block; margin-top: 16px;">Payment Intent Events:</strong>
+      <ul>
+        <li><strong>payment_intent.succeeded:</strong> Triggered when a payment is successfully completed.</li>
+        <li><strong>payment_intent.payment_failed:</strong> Triggered when a payment attempt fails.</li>
+      </ul>
+    </li>
+    <li>
+      <strong style="font-size: 20px; display: block; margin-top: 16px;">Charge Events:</strong>
+      <ul>
+        <li><strong>charge.succeeded:</strong> Triggered when a charge is successfully processed.</li>
+        <li><strong>charge.failed:</strong> Triggered when a charge attempt fails.</li>
+      </ul>
+    </li>
+    <li>
+      <strong style="font-size: 20px; display: block; margin-top: 16px;">Subscription Events:</strong>
+      <ul>
+        <li><strong>customer.subscription.created:</strong> Triggered when a new subscription is created.</li>
+        <li><strong>customer.subscription.updated:</strong> Triggered when an existing subscription is updated.</li>
+        <li><strong>customer.subscription.deleted:</strong> Triggered when a subscription is canceled or deleted.</li>
+      </ul>
+    </li>
+    <li>
+      <strong style="font-size: 20px; display: block; margin-top: 16px;">Invoice Events:</strong>
+      <ul>
+        <li><strong>invoice.payment_failed:</strong> Triggered when an invoice payment attempt fails.</li>
+        <li><strong>invoice.payment_succeeded:</strong> Triggered when an invoice payment is successfully processed.</li>
+      </ul>
+    </li>
+    <li>
+      <strong style="font-size: 20px; display: block; margin-top: 16px;">User Alert Events:</strong>
+      <ul>
+        <li><strong>charge.succeeded:</strong> Notifies the user when a charge is successfully processed.</li>
+        <li><strong>invoice.payment_succeeded:</strong> Notifies the user when an invoice payment is successfully processed.</li>
+        <li><strong>customer.subscription.created:</strong> Notifies the user when a new subscription is created.</li>
+        <li><strong>customer.subscription.updated:</strong> Notifies the user when an existing subscription is updated.</li>
+      </ul>
+    </li>
+  </ul>`;
+
 const faqs = [
   {
     question: "How will this service benefit my business?",
     answer:
-      "Our service helps you prevent revenue loss by instantly detecting and alerting you to payment failures. This means you can resolve issues quickly, keeping your cash flow healthy and your customers satisfied.",
-  },
-  {
-    question: "Is there a limit to the number of webhooks I can monitor?",
-    answer:
-      "Our plans are designed to grow with your business. The Starter plan covers up to 1,000 events per month, while the Pro plan supports up to 10,000. For high-volume businesses, our Enterprise plan offers unlimited webhook monitoring.",
-  },
-  {
-    question: "Can I integrate your service with my existing tools?",
-    answer:
-      "We offer integrations with popular tools and platforms. If you need a specific integration, just reach out to us at support@ourcompany.com, and we'll work on making it happen for you.",
+      "Imagine you are a customer who just found out about the product.<br/><br/>You are excited, you want to buy it. You put your credit card in, payment proccessed.<br/>You expect to see a confirmation page, but instead, you see an error.<br/><br/>You try again, same thing. You are frustrated and don't know what to do.<br/><br/>This is what we prevent. We monitor your payment webhooks and alert you in real-time and send a nice email to the cutsomer, so they know you are on top of it.",
   },
   {
     question: "How quickly can I get started?",
@@ -28,9 +60,18 @@ const faqs = [
       "You can be up and running in less than 5 minutes. Our simple setup process involves either logging in with your payment gateway or generating an API key using our step-by-step guide.",
   },
   {
-    question: "What kind of support do you offer?",
+    question: "What's considered a failed webhook?",
     answer:
-      "We provide comprehensive support to ensure your success. This includes 24/7 email support, detailed documentation, and for our Pro and Enterprise customers, priority phone support.",
+      "Stripe defines a failed webhook as any event that returns a 4xx or 5xx HTTP status code or that takes longer than 10 seconds to respond. Our service monitors these events and alerts you in real-time. We wait 8.4 seconds, assuming 99.99% of the cases will not resolve in the 10th second, and to make sure our request doesn't timeout.",
+  },
+  {
+    question: "Do you collect any data?",
+    answer:
+      "We only collect the data necessary to provide our service. We do not store any sensitive information regarding your customers or transactions.",
+  },
+  {
+    question: "Which events do you track?",
+    answer: eventsTrackedAnswer(),
   },
 ];
 
@@ -59,7 +100,9 @@ export function FAQSection() {
                 <AccordionTrigger className="text-xl">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-base">{faq.answer}</AccordionContent>
+                <AccordionContent className="text-base">
+                  <p dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>

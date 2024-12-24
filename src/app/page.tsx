@@ -15,6 +15,9 @@ import { AboutUsSection } from "@/components/sections/about-us";
 import { FAQSection } from "@/components/sections/faq";
 import CostComparisonSection from "@/components/sections/cost-comparison";
 import { WebhookAnimation } from "@/components/sections/product-animation/webhook-animation";
+import { WhatIfWebhookFails } from "@/components/sections/what-if-webhook-fails";
+import { WebhookReliability } from "@/components/sections/webhook-reliability";
+import { Pricing } from "@/components/sections/pricing";
 
 export default function Home() {
   const darkSectionRef = useRef<HTMLDivElement>(null);
@@ -65,9 +68,10 @@ export default function Home() {
         <CostComparisonSection />
         <WebhookAnimation />
         <ProblemAgitationSection />
+        <WebhookReliability />
         <FeaturesSection />
       </motion.div>
-      <div ref={darkSectionRef} className="hidden md:block">
+      <div ref={darkSectionRef} >
         <AnalyticsSection />
       </div>
       <motion.div
@@ -75,9 +79,11 @@ export default function Home() {
         animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
         transition={{ duration: 0.4 }}
       >
+        <WhatIfWebhookFails />
         <HowItWorksSection />
-        <SocialProofSection />
-        <AboutUsSection />
+        {/* <SocialProofSection />
+        <AboutUsSection /> */}
+        <Pricing />
         <FAQSection />
         <SignUpSection />
       </motion.div>

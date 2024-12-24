@@ -105,23 +105,21 @@ export function HeroSection() {
             </div>
             {/* Main heading */}
             <FadeIn direction="up">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-wide text-foreground">
-                <p>Never Miss</p>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-tight text-foreground">
+                <span>Your</span>{" "}
                 <motion.span className="text-primary inline-block">
-                  <div>
-                    <FlipWords words={webhookErrors} delay={2.5} />
-                  </div>
+                  Safety Net
                 </motion.span>
-                <p>Again</p>
+                <p>For Webhook Failures</p>
               </h1>
             </FadeIn>
 
             {/* Description */}
             <FadeIn direction="up" delay={0.1}>
               <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-                Monitor your webhooks effortlessly, get instant notifications on
-                failures, and maintain smooth payment operations. Keep your
-                revenue flowing without interruption.
+                Missed payments can hurt your revenue and customer experience.
+                Monitor your webhooks seamlessly, fix issues instantly, and keep
+                your business running smoothly.
               </p>
             </FadeIn>
 

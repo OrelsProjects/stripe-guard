@@ -8,7 +8,7 @@ const features = [
   {
     icon: Bell,
     title: "Instant Notifications",
-    description: "Get alerted via email, Slack, or SMS the moment a webhook failure occurs.",
+    description: "Get alerted via email the moment a critical webhook failure occurs.",
   },
   {
     icon: AlertCircle,

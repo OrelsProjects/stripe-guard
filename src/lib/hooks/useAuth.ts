@@ -22,14 +22,19 @@ const useAuth = () => {
 
   const signInWithGoogle = useCallback(async () => {
     try {
-      let redirect = "/dashboard";
-      if (searchParams.has("ft")) {
-        redirect = "/premium";
-      }
+      const redirect = new URL(`${window.location.origin}/dashboard`);
+
+      // preserve query params
+      searchParams.forEach((val, key) => {
+        if (!redirect.searchParams.has(key)) {
+          redirect.searchParams.append(key, val);
+        }
+      });
+
       setLoading(true);
       await signIn("google", {
         redirect: true,
-        callbackUrl: redirect,
+        callbackUrl: redirect.toString(),
       });
     } catch (error: any) {
       if (error?.name === "UserAlreadyAuthenticatedException") {

@@ -6,7 +6,7 @@ import { useAppDispatch } from "@/lib/hooks/redux";
 import { setProducts } from "@/lib/features/products/productsSlice";
 import { useRef } from "react";
 
-const stripePromise = loadStripe(
+const stripePromise = () => loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
 
@@ -37,7 +37,7 @@ export default function usePayments() {
         "/api/stripe/checkout",
         { priceId, productId },
       );
-      const stripe = await stripePromise;
+      const stripe = await stripePromise();
       const { error } = await stripe!.redirectToCheckout({
         sessionId: response.data.sessionId,
       });

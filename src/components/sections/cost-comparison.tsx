@@ -73,6 +73,14 @@ const comparisonData = [
     ),
   },
   {
+    task: "Handling webhook issues stress-free",
+    withoutStripeGuard: "High stress and manual fixes",
+    withStripeGuard: "Automated alerts and customer assurance",
+    icon: (
+      <HeartPulseIcon className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
+    ),
+  },
+  {
     task: "Buying tokens to protect webhooks",
     withoutStripeGuard: 0,
     withStripeGuard: "a few bucks",
@@ -180,7 +188,7 @@ export default function ComparisonSection() {
             </tbody>
           </table>
           <motion.p
-            className="w-full text-base text-start sm:text-xs md:text-base text-muted-foreground/60 pl-2 mt-2"
+            className="w-full text-xs text-start sm:text-xs md:text-sm text-muted-foreground/60 pl-2 mt-2"
             variants={itemVariants}
           >
             Based on industry standards of average senior developer salary in
@@ -192,7 +200,7 @@ export default function ComparisonSection() {
           className="text-center space-y-6 sm:space-y-8 md:space-y-10"
           variants={itemVariants}
         >
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight font-semibold text-secondary">
+          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight font-semibold text-secondary dark:text-foreground">
             Secure Your Revenue Now
           </p>
           <Button

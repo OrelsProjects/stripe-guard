@@ -14,8 +14,6 @@ export async function POST(req: NextRequest) {
     const { priceId, productId } = await req.json();
     const stripe = getStripeInstance();
 
-    const product = await stripe.products.retrieve(productId);
-
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [

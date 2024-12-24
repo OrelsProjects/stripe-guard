@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { formatDistanceToNow } from 'date-fns';
-import { CalendarIcon, ClockIcon } from 'lucide-react';
-import { blogs } from '@/lib/blogs';
+import Link from "next/link";
+import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { blogs } from "@/lib/blogs";
 
 export default function BlogsPage() {
   return (
@@ -12,15 +12,19 @@ export default function BlogsPage() {
           Our Blog Posts
         </h1>
         <div className="grid gap-8 md:grid-cols-3">
-          {Object.values(blogs).map((blog) => (
-            <Link 
-              href={`/blog/${blog.slug}`} 
+          {Object.values(blogs).map(blog => (
+            <Link
+              href={`/blog/${blog.slug}`}
               key={blog.slug}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105"
             >
               <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2 line-clamp-2">{blog.title}</h2>
-                <p className="text-muted-foreground mb-4 line-clamp-3">{blog.excerpt}</p>
+                <h2 className="text-xl font-semibold mb-2 line-clamp-2">
+                  {blog.title}
+                </h2>
+                <p className="text-muted-foreground mb-4 line-clamp-3">
+                  {blog.excerpt}
+                </p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Image
@@ -31,13 +35,17 @@ export default function BlogsPage() {
                     />
                     <div>
                       <p className="text-sm font-medium">{blog.author.name}</p>
-                      <p className="text-xs text-muted-foreground">{blog.author.role}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {blog.author.role}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <CalendarIcon className="w-4 h-4" />
                     <time dateTime={blog.publishedAt}>
-                      {formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(blog.publishedAt), {
+                        addSuffix: true,
+                      })}
                     </time>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { ErrorCard } from "@/app/(authenticated)/dashboard/components/errorCard";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loader";
+import { cn } from "@/lib/utils";
 import { WebhookError } from "@/models/webhook";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
@@ -10,6 +11,7 @@ interface WebhookErrorsCardProps {
   errors: WebhookError[];
   onErrorClick: (error: WebhookError) => void;
   onResolve: (error: WebhookError) => void;
+  className?: string;
 }
 
 function WebhookErrorsCard({
@@ -17,9 +19,10 @@ function WebhookErrorsCard({
   errors,
   onResolve,
   onErrorClick,
+  className,
 }: WebhookErrorsCardProps) {
   return (
-    <Card className="p-4 h-[430px] flex flex-col gap-6">
+    <Card className={cn("p-4 h-[430px] flex flex-col gap-6", className)}>
       <CardTitle className="text-xl font-semibold">Webhook errors</CardTitle>
       <CardContent className="h-full w-full flex items-start justify-start">
         {loading ? (

@@ -11,6 +11,7 @@ export const NotificationEmail = ({
   type,
   delay = 0,
   onAnimationComplete,
+  
 }: NotificationEmailProps) => {
   const isAlert = type === "alert";
 

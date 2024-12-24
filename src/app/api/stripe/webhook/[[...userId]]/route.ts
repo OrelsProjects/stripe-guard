@@ -4,7 +4,9 @@ import { sendMail } from "@/app/api/_utils/mail/mail";
 import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
 import {
   REGISTERED_CONNECTED_HOOKS,
-  RETRIES,
+  INITIAL_RETRY_DELAY,
+  MAX_RETRY_DELAY,
+  MAX_RETRIES,
 } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
 import loggerServer from "@/loggerServer";
@@ -12,6 +14,8 @@ import { EnabledEvent, Event, sendAlertToUserEvents } from "@/models/payment";
 import { User, UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+
+// TODO: Send the user an email when a webhook fails and add a button to contact support.
 
 export const maxDuration = 60; // 1 minute
 
@@ -109,21 +113,19 @@ function areTherePendingWebhooks(pendingHooks: number): boolean {
 async function retryPendingWebhooks(
   stripe: Stripe,
   eventId: string,
-  initialPendingHooks: number,
 ): Promise<boolean> {
-  let pendingHooks = initialPendingHooks;
+  let delay = INITIAL_RETRY_DELAY;
 
-  for (const waitTime of RETRIES) {
-    await new Promise(resolve => setTimeout(resolve, waitTime));
+  for (let i = 0; i < MAX_RETRIES; i++) {
+    await new Promise(resolve => setTimeout(resolve, delay));
+    delay = Math.min(delay * 2, MAX_RETRY_DELAY); // Exponential backoff with cap
     const updatedEvent = await stripe.events.retrieve(eventId);
-    pendingHooks = updatedEvent.pending_webhooks;
-
-    if (!areTherePendingWebhooks(pendingHooks)) {
+    if (!areTherePendingWebhooks(updatedEvent.pending_webhooks)) {
       return true; // Webhook succeeded
     }
   }
 
-  return false; // Webhook still pending
+  return false; // Webhooks are still pending
 }
 
 /**
@@ -266,7 +268,7 @@ async function processStripeEvent(
 
   const webhookSucceeded = !areTherePendingWebhooks(pendingHooks)
     ? true
-    : await retryPendingWebhooks(stripe, event.id, pendingHooks);
+    : await retryPendingWebhooks(stripe, event.id);
 
   await handleWebhookResolution(event, userStripeCredentials, webhookSucceeded);
 }

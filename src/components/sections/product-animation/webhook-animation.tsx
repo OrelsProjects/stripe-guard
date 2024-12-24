@@ -27,6 +27,15 @@ const containerVariants = {
   },
 };
 
+const eventNameVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    viewport: { once: true },
+  },
+};
+
 export const WebhookAnimation = () => {
   const [stripeGuardServerStage, setStripeGuardServerStage] = useState<
     "initial" | "processing" | "success" | "failure" | "loading" | "triggered"
@@ -143,7 +152,7 @@ export const WebhookAnimation = () => {
         whileInView="visible"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="text-6xl font-bold text-secondary mb-8 absolute top-10"
+        className="text-6xl font-bold text-secondary mb-8 absolute top-10 dark:text-foreground"
       >
         {" "}
         How does it work - In practice
@@ -154,11 +163,12 @@ export const WebhookAnimation = () => {
             <AnimatePresence>
               {isFirstTime && stage === "initial" && (
                 <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 }}
-                  exit={{ opacity: 0, x: -20 }}
+                  key="press-event-instruction"
+                  initial="hidden"
+                  whileInView="visible"
                   viewport={{ once: true }}
+                  variants={eventNameVariants}
+                  transition={{ delay: 2, duration: 1.2 }}
                   className="absolute -left-60 top-24 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg flex items-center gap-3 w-56"
                 >
                   <p className="text-sm font-medium">
@@ -171,6 +181,11 @@ export const WebhookAnimation = () => {
             {sendAlertToUserEvents.map((ev, index) => (
               <motion.div
                 key={ev}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={eventNameVariants}
+                transition={{ delay: 0.3 + index * 0.2 }}
                 whileHover={{ scale: 1.02 }}
                 className="relative"
                 onMouseEnter={() => setHoveredEvent(ev)}
@@ -243,27 +258,48 @@ export const WebhookAnimation = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          <motion.div
-            key={stripeAnimationKey}
-            className={cn(
-              "w-fit h-fit absolute left-[33%] top-[30%] z-20  rounded-lg shadow-lg overflow-hidden",
-            )}
-            initial={{ scale: 1 }}
-            animate={{ scale: [1, 0.8, 1] }}
-            transition={{
-              repeat: 0,
-              repeatType: "reverse",
-              duration: 0.7,
-              ease: "easeInOut",
-              delay: animationOngoing ? 1.5 : Infinity,
-            }}
-          >
-            <img
-              src="/stripe.jpg"
-              alt="stripe"
-              className={cn("h-28 w-auto object-cover rounded-lg shadow-lg")}
-            />
-          </motion.div>
+          {animationOngoing || !isFirstTime ? (
+            <motion.div
+              key={stripeAnimationKey}
+              whileInView="visible"
+              className={cn(
+                "w-fit h-fit absolute left-[33%] top-[30%] z-20  rounded-lg shadow-lg overflow-hidden",
+              )}
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 0.8, 1] }}
+              transition={{
+                repeat: 0,
+                repeatType: "reverse",
+                duration: 0.7,
+                ease: "easeInOut",
+                delay: animationOngoing ? 1.5 : Infinity,
+              }}
+            >
+              <img
+                src="/stripe.jpg"
+                alt="stripe"
+                className={cn("h-28 w-auto object-cover rounded-lg shadow-lg")}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={`${stripeAnimationKey}-no-animation`}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={eventNameVariants}
+              transition={{ delay: 1.5 }}
+              className={cn(
+                "w-fit h-fit absolute left-[33%] top-[30%] z-20  rounded-lg shadow-lg overflow-hidden",
+              )}
+            >
+              <img
+                src="/stripe.jpg"
+                alt="stripe"
+                className={cn("h-28 w-auto object-cover rounded-lg shadow-lg")}
+              />
+            </motion.div>
+          )}
 
           <AnimatePresence>
             {webhookVisible && (
@@ -306,20 +342,30 @@ export const WebhookAnimation = () => {
             )}
           </AnimatePresence>
 
-          <div
+          <motion.div
+            whileInView="visible"
+            initial={{ x: -86, y: 0, opacity: 0 }}
+            animate={{ x: -66, y: 0, opacity: 1 }}
+            transition={{ delay: 1.7 }}
+            viewport={{ once: true }}
             id="stripe-guard-server"
             className="absolute left-[66%] top-[65%] -translate-x-1/2 flex flex-col"
           >
             <ServerIcon stage={stripeGuardServerStage} />
             <Logo className="w-16 h-16" />
-          </div>
-          <div
+          </motion.div>
+          <motion.div
+            whileInView="visible"
+            initial={{ x: -86, y: 0, opacity: 0 }}
+            animate={{ x: -66, y: 0, opacity: 1 }}
+            transition={{ delay: 1.8 }}
+            viewport={{ once: true }}
             id="user-server"
             className="absolute left-[66%] -top-[5%] -translate-x-1/2 flex flex-col items-center"
           >
             <ServerIcon stage={userServerStage} />
             <strong>Your Server</strong>
-          </div>
+          </motion.div>
 
           <AnimatePresence>
             {showNotifications && (

@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MontserratAlternates } from "@/lib/utils/fonts";
 import { motion } from "framer-motion";
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME;
 
 export default function SignUp() {
   return (
@@ -19,7 +21,9 @@ export default function SignUp() {
       }}
     >
       <motion.h2
-        className={cn("text-4xl md:text-5xl font-bold mb-6 text-center text-primary")}
+        className={cn(
+          "text-4xl md:text-5xl font-bold mb-6 text-center text-primary",
+        )}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -33,8 +37,7 @@ export default function SignUp() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        Join thousands of businesses that have optimized their payment processes and boosted their bottom line.
-        Experience the difference in your cash flow today.
+        Protect your revenue and keep your customers happy with {APP_NAME}.
       </motion.p>
 
       <motion.div
@@ -57,4 +60,3 @@ export default function SignUp() {
     </motion.div>
   );
 }
-

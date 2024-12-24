@@ -1,7 +1,9 @@
 "use client";
 
+import WebhookErrorsCard from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhooksErrorsCard";
 import { FadeIn } from "@/components/animations/fade-in";
 import { Card } from "@/components/ui/card";
+import { WebhookError } from "@/models/webhook";
 import { motion } from "framer-motion";
 import { forwardRef, ForwardedRef } from "react";
 import {
@@ -20,6 +22,78 @@ import {
 } from "recharts";
 
 interface AnalyticsSectionProps extends React.HTMLAttributes<HTMLElement> {}
+
+const mockWebhookErrors: WebhookError[] = [
+  {
+    eventId: "evt_1",
+    type: "subscription.created",
+    created: 1672531200, // Unix timestamp for 2023-01-01
+    failedWebhooks: 2,
+    userWebhookEvent: {
+      id: "uw_1",
+      userId: "user_1",
+      eventId: "evt_1",
+      livemode: false,
+      type: "subscription.created",
+      created: 1672531200,
+      pendingWebhooks: 1,
+      connected: true,
+      succeeded: false,
+      requestId: "req_1",
+      requestIdempotencyKey: "key_1",
+      userNotifiedAt: new Date("2023-01-02T00:00:00Z"),
+      createdAt: new Date("2023-01-01T12:00:00Z"),
+      updatedAt: new Date("2023-01-02T00:00:00Z"),
+      resolvedAt: null,
+    },
+  },
+  {
+    eventId: "evt_2",
+    type: "invoice.payment_failed",
+    created: 1672617600, // Unix timestamp for 2023-01-02
+    failedWebhooks: 3,
+    userWebhookEvent: {
+      id: "uw_2",
+      userId: "user_2",
+      eventId: "evt_2",
+      livemode: true,
+      type: "invoice.payment_failed",
+      created: 1672617600,
+      pendingWebhooks: 2,
+      connected: false,
+      succeeded: false,
+      requestId: "req_2",
+      requestIdempotencyKey: "key_2",
+      userNotifiedAt: null,
+      createdAt: new Date("2023-01-02T12:00:00Z"),
+      updatedAt: new Date("2023-01-03T00:00:00Z"),
+      resolvedAt: new Date("2023-01-04T00:00:00Z"),
+    },
+  },
+  {
+    eventId: "evt_3",
+    type: "customer.updated",
+    created: 1672704000, // Unix timestamp for 2023-01-03
+    failedWebhooks: 0,
+    userWebhookEvent: {
+      id: "uw_3",
+      userId: "user_3",
+      eventId: "evt_3",
+      livemode: false,
+      type: "customer.updated",
+      created: 1672704000,
+      pendingWebhooks: 0,
+      connected: true,
+      succeeded: true,
+      requestId: "req_3",
+      requestIdempotencyKey: "key_3",
+      userNotifiedAt: new Date("2023-01-03T12:00:00Z"),
+      createdAt: new Date("2023-01-03T12:00:00Z"),
+      updatedAt: new Date("2023-01-03T12:00:00Z"),
+      resolvedAt: new Date("2023-01-03T12:00:00Z"),
+    },
+  },
+];
 
 const successVsFailureData = [
   { name: "Success", value: 85, color: "#10B981" },
@@ -68,7 +142,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const CustomLegend = ({ payload }: any) => {
   return (
-    <div className="flex items-center justify-center space-x-4">
+    <div className="flex items-center justify-start md:justify-center space-x-4 overflow-x-auto">
       {payload.map((entry: any, index: number) => (
         <div key={index} className="flex items-center space-x-2">
           <div
@@ -198,32 +272,13 @@ export const AnalyticsSection = forwardRef<HTMLElement, AnalyticsSectionProps>(
                 whileHover={{ y: -5 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">
-                    Failure Reason Breakdown
-                  </h3>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={failureReasonsData} barSize={40}>
-                      <XAxis
-                        dataKey="reason"
-                        axisLine={false}
-                        tickLine={false}
-                        dy={10}
-                      />
-                      <YAxis axisLine={false} tickLine={false} dx={-10} />
-                      <Tooltip
-                        content={<CustomTooltip />}
-                        cursor={{ fill: "transparent" }}
-                      />
-                      <Bar
-                        dataKey="count"
-                        fill="#EF4444"
-                        radius={[4, 4, 0, 0]}
-                        opacity={0.9}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </Card>
+                <WebhookErrorsCard
+                  className="!h-full !max-h-[394px]"
+                  errors={mockWebhookErrors}
+                  loading={false}
+                  onErrorClick={() => {}}
+                  onResolve={() => {}}
+                />
               </motion.div>
             </FadeIn>
 

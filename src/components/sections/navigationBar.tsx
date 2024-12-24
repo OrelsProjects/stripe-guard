@@ -17,32 +17,33 @@ export default function NavigationBar() {
       <div className="container flex items-center h-14 justify-between">
         <Logo />
         <nav className="flex items-center gap-10 flex-1 justify-end text-base">
-          {["Features", "How it Works", "Analytics"].map((item, i) => (
-            <motion.div
-              key={item}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: i * 0.1,
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-              }}
-              className={cn({
-                "hidden sm:block":
-                  item.toLowerCase() === "how it works" ||
-                  item.toLowerCase() === "analytics" ||
-                  item.toLowerCase() === "features",
-              })}
-            >
-              <Link
-                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
-                className="text-sm font-medium transition-colors hover:text-primary"
+          {["Features", "How it Works", "Pricing", "Read more"].map(
+            (item, i) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: i * 0.1,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                }}
+                className="hidden sm:block"
               >
-                {item}
-              </Link>
-            </motion.div>
-          ))}
+                <Link
+                  href={
+                    item === "Read more"
+                      ? "/blog"
+                      : `#${item.toLowerCase().replace(/\s+/g, "-")}`
+                  }
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  {item}
+                </Link>
+              </motion.div>
+            ),
+          )}
           <Button className="md:px-16 md:py-5" asChild>
             <Link href="/login">Sign up</Link>
           </Button>

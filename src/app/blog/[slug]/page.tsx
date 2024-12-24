@@ -30,7 +30,6 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       langPrefix: "language-",
       highlight(code, lang, info) {
         const language = hljs.getLanguage(lang) ? lang : "plaintext";
-        console.log("highlighting", lang, language);
         return hljs.highlight(code, { language, ignoreIllegals: true }).value;
       },
     }),
