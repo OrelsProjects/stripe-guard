@@ -13,7 +13,9 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       attribute="class"
       defaultTheme="light"
       forcedTheme={
-        pathname === "/" || pathname === "/login" ? "light" : undefined
+        pathname === "/" || pathname === "/login" || pathname.includes("/blog")
+          ? "light"
+          : undefined
       }
       {...props}
     >

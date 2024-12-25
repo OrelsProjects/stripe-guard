@@ -15,16 +15,15 @@ export default function AuthenticatedLayout({ children }: RootLayoutProps) {
   return (
     <main>
       <Navbar />
-      <div className="space-y-8 mt-16">
-        <AuthProvider>
-          <PromotionProvider />
-          <NewTokensProvider />
-          <InitiatePlanFromLandingProvider />
-          <AnimationProvider className="w-full h-full">
+      <AuthProvider>
+        <PromotionProvider />
+        <NewTokensProvider />
+        <AnimationProvider>
+          <InitiatePlanFromLandingProvider>
             {children}
-          </AnimationProvider>
-        </AuthProvider>
-      </div>
+          </InitiatePlanFromLandingProvider>
+        </AnimationProvider>
+      </AuthProvider>
     </main>
   );
 }

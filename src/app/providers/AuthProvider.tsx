@@ -109,7 +109,7 @@ export default function AuthProvider({
     loadingUser
   ) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center overflow-hidden absolute top-[50%] left-[50%]">
         <Loading className="w-20 h-20" />
       </div>
     );

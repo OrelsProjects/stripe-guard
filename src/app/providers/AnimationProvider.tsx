@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface ProviderProps {
   children?: React.ReactNode;
@@ -39,7 +40,7 @@ const AnimationProvider: React.FC<ProviderProps> = ({
           opacity: 0,
         },
       }}
-      className={className}
+      className={cn("w-full h-full", className)}
     >
       {children}
     </motion.div>
