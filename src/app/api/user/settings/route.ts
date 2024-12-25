@@ -1,12 +1,10 @@
 import prisma from "@/app/api/_db/db";
-import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { authOptions } from "@/auth/authOptions";
 import { encrypt } from "@/lib/utils/encryption";
 import loggerServer from "@/loggerServer";
 import { BillingHistory, UserSettings } from "@/models/user";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);

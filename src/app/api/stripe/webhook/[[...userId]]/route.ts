@@ -1,7 +1,10 @@
 import prisma from "@/app/api/_db/db";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
-import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
+import {
+  generatePaymentProcessingIssueEmail,
+  generateWebhookFailureEmail,
+} from "@/app/api/_utils/mail/templates";
 import {
   REGISTERED_CONNECTED_HOOKS,
   INITIAL_RETRY_DELAY,
@@ -245,14 +248,14 @@ async function handleWebhookFailure(
   );
 
   // Possible feature. Send email to customer if webhook failed.
-  // if (customerEmail) {
-  //   sendMail(
-  //     customerEmail,
-  //     process.env.NEXT_PUBLIC_APP_NAME as string,
-  //     "Problem processing your payment",
-  //     generatePaymentProcessingIssueEmail(),
-  //   );
-  // }
+  if (customerEmail) {
+    sendMail(
+      customerEmail,
+      process.env.NEXT_PUBLIC_APP_NAME as string,
+      "Problem processing your payment",
+      generatePaymentProcessingIssueEmail(),
+    );
+  }
 }
 
 async function processStripeEvent(
@@ -304,7 +307,7 @@ export async function POST(
       );
     }
 
-    processStripeEvent(userStripeCredentials, event);
+    await processStripeEvent(userStripeCredentials, event);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {

@@ -53,5 +53,9 @@ export async function DELETE(req: NextRequest) {
       session?.user?.userId || "Unknown user",
       error,
     );
+    return NextResponse.json(
+      { error: "Error disconnecting Stripe" },
+      { status: 500 },
+    );
   }
 }

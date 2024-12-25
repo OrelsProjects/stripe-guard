@@ -1,5 +1,7 @@
 import { Event } from "@/models/payment";
 
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
+
 export function generatePaymentProcessingIssueEmail() {
   const content = `
     <h2>Important Notice: Payment Processing Issue</h2>
@@ -116,7 +118,7 @@ export function generateWebhookFailureEmail(
             </a>
           </div>
           <div class="footer">
-            <p>This is an automated notification from your Stripe webhook handler.</p>
+            <p>This is an automated notification from ${APP_NAME}.</p>
           </div>
         </div>
       </body>
