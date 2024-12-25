@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
+const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION as string;
 
 const Footer = () => {
   return (
@@ -24,9 +25,7 @@ const Footer = () => {
               <Image src="/logo.png" alt={APP_NAME} width={32} height={32} />
               <h3 className="text-xl font-bold">{APP_NAME}</h3>
             </div>
-            <p className="mt-4 text-muted-foreground">
-              Get notified when your Stripe webhooks fail in real time.
-            </p>
+            <p className="mt-4 text-muted-foreground">{APP_DESCRIPTION}</p>
           </div>
 
           {/* Quick Links */}
