@@ -1,7 +1,7 @@
 import React from "react";
 
-const COMPANY_NAME = "buildquick.app";
-const WEBSITE_URL = "https://buildquick.app";
+const COMPANY_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
+const WEBSITE_URL = process.env.NEXT_PUBLIC_APP_URL as string;
 const POLICY_EFFECTIVE_DATE = "07 Nov 2024";
 
 const PrivacyPolicy: React.FC = () => {

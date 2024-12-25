@@ -37,7 +37,7 @@ const eventNameVariants = {
 };
 
 export const WebhookAnimation = () => {
-  const [stripeGuardServerStage, setStripeProtectServerStage] = useState<
+  const [StripeProtectServerStage, setStripeProtectServerStage] = useState<
     "initial" | "processing" | "success" | "failure" | "loading" | "triggered"
   >("initial");
   const [userServerStage, setUserServerStage] = useState<
@@ -304,7 +304,7 @@ export const WebhookAnimation = () => {
           <AnimatePresence>
             {webhookVisible && (
               <motion.div
-                key="stripe-guard-server-webhook"
+                key="stripe-protect-server-webhook"
                 initial={{ x: -400, y: 0, opacity: 1 }}
                 animate={{ x: -30, y: 90, opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -348,10 +348,10 @@ export const WebhookAnimation = () => {
             animate={{ x: -66, y: 0, opacity: 1 }}
             transition={{ delay: 1.7 }}
             viewport={{ once: true }}
-            id="stripe-guard-server"
+            id="stripe-protect-server"
             className="absolute left-[66%] top-[65%] -translate-x-1/2 flex flex-col"
           >
-            <ServerIcon stage={stripeGuardServerStage} />
+            <ServerIcon stage={StripeProtectServerStage} />
             <Logo className="w-16 h-16" />
           </motion.div>
           <motion.div
