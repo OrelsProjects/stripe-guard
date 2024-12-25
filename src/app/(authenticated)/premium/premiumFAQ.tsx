@@ -14,7 +14,7 @@ const faqData = [
     id: "question-1",
     question: "How does it work?",
     answer:
-      "StripeGuard is a Stripe webhook monitoring tool. It listens to the most important events and notifies you when one of the webhooks failed. For instance, if a user has resubscribed, but the webhook failed, the user will not get access to the product. You will be notified about this failure.",
+      "StripeProtect is a Stripe webhook monitoring tool. It listens to the most important events and notifies you when one of the webhooks failed. For instance, if a user has resubscribed, but the webhook failed, the user will not get access to the product. You will be notified about this failure.",
   },
   {
     id: "question-2",
@@ -26,7 +26,7 @@ const faqData = [
     id: "question-3",
     question: "Do I need coding skills?",
     answer:
-      "Nope. StripeGuard is a no-code tool. You set up shop with a few clicks.",
+      "Nope. StripeProtect is a no-code tool. You set up shop with a few clicks.",
   },
   {
     id: "question-4",

@@ -37,7 +37,7 @@ const eventNameVariants = {
 };
 
 export const WebhookAnimation = () => {
-  const [stripeGuardServerStage, setStripeGuardServerStage] = useState<
+  const [stripeGuardServerStage, setStripeProtectServerStage] = useState<
     "initial" | "processing" | "success" | "failure" | "loading" | "triggered"
   >("initial");
   const [userServerStage, setUserServerStage] = useState<
@@ -62,7 +62,7 @@ export const WebhookAnimation = () => {
 
   const runAnimation = async (event?: string) => {
     setStage("initial");
-    setStripeGuardServerStage("initial");
+    setStripeProtectServerStage("initial");
     setUserServerStage("initial");
     setAnimationOngoing(true);
     setShowNotifications(false);
@@ -75,7 +75,7 @@ export const WebhookAnimation = () => {
     setWebhookVisible(false);
     setStage("processing"); // Start with user server processing
     setUserServerStage("processing");
-    setStripeGuardServerStage("processing");
+    setStripeProtectServerStage("processing");
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -84,7 +84,7 @@ export const WebhookAnimation = () => {
       setStage("success");
       setUserServerStage("success");
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setStripeGuardServerStage("success");
+      setStripeProtectServerStage("success");
       setAnimationOngoing(false);
       setSelectedEvent(null);
       setAnimatingEvent(null);
@@ -93,7 +93,7 @@ export const WebhookAnimation = () => {
       setStage("failure");
       setUserServerStage("failure");
       await new Promise(resolve => setTimeout(resolve, 1200));
-      setStripeGuardServerStage("triggered");
+      setStripeProtectServerStage("triggered");
       await new Promise(resolve => setTimeout(resolve, 1000));
       setShowNotifications(true);
     }

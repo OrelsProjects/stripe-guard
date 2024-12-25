@@ -1,6 +1,6 @@
 import React from "react";
 
-const COMPANY_NAME = "StripeGuard";
+const COMPANY_NAME = "StripeProtect";
 const WEBSITE_URL = "https://stripe-guard.vercel.app";
 const POLICY_EFFECTIVE_DATE = "07 Nov 2024";
 

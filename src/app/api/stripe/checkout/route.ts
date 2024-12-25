@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: "payment",
-      success_url: `${nextUrl.origin}/api/stripe/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${nextUrl.origin}/api/stripe/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${nextUrl.origin}/cancel`,
       client_reference_id: session.user.userId,
       customer_email: session.user.email || "",

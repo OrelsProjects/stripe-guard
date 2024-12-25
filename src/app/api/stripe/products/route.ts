@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       });
       stripePrices
         .filter(stripePrice => stripePrice.active && stripePrice.unit_amount)
-        // only those that have StripeGuard
+        // only those that have StripeProtect
         .map(stripePrice => {
           const product: Product = {
             id: stripeProduct.id,

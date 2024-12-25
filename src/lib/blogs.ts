@@ -222,7 +222,7 @@ export const blogs = {
     slug: "webhook-failure-rate",
     title: "Why Every Webhook Failure Matters (And How You Can Prevent It)",
     excerpt:
-      "Discover how even a 0.5% webhook failure rate can impact your business and how tools like StripeGuard can help you protect your revenue and reputation.",
+      "Discover how even a 0.5% webhook failure rate can impact your business and how tools like StripeProtect can help you protect your revenue and reputation.",
     content: `
    # Why Every Webhook Failure Matters (And How You Can Prevent It)
  
@@ -254,20 +254,20 @@ export const blogs = {
    4. **Implement Alerts**: Use tools that notify you immediately when a webhook fails, so you can take action before customers are affected.
    5. **Test and Validate**: Regularly test your webhooks for payload parsing errors, authentication issues, and endpoint reachability.
  
-   ## How StripeGuard Protects Your Webhooks (And Your Business)
+   ## How StripeProtect Protects Your Webhooks (And Your Business)
  
-   StripeGuard takes webhook reliability to the next level. Here’s how:
+   StripeProtect takes webhook reliability to the next level. Here’s how:
  
-   1. **Real-Time Monitoring**: StripeGuard listens to your Stripe webhooks and alerts you the moment something might go wrong. No more waiting to hear about issues from your customers.
+   1. **Real-Time Monitoring**: StripeProtect listens to your Stripe webhooks and alerts you the moment something might go wrong. No more waiting to hear about issues from your customers.
    2. **Customizable Alerts**: Receive friendly, actionable notifications for failed webhooks, reducing the risk of churn.
-   3. **Automated Follow-Ups**: StripeGuard can automatically send follow-up emails for critical events like subscription renewals or failed payments, ensuring no customer is left behind.
-   4. **Ease of Use**: Set up StripeGuard in minutes, and let it handle the hard work of protecting your webhooks.
+   3. **Automated Follow-Ups**: StripeProtect can automatically send follow-up emails for critical events like subscription renewals or failed payments, ensuring no customer is left behind.
+   4. **Ease of Use**: Set up StripeProtect in minutes, and let it handle the hard work of protecting your webhooks.
  
-   With StripeGuard, the cost to protect 200 webhooks is **just $0.44**. For that tiny investment, you’re safeguarding a **$50 customer** (or more) and ensuring your business’s reputation remains intact.
+   With StripeProtect, the cost to protect 200 webhooks is **just $0.44**. For that tiny investment, you’re safeguarding a **$50 customer** (or more) and ensuring your business’s reputation remains intact.
  
    ## Ready to Safeguard Your Webhooks?
  
-   Every failed webhook is a missed opportunity. Don’t let small issues cost you big. Protect your webhooks, your revenue, and your reputation with StripeGuard.
+   Every failed webhook is a missed opportunity. Don’t let small issues cost you big. Protect your webhooks, your revenue, and your reputation with StripeProtect.
  
    [**Start Protecting Your Webhooks Now**](${APP_URL})
  
@@ -275,9 +275,9 @@ export const blogs = {
  
    ## Conclusion
  
-   Webhook reliability isn’t just a technical detail—it’s a critical part of your customer experience and bottom line. Even at an industry-standard failure rate of 0.5%, the financial and reputational risks are too significant to ignore. StripeGuard makes it easy and affordable to ensure every webhook counts.
+   Webhook reliability isn’t just a technical detail—it’s a critical part of your customer experience and bottom line. Even at an industry-standard failure rate of 0.5%, the financial and reputational risks are too significant to ignore. StripeProtect makes it easy and affordable to ensure every webhook counts.
  
-   [**Try StripeGuard Today**](${APP_URL}) and experience peace of mind with every webhook.
+   [**Try StripeProtect Today**](${APP_URL}) and experience peace of mind with every webhook.
    `,
     publishedAt: "2024-12-24T12:00:00Z",
     readingTime: "7 min read",

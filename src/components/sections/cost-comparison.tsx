@@ -22,8 +22,8 @@ const appName = process.env.NEXT_PUBLIC_APP_NAME;
 const comparisonData = [
   {
     task: "Creating complex webhook flows and dashboards",
-    withoutStripeGuard: 1500,
-    withStripeGuard: 0,
+    withoutStripeProtect: 1500,
+    withStripeProtect: 0,
     timeIndication: "3 days",
     icon: (
       <Tool className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
@@ -31,8 +31,8 @@ const comparisonData = [
   },
   {
     task: "Developing new features (per feature)",
-    withoutStripeGuard: 500,
-    withStripeGuard: 0,
+    withoutStripeProtect: 500,
+    withStripeProtect: 0,
     timeIndication: "1 day",
     icon: (
       <Zap className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
@@ -40,8 +40,8 @@ const comparisonData = [
   },
   {
     task: "Pinpointing failed webhooks",
-    withoutStripeGuard: 125,
-    withStripeGuard: 0,
+    withoutStripeProtect: 125,
+    withStripeProtect: 0,
     timeIndication: "2 hours",
     icon: (
       <Clock className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
@@ -49,24 +49,24 @@ const comparisonData = [
   },
   {
     task: "Bug fixing and maintenance",
-    withoutStripeGuard: "more than you think",
-    withStripeGuard: 0,
+    withoutStripeProtect: "more than you think",
+    withStripeProtect: 0,
     icon: (
       <Tool className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
     ),
   },
   {
     task: "Frustrated customers",
-    withoutStripeGuard: "a lot",
-    withStripeGuard: "a little",
+    withoutStripeProtect: "a lot",
+    withStripeProtect: "a little",
     icon: (
       <X className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
     ),
   },
   {
     task: "Retraining new developers",
-    withoutStripeGuard: "expensive and slow",
-    withStripeGuard: "tokens are forever",
+    withoutStripeProtect: "expensive and slow",
+    withStripeProtect: "tokens are forever",
     timeIndication: "Weeks",
     icon: (
       <Repeat className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
@@ -74,16 +74,16 @@ const comparisonData = [
   },
   {
     task: "Handling webhook issues stress-free",
-    withoutStripeGuard: "High stress and manual fixes",
-    withStripeGuard: "Automated alerts and customer assurance",
+    withoutStripeProtect: "High stress and manual fixes",
+    withStripeProtect: "Automated alerts and customer assurance",
     icon: (
       <HeartPulseIcon className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
     ),
   },
   {
     task: "Buying tokens to protect webhooks",
-    withoutStripeGuard: 0,
-    withStripeGuard: "a few bucks",
+    withoutStripeProtect: 0,
+    withStripeProtect: "a few bucks",
     icon: (
       <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
     ),
@@ -170,18 +170,18 @@ export default function ComparisonSection() {
                     {item.task}
                   </td>
                   <td className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 font-semibold text-foreground text-center text-xs sm:text-sm md:text-base lg:text-lg">
-                    {typeof item.withoutStripeGuard === "number"
-                      ? `$${item.withoutStripeGuard}`
-                      : item.withoutStripeGuard}
+                    {typeof item.withoutStripeProtect === "number"
+                      ? `$${item.withoutStripeProtect}`
+                      : item.withoutStripeProtect}
                     {item.timeIndication && <span className="text-xs text-muted-foreground">
                       {" "}
                       ({item.timeIndication})
                     </span>}
                   </td>
                   <td className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 font-semibold text-foreground text-center text-xs sm:text-sm md:text-base lg:text-lg">
-                    {typeof item.withStripeGuard === "number"
-                      ? `$${item.withStripeGuard}`
-                      : item.withStripeGuard}
+                    {typeof item.withStripeProtect === "number"
+                      ? `$${item.withStripeProtect}`
+                      : item.withStripeProtect}
                   </td>
                 </motion.tr>
               ))}
