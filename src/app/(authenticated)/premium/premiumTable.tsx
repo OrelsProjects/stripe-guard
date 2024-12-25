@@ -39,7 +39,7 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
     };
 
     fetchProducts();
-  }, [getProducts, products.length]);
+  }, []);
 
   const handleCheckout = async (priceId: string, productId: string) => {
     if (onCheckout) {
@@ -63,7 +63,9 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
 
   return (
     <div className="overflow-hidden border border-muted rounded-lg">
-      <div className="hidden md:block"> {/* Desktop view */}
+      <div className="hidden md:block">
+        {" "}
+        {/* Desktop view */}
         <table className="w-full table-auto text-center">
           <thead className="bg-muted text-muted-foreground">
             <tr>
@@ -130,7 +132,9 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
         </table>
       </div>
 
-      <div className="md:hidden"> {/* Mobile view */}
+      <div className="md:hidden">
+        {" "}
+        {/* Mobile view */}
         {loading ? (
           <div className="p-4">
             <Skeleton className="h-48 w-full" />
@@ -149,7 +153,9 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
                 className="p-4 border-b border-muted/80 last:border-b-0"
               >
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">PROTECTED WEBHOOK</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    PROTECTED WEBHOOK
+                  </span>
                   <span className="text-lg font-bold text-foreground">
                     {new Intl.NumberFormat("en-US").format(
                       product.priceStructure.tokens,
@@ -157,13 +163,17 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">PRICE</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    PRICE
+                  </span>
                   <span className="text-lg font-bold text-primary">
                     ${product.priceStructure.price}
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm font-medium text-muted-foreground">PER WEBHOOK</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    PER WEBHOOK
+                  </span>
                   <span className="text-sm text-muted-foreground">
                     $
                     {(
@@ -192,4 +202,3 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
     </div>
   );
 }
-
