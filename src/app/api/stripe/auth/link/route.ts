@@ -1,4 +1,5 @@
 import { authOptions } from "@/auth/authOptions";
+import loggerServer from "@/loggerServer";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
 
     return response;
   } catch (err: any) {
-    console.error(err);
+    loggerServer.error(err);
     return NextResponse.json(
       { error: "An unknown error occurred." },
       { status: 500 },

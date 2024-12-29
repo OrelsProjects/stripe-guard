@@ -8,6 +8,7 @@ import { useAppSelector } from "@/lib/hooks/redux";
 import usePayments from "@/lib/hooks/usePayments";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
+import { Logger } from "@/logger";
 
 export interface PremiumTableProps {
   buyText?: string;
@@ -30,8 +31,8 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
       setLoading(true);
       try {
         if (products.length === 0) await getProducts();
-      } catch (error) {
-        console.error("Error fetching products:", error);
+      } catch (error: any) {
+        Logger.error("Error fetching products:", error);
       } finally {
         setLoading(false);
         loadingRef.current = false;
@@ -53,9 +54,9 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
     setLoadingCheckout(true);
     try {
       await goToCheckout(priceId, productId);
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Something went wrong. Try again :)");
-      console.log("Error starting checkout:", error);
+      Logger.error("Error starting checkout:", error);
     } finally {
       setLoadingCheckout(false);
     }

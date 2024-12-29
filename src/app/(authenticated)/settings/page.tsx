@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from 'lucide-react';
 import { selectAuth } from "@/lib/features/auth/authSlice";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Logger } from "@/logger";
 
 export default function SettingsPage() {
   const { user, loading } = useAppSelector(selectAuth);
@@ -49,7 +50,7 @@ export default function SettingsPage() {
     try {
       await updateUserSettings(userSettings);
     } catch (error: any) {
-      console.error(error);
+      Logger.error(error);
     } finally {
       setLoadingSettings(false);
     }

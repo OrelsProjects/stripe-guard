@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/api/_db/db";
 import { sendMail } from "@/app/api/_utils/mail/mail";
+import loggerServer from "@/loggerServer";
 
 type Body = {
   interestedUser: string;
@@ -34,8 +35,8 @@ export async function POST(req: NextRequest) {
         "NEW USER HAS REGISTERED",
         `User ${interestedUser} has registered to the platform`,
       );
-    } catch (error) {
-      console.error("Error sending mail", { error });
+    } catch (error: any) {
+      loggerServer.error("Error sending mail", error);
     }
 
     return NextResponse.json(
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
       { status: 201 },
     );
   } catch (error: any) {
-    console.error("Error registering user", { error });
+    loggerServer.error("Error registering user", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -217,7 +217,7 @@ async function handleWebhookResolution(
         },
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     loggerServer.error("Error decrementing tokens", userId, error);
   }
 

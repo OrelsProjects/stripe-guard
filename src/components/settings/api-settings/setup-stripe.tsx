@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ExternalLink, KeyRound, Webhook } from "lucide-react";
 import { DisconnectDialog } from "./disconnect-dialog";
 import Link from "next/link";
+import { Logger } from "@/logger";
 
 export function SetupStripe() {
   const [apiKey, setApiKey] = useState("");
@@ -15,13 +16,6 @@ export function SetupStripe() {
   const [isConnected, setIsConnected] = useState(false);
 
   const handleConnect = () => {
-    // Here you would typically make an API call to your backend to store the Stripe credentials
-    console.log(
-      "Connecting with API Key:",
-      apiKey,
-      "and Webhook URL:",
-      webhookUrl,
-    );
     setIsConnected(true);
   };
 
@@ -31,7 +25,7 @@ export function SetupStripe() {
 
   const confirmDisconnect = () => {
     // Here you would typically make an API call to your backend to remove the Stripe credentials
-    console.log("Disconnecting Stripe");
+    Logger.warn("Disconnecting Stripe");
     setIsConnected(false);
     setApiKey("");
     setWebhookUrl("");
@@ -57,7 +51,7 @@ export function SetupStripe() {
           disabled={!apiKey || !webhookUrl}
           asChild
         >
-        <Link href="/stripe-setup/api-key">Setup Stripe</Link>
+          <Link href="/stripe-setup/api-key">Setup Stripe</Link>
         </Button>
       </div>
     </div>

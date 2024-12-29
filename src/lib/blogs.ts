@@ -47,7 +47,7 @@ export const blogs = {
        let event;
        try {
          event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-       } catch (err) {
+       } catch (err: any) {
          console.error('Webhook signature verification failed:', err.message);
          return res.sendStatus(400);
        }

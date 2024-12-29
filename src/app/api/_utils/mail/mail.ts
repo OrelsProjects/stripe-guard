@@ -1,3 +1,4 @@
+import loggerServer from "@/loggerServer";
 import axios from "axios";
 
 export const sendMail = async (
@@ -31,7 +32,7 @@ export const sendMail = async (
       },
     );
 
-    console.log("Mail sent successfully:", response.data);
+    loggerServer.info("Mail sent successfully:", response.data);
   } catch (error: any) {
     throw new Error(`Error sending mail: ${error.message}`);
   }

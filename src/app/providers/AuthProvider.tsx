@@ -10,7 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import Loading from "@/components/ui/loading";
 import { setUserEventTracker } from "@/eventTracker";
-import { setUserLogger } from "@/logger";
+import { Logger, setUserLogger } from "@/logger";
 import { useSession } from "next-auth/react";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
@@ -52,7 +52,7 @@ export default function AuthProvider({
       };
       dispatch(setUserAction(appUser));
     } catch (error: any) {
-      console.error(error);
+      Logger.error(error);
       dispatch(setUserAction(null));
       dispatch(setLoadingUserDetails(false));
     }
@@ -75,7 +75,7 @@ export default function AuthProvider({
           router.push("/dashboard");
         }
       } catch (error: any) {
-        console.error(error);
+        Logger.error(error);
         router.push("/stripe-setup/api-key");
       } finally {
         loading.current = false;

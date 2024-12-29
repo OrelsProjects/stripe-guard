@@ -5,13 +5,13 @@ interface Dict {
   [key: string]: any;
 }
 
-export type LogItem = Dict & {
-  error?: Error;
-};
+export type LogItem = Dict;
 
 export const setUserLogger = (user?: AppUser | null) => {
   datadogLogs.setUser({
     ...user,
+    email: user?.email || "",
+    name: user?.name || undefined,
   });
 };
 

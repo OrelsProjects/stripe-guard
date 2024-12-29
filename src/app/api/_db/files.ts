@@ -53,7 +53,7 @@ export const uploadFile = async (
         expires: "03-09-2491", // Use an appropriate expiry date
       });
       resolve(signedUrls[0]); // Resolve with the URL
-    } catch (err) {
+    } catch (err: any) {
       reject(err);
     }
   });
@@ -78,7 +78,7 @@ export const downloadFile = async (
     try {
       const [file] = await fileRef.download();
       resolve(file);
-    } catch (err) {
+    } catch (err: any) {
       reject(err);
     }
   });
@@ -114,7 +114,7 @@ export const updateFile = async (
         expires: "03-09-2491", // Use an appropriate expiry date
       });
       resolve(signedUrls[0]);
-    } catch (err) {
+    } catch (err: any) {
       reject(err);
     }
   });

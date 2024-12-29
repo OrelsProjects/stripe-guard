@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { encrypt } from "@/lib/utils/encryption";
 import { StripePermissionErrorName } from "@/models/errors/StripePermissionError";
+import { Logger } from "@/logger";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME;
 const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -193,7 +194,7 @@ export default function ApiKeyGuide() {
       toast.success("API key saved securely! 🚀");
       router.push("/dashboard");
     } catch (error: any) {
-      console.error(error);
+      Logger.error(error);
       if (error instanceof AxiosError) {
         if (error.response?.data.error.name === StripePermissionErrorName) {
           showNoPermissionsError();

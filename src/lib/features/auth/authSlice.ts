@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/lib/store";
 import _ from "lodash";
 import { AppUser, UserSettings } from "@/models/user";
+import { Logger } from "@/logger";
 
 export type AuthStateType =
   | "anonymous"
@@ -78,7 +79,7 @@ const authSlice = createSlice({
       state.loading = action.payload;
     },
     setError: (state, action: PayloadAction<string | null>) => {
-      console.error(action.payload);
+      Logger.error("Error received in authSlice", { error: action.payload });
       state.error = action.payload;
       state.loading = false;
     },
@@ -90,8 +91,14 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, updateUserSettings, setLoadingUserDetails, setError, clearUser , disconnectStripe} =
-  authSlice.actions;
+export const {
+  setUser,
+  updateUserSettings,
+  setLoadingUserDetails,
+  setError,
+  clearUser,
+  disconnectStripe,
+} = authSlice.actions;
 
 export const selectAuth = (state: RootState): AuthState => state.auth;
 

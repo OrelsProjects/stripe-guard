@@ -49,7 +49,6 @@ export const NotificationEmail = ({
       );
     }
     const content = generateUserAlertEmail(event as EnabledEvent);
-    console.log("content", content);
     return content;
   }, []);
 

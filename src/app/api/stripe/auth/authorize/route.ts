@@ -4,6 +4,7 @@ import { authOptions } from "@/auth/authOptions";
 import { getServerSession } from "next-auth";
 import prisma from "@/app/api/_db/db";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
+import loggerServer from "@/loggerServer";
 
 async function saveAccountId(data: Stripe.OAuthToken, userId: string) {
   await prisma.userStripeCredentials.upsert({
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       );
     }
-    console.error(err);
+    loggerServer.error(err);
     return NextResponse.json(
       { error: "An unknown error occurred." },
       { status: 500 },
