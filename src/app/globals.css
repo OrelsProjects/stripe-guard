@@ -244,3 +244,15 @@
 .prose {
   --primary: #1e90ff; /* Replace with your primary color */
 }
+
+.notification-email {
+
+}
+
+.notification-email ul {
+  list-style-type: disc; /* Adds bullet points */
+  margin-left: 1.5rem; /* Indents the list */
+}
+.notification-email li {
+  margin-bottom: 0.5rem; /* Optional spacing between list items */
+}

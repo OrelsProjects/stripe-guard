@@ -13,10 +13,10 @@ import {
 
 export function RetrySettings() {
   return (
-    <Card className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Retry Configuration</h2>
+    <Card className="p-4 md:p-6">
+      <h2 className="text-lg md:text-xl font-semibold mb-4">Retry Configuration</h2>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
           <div className="space-y-0.5">
             <Label>Automatic Retries</Label>
             <p className="text-sm text-muted-foreground">
@@ -29,7 +29,7 @@ export function RetrySettings() {
         <div className="space-y-2">
           <Label htmlFor="max-retries">Maximum Retry Attempts</Label>
           <Select>
-            <SelectTrigger id="max-retries">
+            <SelectTrigger id="max-retries" className="w-full md:w-auto">
               <SelectValue placeholder="Select max retries" />
             </SelectTrigger>
             <SelectContent>

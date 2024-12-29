@@ -27,7 +27,7 @@ export const invoiceEvents: EnabledEvent[] = [
 
 export const sendAlertToUserEvents: EnabledEvent[] = [
   "charge.succeeded",
-  "invoice.payment_succeeded",
+  "charge.failed",
   "customer.subscription.created",
   "customer.subscription.updated",
 ];

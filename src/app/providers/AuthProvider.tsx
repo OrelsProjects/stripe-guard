@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   selectAuth,
+  setLoadingUserDetails,
   setUser as setUserAction,
 } from "@/lib/features/auth/authSlice";
 import { usePathname } from "next/navigation";
@@ -37,7 +38,7 @@ export default function AuthProvider({
         dispatch(setUserAction(null));
         return;
       }
-
+      dispatch(setLoadingUserDetails(true));
       const settings = await axios.get<UserSettings>("/api/user/settings");
 
       const { user } = data;
@@ -52,6 +53,7 @@ export default function AuthProvider({
     } catch (error: any) {
       console.error(error);
       dispatch(setUserAction(null));
+      dispatch(setLoadingUserDetails(false));
     }
   };
 
@@ -73,7 +75,7 @@ export default function AuthProvider({
         }
       } catch (error: any) {
         console.error(error);
-        router.push("/stripe-setup");
+        router.push("/stripe-setup/api-key");
       } finally {
         loading.current = false;
         setLoadingUser(false);

@@ -35,7 +35,7 @@ export default function NewTokensProvider() {
   const handleOpenCheckout = (open: boolean, checkSetup: boolean = true) => {
     if (!open) {
       if (checkSetup && shouldOnboard) {
-        router.push("/stripe-setup");
+        router.push("/stripe-setup/api-key");
       } else {
         router.push(pathname);
       }

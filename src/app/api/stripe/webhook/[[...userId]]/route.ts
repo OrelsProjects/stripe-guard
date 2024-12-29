@@ -2,7 +2,7 @@ import prisma from "@/app/api/_db/db";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
 import {
-  generatePaymentProcessingIssueEmail,
+  generateUserAlertEmail,
   generateWebhookFailureEmail,
 } from "@/app/api/_utils/mail/templates";
 import {
@@ -13,8 +13,8 @@ import {
 } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
 import loggerServer from "@/loggerServer";
-import { EnabledEvent, Event, sendAlertToUserEvents } from "@/models/payment";
-import { User, UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
+import { Event, sendAlertToUserEvents } from "@/models/payment";
+import { UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -240,6 +240,8 @@ async function handleWebhookFailure(
   customerEmail?: string,
 ) {
   const failedWebhooks = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
+  const eventType = event.type;
+
   await sendMail(
     userEmail,
     process.env.NEXT_PUBLIC_APP_NAME as string,
@@ -247,13 +249,21 @@ async function handleWebhookFailure(
     generateWebhookFailureEmail(event, new Date(), failedWebhooks),
   );
 
+  if (!sendAlertToUserEvents.includes(eventType)) {
+    return;
+  }
+
   // Possible feature. Send email to customer if webhook failed.
   if (customerEmail) {
+    const emailContent = generateUserAlertEmail(eventType);
+    if (!emailContent) {
+      return;
+    }
     sendMail(
       customerEmail,
       process.env.NEXT_PUBLIC_APP_NAME as string,
       "Problem processing your payment",
-      generatePaymentProcessingIssueEmail(),
+      customerEmail,
     );
   }
 }

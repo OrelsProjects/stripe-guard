@@ -1,8 +1,93 @@
-import { Event } from "@/models/payment";
+import { Event, sendAlertToUserEvents } from "@/models/payment";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
-export function generatePaymentProcessingIssueEmail() {
+export type SendAlertsToUserEvents = (typeof sendAlertToUserEvents)[number];
+
+export function generateUserAlertEmail(type: SendAlertsToUserEvents): string {
+  switch (type) {
+    case "charge.succeeded":
+      return generateChargeSucceededWebhookIssueEmail();
+    case "charge.failed":
+      return generateChargeFailedWebhookIssueEmail();
+    case "customer.subscription.created":
+      return generateSubscriptionCreatedWebhookIssueEmail();
+    case "customer.subscription.updated":
+      return generateSubscriptionUpdatedWebhookIssueEmail();
+    default:
+      return "";
+  }
+}
+
+function generateChargeFailedWebhookIssueEmail() {
+  const content = `
+    <h2>Important Notice: Payment Processing Issue</h2>
+    <p>Hi there,</p>
+    <p>We encountered an issue while processing your recent payment for [Product/Service Name].<br/> Additionally, we faced a temporary issue with our systems while attempting to notify you about this payment status.</p>
+    <p>Please note:</p>
+    <ul>
+      <li>If you haven't noticed any issues with our services, you can safely disregard this email.</li>
+      <li>No additional action is required from you at this time.</li>
+      <li>We will notify you once the issue has been resolved.</li>
+    </ul>
+    <p>If you have any questions or concerns, feel free to reach out to our support team for assistance.</p>
+    <p>Thank you for your understanding and patience.</p>
+  `;
+  return baseEmailTemplate(content);
+}
+
+function generateChargeSucceededWebhookIssueEmail() {
+  const content = `
+    <h2>Payment Successful - Notification Delay</h2>
+    <p>Hi there,</p>
+    <p>Good news! Your payment for [Product/Service Name] has been successfully processed. However, we encountered a temporary issue with our systems while notifying you of this status.</p>
+    <p>Please note:</p>
+    <ul>
+      <li>If you haven't noticed any issues with our services, you can safely disregard this email.</li>
+      <li>No additional action is required from you at this time.</li>
+      <li>We will notify you once the issue has been resolved.</li>
+    </ul>
+    <p>If you have any questions or need further assistance, feel free to contact our support team.</p>
+    <p>Thank you for your understanding and trust in our services.</p>
+  `;
+  return baseEmailTemplate(content);
+}
+
+function generateSubscriptionCreatedWebhookIssueEmail() {
+  const content = `
+    <h2>Welcome to [Subscription Name] - Notification Delay</h2>
+    <p>Hi there,</p>
+    <p>Welcome aboard! Your subscription for [Subscription Name] has been successfully created. However, we encountered a temporary issue with our systems while notifying you about this event.</p>
+    <p>Please note:</p>
+    <ul>
+      <li>If you haven't noticed any issues with our services, you can safely disregard this email.</li>
+      <li>No additional action is required from you at this time.</li>
+      <li>We will notify you once the issue has been resolved.</li>
+    </ul>
+    <p>If you have any questions or concerns, please don’t hesitate to reach out to our support team for assistance.</p>
+    <p>Thank you for your understanding and welcome to [Subscription Name]!</p>
+  `;
+  return baseEmailTemplate(content);
+}
+
+function generateSubscriptionUpdatedWebhookIssueEmail() {
+  const content = `
+    <h2>Subscription Update - Notification Issue</h2>
+    <p>Hi there,</p>
+    <p>We’ve successfully updated your subscription for [Subscription Name]. However, we encountered a temporary issue with our systems while notifying you of this change.</p>
+    <p>Please note:</p>
+    <ul>
+      <li>If you haven't noticed any issues with our services, you can safely disregard this email.</li>
+      <li>No additional action is required from you at this time.</li>
+      <li>We will notify you once the issue has been resolved.</li>
+    </ul>
+    <p>If you have any questions or concerns, please feel free to contact our support team.</p>
+    <p>Thank you for your patience and continued trust in us.</p>
+  `;
+  return baseEmailTemplate(content);
+}
+
+function generatePaymentProcessingIssueEmail() {
   const content = `
     <h2>Important Notice: Payment Processing Issue</h2>
     <p>Hey there!</p>
@@ -22,7 +107,10 @@ export function generatePaymentProcessingIssueEmail() {
 }
 
 export function generateWebhookFailureEmail(
-  event: Event,
+  event: {
+    id: string;
+    type: string;
+  },
   eventTime: Date,
   failedWebhooks: number,
 ) {
@@ -44,11 +132,11 @@ export function generateWebhookFailureEmail(
             margin: 0;
             padding: 0;
           }
-          .container {
+          .mail-container {
             max-width: 600px;
             margin: 30px auto;
+            padding: 0 !important;
             background: #ffffff;
-            padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -94,7 +182,7 @@ export function generateWebhookFailureEmail(
         </style>
       </head>
       <body>
-        <div class="container">
+        <div class="mail-container">
           <div class="header">
             <h1>🚨 Webhook Failure Alert</h1>
           </div>
@@ -143,7 +231,16 @@ export function baseEmailTemplate(content: string) {
           margin: 0;
           padding: 0;
         }
-        .container {
+        h2 {
+          color: hsl(0, 0%, 13.3%);
+          font-size: 24px;
+          margin-top: 0;
+          font-weight: 600;
+        }
+        p {
+          margin: 10px 0;
+        }
+        .mail-container {
           max-width: 600px;
           margin: 20px auto;
           background-color: hsl(0, 0%, 100%);
@@ -180,7 +277,7 @@ export function baseEmailTemplate(content: string) {
       </style>
     </head>
     <body>
-      <div class="container">
+      <div class="mail-container">
         <div class="header">
           <h1>StripeProtect</h1>
         </div>

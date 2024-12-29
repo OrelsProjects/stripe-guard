@@ -15,13 +15,13 @@ export function ThemeSettings() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Card className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Theme Settings</h2>
+    <Card className="p-4 md:p-6">
+      <h2 className="text-lg md:text-xl font-semibold mb-4">Theme Settings</h2>
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="theme">Color Theme</Label>
           <Select value={theme} onValueChange={setTheme}>
-            <SelectTrigger id="theme">
+            <SelectTrigger id="theme" className="w-full md:w-auto">
               <SelectValue placeholder="Select theme" />
             </SelectTrigger>
             <SelectContent>

@@ -4,7 +4,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins } from "lucide-react";
+import { Coins } from 'lucide-react';
 import { Plan } from "@/models/user";
 import { PremiumDialog } from "@/components/premium-dialog";
 import {
@@ -13,30 +13,37 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface BillingSettingsProps {
   plan?: Plan;
+  loading?: boolean;
 }
 
-export function BillingSettings({ plan }: BillingSettingsProps) {
+export function BillingSettings({ plan, loading = false }: BillingSettingsProps) {
   return (
-    <Card className="p-6">
-      <div className="flex justify-between items-center">
+    <Card className="p-4 md:p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="w-full flex flex-col justify-start items-start">
           <div className="flex items-center justify-start gap-2 mb-4">
             <Coins className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Tokens</h2>
+            <h2 className="text-lg md:text-xl font-semibold">Tokens</h2>
           </div>
           <div className="space-y-6 w-full">
-            {plan ? (
+            {loading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            ) : plan ? (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <div className="flex items-center space-x-2 text-xl">
+                    <div className="flex items-center space-x-2 text-base md:text-xl">
                       <h3 className="font-medium">Available Tokens</h3>
                       <Badge
                         variant="secondary"
-                        className="text-base sm:text-lg"
+                        className="text-sm md:text-base"
                       >
                         {plan.tokensLeft.toLocaleString()}
                       </Badge>
@@ -47,7 +54,7 @@ export function BillingSettings({ plan }: BillingSettingsProps) {
             ) : (
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <div className="flex items-center space-x-2 text-xl">
+                  <div className="flex items-center space-x-2 text-base md:text-xl">
                     <h3 className="font-medium">No Tokens Available</h3>
                     <Badge variant="secondary">0 tokens</Badge>
                   </div>
@@ -59,9 +66,9 @@ export function BillingSettings({ plan }: BillingSettingsProps) {
             )}
           </div>
         </div>
-        <PremiumDialog text="+ Tokens" />
+        {!loading && <PremiumDialog text="+ Tokens" />}
       </div>
-      {plan && plan.billingHistory && plan.billingHistory.length > 0 && (
+      {!loading && plan && plan.billingHistory && plan.billingHistory.length > 0 && (
         <Accordion type="single" collapsible className="border-t border-muted-foreground/20 mt-6">
           <AccordionItem value="history">
             <AccordionTrigger>Token Purchase History</AccordionTrigger>
@@ -70,7 +77,7 @@ export function BillingSettings({ plan }: BillingSettingsProps) {
                 {plan.billingHistory.map((history, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-muted/50"
+                    className="flex flex-col md:flex-row items-start md:items-center justify-between text-sm p-2 rounded-lg hover:bg-muted/50"
                   >
                     <div>
                       <p className="font-medium">
@@ -80,13 +87,10 @@ export function BillingSettings({ plan }: BillingSettingsProps) {
                         {new Date(history.date).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left md:text-right mt-2 md:mt-0">
                       <p className="font-medium">
                         ${history.amount.toFixed(2)}
                       </p>
-                      {/* <Button variant="link" size="sm" className="h-auto p-0">
-                              View Receipt
-                            </Button> */}
                     </div>
                   </div>
                 ))}
@@ -98,3 +102,4 @@ export function BillingSettings({ plan }: BillingSettingsProps) {
     </Card>
   );
 }
+

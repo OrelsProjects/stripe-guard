@@ -60,7 +60,8 @@ export const WebhookAnimation = () => {
     y: number;
   } | null>(null);
 
-  const runAnimation = async (event?: string) => {
+  const runAnimation = async (event: string) => {
+    setSelectedEvent(event);
     setStage("initial");
     setStripeProtectServerStage("initial");
     setUserServerStage("initial");
@@ -79,7 +80,7 @@ export const WebhookAnimation = () => {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const userServerSuccess = Math.random() > 0.5; // Simulate a 50% chance of success
+    const userServerSuccess = Math.random() > 0.99; // Simulate a 50% chance of success
     if (userServerSuccess && !isFirstTime) {
       setStage("success");
       setUserServerStage("success");
@@ -98,10 +99,6 @@ export const WebhookAnimation = () => {
       setShowNotifications(true);
     }
   };
-
-  useEffect(() => {
-    console.log("stage", stage);
-  }, [stage]);
 
   const handleEventClick = (
     event: string,
@@ -123,8 +120,11 @@ export const WebhookAnimation = () => {
   useEffect(() => {
     if (animatingEvent) {
       const timer = setTimeout(() => {
+        if (!selectedEvent) {
+          return;
+        }
         setAnimatingEvent(null);
-        runAnimation(selectedEvent || undefined);
+        runAnimation(selectedEvent);
       }, 1500);
       return () => clearTimeout(timer);
     }
@@ -140,6 +140,8 @@ export const WebhookAnimation = () => {
         return "Customer Subscription Created";
       case "customer.subscription.updated":
         return "Customer Subscription Updated";
+      case "charge.failed":
+        return "Charge Failed";
       default:
         return ev;
     }
@@ -194,15 +196,18 @@ export const WebhookAnimation = () => {
                 <Button
                   variant={hoveredEvent === ev ? "default" : "outline"}
                   size="lg"
-                  disabled={selectedEvent !== null && selectedEvent !== ev}
+                  disabled={
+                    animationOngoing ||
+                    (selectedEvent !== null && selectedEvent !== ev)
+                  }
                   onClick={e => {
                     handleEventClick(ev, index, e.clientX, e.clientY);
                   }}
                   className={cn(
                     "w-full transition-all duration-200 hover:shadow-lg",
                     {
-                      "opacity-30": animationOngoing && selectedEvent !== ev,
-                      "border-primary border-2": selectedEvent === ev,
+                      "border-primary border-2 !opacity-100":
+                        selectedEvent === ev,
                       "transform hover:-translate-y-0.5": !animationOngoing,
                     },
                   )}
@@ -370,8 +375,9 @@ export const WebhookAnimation = () => {
           <AnimatePresence>
             {showNotifications && (
               <>
-                <NotificationEmail type="apology" />
+                <NotificationEmail event={selectedEvent} type="apology" />
                 <NotificationEmail
+                  event={selectedEvent}
                   type="alert"
                   delay={0.5}
                   onAnimationComplete={() => {

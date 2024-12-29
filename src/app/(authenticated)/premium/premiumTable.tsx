@@ -132,7 +132,7 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
         </table>
       </div>
 
-      <div className="md:hidden">
+      <div className="flex flex-col gap-6 md:hidden">
         {" "}
         {/* Mobile view */}
         {loading ? (

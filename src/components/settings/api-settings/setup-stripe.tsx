@@ -57,7 +57,7 @@ export function SetupStripe() {
           disabled={!apiKey || !webhookUrl}
           asChild
         >
-          <Link href="/stripe-setup">Setup Stripe</Link>
+        <Link href="/stripe-setup/api-key">Setup Stripe</Link>
         </Button>
       </div>
     </div>

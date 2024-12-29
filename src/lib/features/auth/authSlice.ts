@@ -74,6 +74,9 @@ const authSlice = createSlice({
         };
       }
     },
+    setLoadingUserDetails: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
     setError: (state, action: PayloadAction<string | null>) => {
       console.error(action.payload);
       state.error = action.payload;
@@ -87,7 +90,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, updateUserSettings, setError, clearUser , disconnectStripe} =
+export const { setUser, updateUserSettings, setLoadingUserDetails, setError, clearUser , disconnectStripe} =
   authSlice.actions;
 
 export const selectAuth = (state: RootState): AuthState => state.auth;

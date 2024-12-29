@@ -37,15 +37,6 @@ const eventsTrackedAnswer = () =>
         <li><strong>invoice.payment_succeeded:</strong> Triggered when an invoice payment is successfully processed.</li>
       </ul>
     </li>
-    <li>
-      <strong style="font-size: 20px; display: block; margin-top: 16px;">User Alert Events:</strong>
-      <ul>
-        <li><strong>charge.succeeded:</strong> Notifies the user when a charge is successfully processed.</li>
-        <li><strong>invoice.payment_succeeded:</strong> Notifies the user when an invoice payment is successfully processed.</li>
-        <li><strong>customer.subscription.created:</strong> Notifies the user when a new subscription is created.</li>
-        <li><strong>customer.subscription.updated:</strong> Notifies the user when an existing subscription is updated.</li>
-      </ul>
-    </li>
   </ul>`;
 
 const faqs = [
@@ -53,6 +44,11 @@ const faqs = [
     question: "How will this service benefit my business?",
     answer:
       "Imagine you are a customer who just found out about the product.<br/><br/>You are excited, you want to buy it. You put your credit card in, payment proccessed.<br/>You expect to see a confirmation page, but instead, you see an error.<br/><br/>You try again, same thing. You are frustrated and don't know what to do.<br/><br/>This is what we prevent. We monitor your payment webhooks and alert you in real-time and send a nice email to the cutsomer, so they know you are on top of it.",
+  },
+  {
+    question: "Why should I care?",
+    answer:
+      "Because when the customer doesn't get what they should, due to a failure with your webhooks, they will dispute the payment. And you might lose your account.",
   },
   {
     question: "How quickly can I get started?",

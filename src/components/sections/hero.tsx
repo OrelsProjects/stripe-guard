@@ -90,7 +90,7 @@ export function HeroSection() {
   ]);
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-start bg-background pt-20 sm:pt-10 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center sm:justify-start bg-background pb-24 sm:pt-10 overflow-hidden">
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
       <div className="container px-4 mx-auto relative z-10">
@@ -182,14 +182,14 @@ export function HeroSection() {
                     >
                       <stop
                         offset="0.0645857"
-                        stop-color="#2563EB"
-                        stop-opacity="0.05"
+                        stopColor="#2563EB"
+                        stopOpacity="0.05"
                       />
-                      <stop offset="0.547993" stop-color="#2563EB" />
+                      <stop offset="0.547993" stopColor="#2563EB" />
                       <stop
                         offset="1"
-                        stop-color="#2563EB"
-                        stop-opacity="0.015"
+                        stopColor="#2563EB"
+                        stopOpacity="0.015"
                       />
                     </linearGradient>
                   </defs>
@@ -226,7 +226,7 @@ export function HeroSection() {
                     transition={{ duration: 2, ease: "easeInOut" }}
                     d="M414 1.5H391.5C380.454 1.5 371.5 10.4543 371.5 21.5V182C371.5 193.046 362.546 202 351.5 202H27C15.9543 202 1.5 210.954 1.5 222V295M414 74H390C379.783 74 371.5 82.2827 371.5 92.5"
                     stroke="url(#paint0_linear_0_55)"
-                    stroke-width="2"
+                    strokeWidth="2"
                   />
                   <defs>
                     <linearGradient
@@ -239,14 +239,14 @@ export function HeroSection() {
                     >
                       <stop
                         offset="0.0645857"
-                        stop-color="#2563EB"
-                        stop-opacity="0.05"
+                        stopColor="#2563EB"
+                        stopOpacity="0.05"
                       />
-                      <stop offset="0.547993" stop-color="#2563EB" />
+                      <stop offset="0.547993" stopColor="#2563EB" />
                       <stop
                         offset="1"
-                        stop-color="#2563EB"
-                        stop-opacity="0.015"
+                        stopColor="#2563EB"
+                        stopOpacity="0.015"
                       />
                     </linearGradient>
                   </defs>

@@ -8,15 +8,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { NotificationsChannel } from "@/models/user";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface NotificationSettingsProps {
   notificationEmail: NotificationsChannel;
-  onEmailChange: (value: NotificationsChannel) => void;
+  onChange: (value: NotificationsChannel) => void;
+  loading?: boolean;
 }
 
 export function NotificationSettings({
   notificationEmail,
-  onEmailChange,
+  onChange,
+  loading = false,
 }: NotificationSettingsProps) {
   const formik = useFormik({
     initialValues: {
@@ -29,7 +32,7 @@ export function NotificationSettings({
         .required("Email is required"),
     }),
     onSubmit: values => {
-      onEmailChange({
+      onChange({
         ...notificationEmail,
         ...values,
       });
@@ -44,50 +47,71 @@ export function NotificationSettings({
   }, [notificationEmail]);
 
   return (
-    <Card className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Notification Preferences</h2>
-      <form onSubmit={formik.handleSubmit} className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <Label>Email Notifications</Label>
-            <p className="text-sm text-muted-foreground">
-              Receive notifications about webhook failures
-            </p>
+    <Card className="p-4 md:p-6">
+      <h2 className="text-lg md:text-xl font-semibold mb-4">
+        Notification Preferences
+      </h2>
+      {loading ? (
+        <div className="space-y-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+            <div className="space-y-0.5">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-48" />
+            </div>
+            <Skeleton className="h-6 w-10" />
           </div>
-          <Switch
-            name="enabled"
-            checked={formik.values.enabled}
-            onCheckedChange={checked => {
-              formik.setFieldValue("enabled", checked);
-            }}
-          />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-10 w-full md:w-64" />
+          </div>
         </div>
+      ) : (
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+            <div className="space-y-0.5">
+              <Label>Email Notifications</Label>
+              <p className="text-sm text-muted-foreground">
+                Receive notifications about webhook failures
+              </p>
+            </div>
+            <Switch
+              name="enabled"
+              checked={formik.values.enabled}
+              onCheckedChange={checked => {
+                onChange({
+                  ...notificationEmail,
+                  enabled: checked,
+                });
+                formik.setFieldValue("enabled", checked);
+              }}
+            />
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="notification-email">Notification Email</Label>
-          <Input
-            id="notification-email"
-            type="email"
-            placeholder="your@email.com"
-            disabled={!formik.values.enabled}
-            value={formik.values.value}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="value"
-          />
-          {formik.touched.value && formik.errors.value ? (
-            <p className="text-sm text-red-500">{formik.errors.value}</p>
-          ) : null}
-        </div>
-
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={!formik.dirty || !formik.isValid}
-        >
-          Save Settings
-        </button>
-      </form>
+          <div className="space-y-2">
+            <Label htmlFor="notification-email">Notification Email</Label>
+            <Input
+              id="notification-email"
+              type="email"
+              placeholder="your@email.com"
+              disabled={!formik.values.enabled}
+              value={formik.values.value}
+              onChange={e => {
+                formik.handleChange(e);
+                onChange({
+                  ...notificationEmail,
+                  value: e.target.value,
+                });
+              }}
+              onBlur={formik.handleBlur}
+              name="value"
+              className="w-full md:w-auto"
+            />
+            {formik.touched.value && formik.errors.value ? (
+              <p className="text-sm text-red-500">{formik.errors.value}</p>
+            ) : null}
+          </div>
+        </form>
+      )}
     </Card>
   );
 }
