@@ -1,14 +1,12 @@
 import { StatusType, datadogLogs } from "@datadog/browser-logs";
-import { AppUser } from "@/models/user";
 
 interface Dict {
   [key: string]: any;
 }
 
-export interface LogItem {
-  data?: Dict;
+export type LogItem = Dict & {
   error?: Error;
-}
+};
 
 export const initLogger = () => {
   try {
@@ -26,14 +24,6 @@ export const initLogger = () => {
       error,
     });
   }
-};
-
-export const setUserLogger = (user?: AppUser | null) => {
-  datadogLogs.setUser({
-    id: user?.id,
-    name: user?.name || "",
-    email: user?.email || "",
-  });
 };
 
 const log = (
@@ -81,19 +71,19 @@ const printLog = (
 };
 
 export class Logger {
-  static info(message: string, error: any, logItem?: LogItem) {
+  static info(message: string, logItem?: LogItem) {
     log(StatusType.info, message, logItem);
   }
 
-  static warn(message: string, error: any, logItem?: LogItem) {
+  static warn(message: string, logItem?: LogItem) {
     log(StatusType.warn, message, logItem);
   }
 
-  static error(message: string, error: any, logItem?: LogItem) {
+  static error(message: string, logItem?: LogItem) {
     log(StatusType.error, message, logItem);
   }
 
-  static debug(message: string, error: any, logItem?: LogItem) {
+  static debug(message: string, logItem?: LogItem) {
     log(StatusType.debug, message, logItem);
   }
 }
