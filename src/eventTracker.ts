@@ -3,6 +3,7 @@
 import posthog from "posthog-js";
 import mixpanel from "mixpanel-browser";
 import { Logger } from "@/logger";
+import { AppUser } from "@/models/user";
 
 enum TimeoutLength {
   SHORT = 100,
@@ -13,6 +14,21 @@ enum TimeoutLength {
 interface Dict {
   [key: string]: any;
 }
+
+export const setUserEventTracker = (user?: AppUser | null) => {
+  try {
+    posthog.identify(user?.id);
+    mixpanel.identify(user?.id);
+  } catch (error: any) {
+    Logger.error("Error setting user for event tracker", {
+      data: {
+        user,
+      },
+      error,
+    });
+  }
+};
+
 export const initEventTracker = () => {
   try {
     const env = process.env.NODE_ENV;

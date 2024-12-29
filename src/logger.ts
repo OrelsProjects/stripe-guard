@@ -1,3 +1,4 @@
+import { AppUser } from "@/models/user";
 import { StatusType, datadogLogs } from "@datadog/browser-logs";
 
 interface Dict {
@@ -6,6 +7,12 @@ interface Dict {
 
 export type LogItem = Dict & {
   error?: Error;
+};
+
+export const setUserLogger = (user?: AppUser | null) => {
+  datadogLogs.setUser({
+    ...user,
+  });
 };
 
 export const initLogger = () => {

@@ -32,6 +32,7 @@ export default function AuthProvider({
 
   const loading = useRef(false);
 
+  
   const setUser = async (data?: Session) => {
     try {
       if (!data) {
