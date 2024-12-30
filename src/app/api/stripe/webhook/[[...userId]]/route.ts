@@ -20,11 +20,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 // TODO: Send the user an email when a webhook fails and add a button to contact support.
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 export const maxDuration = 60; // 1 minute
 
 type LeanUser = {
