@@ -138,7 +138,8 @@ model UserWebhookEvent {
 
   resolvedAt DateTime? @map("resolved_at")
 
-  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appUser    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailsSent EmailSent[]
 
   @@map("user_webhook_event")
 }
@@ -185,4 +186,20 @@ model InterestedUser {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("interested_user")
+}
+
+model EmailSent {
+  id    String @id @default(cuid())
+  email String
+
+  sentToUser Boolean @default(false) @map("sent_to_user")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  webhookEventId String? @map("webhook_event_id")
+
+  webhookEvent UserWebhookEvent? @relation(fields: [webhookEventId], references: [id])
+
+  @@map("email_sent")
 }

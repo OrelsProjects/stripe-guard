@@ -292,3 +292,21 @@ export function baseEmailTemplate(content: string) {
     </html>
   `;
 }
+
+export function successfulTokensPurchaseEmail(tokens: number, price: number) {
+  const pricePerToken = (price / tokens).toFixed(4);
+  const content = `
+    <h2>Thank you for your purchase!</h2>
+    <p>Hi there,</p>
+    <p>We wanted to let you know that your purchase was successful. You've successfully acquired ${tokens} tokens for your account.</p>
+    <p>Here's a summary of your purchase:</p>
+    <ul>
+      <li><strong>Tokens:</strong> ${tokens}</li>
+      <li><strong>Price:</strong> $${price}</li>
+      <li><strong>Price per Token:</strong> $${pricePerToken}</li>
+    </ul>
+    <p>If you have any questions or need further assistance, feel free to reach out to me at: orelsmail@gmail.com.</p>
+    <p>Thank you for your purchase and continued trust in our services.</p>
+  `;
+  return baseEmailTemplate(content);
+}

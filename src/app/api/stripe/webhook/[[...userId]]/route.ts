@@ -1,4 +1,5 @@
 import prisma from "@/app/api/_db/db";
+import Stripe from "stripe";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
 import {
@@ -16,10 +17,14 @@ import loggerServer from "@/loggerServer";
 import { Event, sendAlertToUserEvents } from "@/models/payment";
 import { UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 
 // TODO: Send the user an email when a webhook fails and add a button to contact support.
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 export const maxDuration = 60; // 1 minute
 
 type LeanUser = {
@@ -186,7 +191,7 @@ async function handleWebhookResolution(
     existingWebhookEvents,
   );
 
-  await prisma.userWebhookEvent.create({
+  const userWebhookEventId = await prisma.userWebhookEvent.create({
     data: {
       userId: userId,
       eventId: event.id,
@@ -198,6 +203,9 @@ async function handleWebhookResolution(
       requestIdempotencyKey: event.request?.idempotency_key,
       succeeded,
       connected: userStripeCredentials?.connected,
+    },
+    select: {
+      id: true,
     },
   });
 
@@ -228,7 +236,12 @@ async function handleWebhookResolution(
   if (succeeded) {
     await handleWebhookSuccess(event, email || "");
   } else {
-    await handleWebhookFailure(event, email || "", customerEmail);
+    await handleWebhookFailure(
+      event,
+      email || "",
+      userWebhookEventId.id,
+      customerEmail,
+    );
   }
 }
 
@@ -237,24 +250,50 @@ async function handleWebhookSuccess(event: Event, userEmail: string) {}
 async function handleWebhookFailure(
   event: Event,
   userEmail: string,
+  userWebhookEventId: string,
   customerEmail?: string,
 ) {
   const failedWebhooks = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
   const eventType = event.type;
 
-  await sendMail(
-    userEmail,
-    process.env.NEXT_PUBLIC_APP_NAME as string,
-    "Webhook Failed",
-    generateWebhookFailureEmail(event, new Date(), failedWebhooks),
+  const emailsSentForEvent = await prisma.emailSent.findMany({
+    where: {
+      webhookEvent: {
+        eventId: event.id,
+        succeeded: false,
+      },
+    },
+    select: {
+      sentToUser: true,
+    },
+  });
+
+  const emailsNotSentToUser = emailsSentForEvent.filter(
+    email => !email.sentToUser,
   );
+  const emailsSentToUser = emailsSentForEvent.filter(email => email.sentToUser);
+
+  if (emailsNotSentToUser.length === 0) {
+    await sendMail(
+      userEmail,
+      process.env.NEXT_PUBLIC_APP_NAME as string,
+      "Webhook Failed",
+      generateWebhookFailureEmail(event, new Date(), failedWebhooks),
+    );
+    await prisma.emailSent.create({
+      data: {
+        email: userEmail,
+        webhookEventId: userWebhookEventId,
+      },
+    });
+  }
 
   if (!sendAlertToUserEvents.includes(eventType)) {
     return;
   }
 
   // Possible feature. Send email to customer if webhook failed.
-  if (customerEmail) {
+  if (customerEmail && emailsSentToUser.length === 0) {
     const emailContent = generateUserAlertEmail(eventType);
     if (!emailContent) {
       return;
@@ -263,8 +302,15 @@ async function handleWebhookFailure(
       customerEmail,
       process.env.NEXT_PUBLIC_APP_NAME as string,
       "Problem processing your payment",
-      customerEmail,
+      emailContent,
     );
+    await prisma.emailSent.create({
+      data: {
+        email: customerEmail,
+        webhookEventId: userWebhookEventId,
+        sentToUser: true,
+      },
+    });
   }
 }
 
@@ -291,8 +337,40 @@ export async function POST(
   { params }: { params: { userId?: string[] } },
 ) {
   const signature = req.headers.get("stripe-signature");
-  let event = (await req.json()) as Event;
-  const stripe = getStripeInstance();
+  const body: string = await req.text();
+  let event: Event | null = null;
+
+  // validate webhook
+  const userStripeCredentials = await prisma.userStripeCredentials.findUnique({
+    where: { userId: params.userId?.[0] },
+  });
+
+  if (!userStripeCredentials) {
+    return NextResponse.json(
+      { error: "Unauthorized access, no user" },
+      { status: 401 },
+    );
+  }
+
+  const webhookSecret = userStripeCredentials.webhookSecret;
+
+  if (!webhookSecret) {
+    return NextResponse.json(
+      { error: "Unauthorized access, no webhook secret" },
+      { status: 401 },
+    );
+  }
+
+  const stripe = getStripeInstance({
+    apiKey: userStripeCredentials.apiKey as string,
+  });
+
+  try {
+    event = stripe.webhooks.constructEvent(body, signature!, webhookSecret);
+  } catch (error: any) {
+    loggerServer.error("Error validating webhook", "Unknown", error);
+    return NextResponse.json({ error: "Invalid webhook" }, { status: 400 });
+  }
 
   const userId = params.userId?.[0];
   const accountId = event.account; // If accountId is null, it's a non-connected account

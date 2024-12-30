@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 import Logo from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function NavigationBar() {
   return (
@@ -45,7 +45,11 @@ export default function NavigationBar() {
             ),
           )}
           <Button className="md:px-16 md:py-5" asChild>
-            <Link href="/login">Sign up</Link>
+            <Link href="/login">
+            <span className="hidden md:block">Protect your revenue</span>
+            <span className="md:hidden">Get started</span>
+               <ArrowRight />
+            </Link>
           </Button>
         </nav>
       </div>

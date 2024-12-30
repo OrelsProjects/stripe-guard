@@ -37,7 +37,7 @@ const getDidCloseUserNeedsSetup = () => {
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user } = useAppSelector(selectAuth);
+  const { user, loading } = useAppSelector(selectAuth);
 
   const [open, setOpen] = useState(true);
   const [showLastChance, setShowLastChance] = useState(false);
@@ -57,10 +57,11 @@ export function Navbar() {
 
   const shouldShowUserNeedsSetup = useMemo(
     () =>
+      !loading &&
       (user?.settings.plan?.tokensLeft || 0) > 0 &&
       !user?.settings.isOnboarded &&
       open,
-    [user],
+    [user, loading],
   );
 
   const handleClose = () => {

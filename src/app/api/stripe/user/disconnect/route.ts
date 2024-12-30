@@ -37,8 +37,15 @@ export async function DELETE(req: NextRequest) {
         stripe_user_id: userStripeCredentials.accountId as string,
       });
     } else {
-      const stripe = getStripeInstance();
-      stripe.webhookEndpoints.del(userStripeCredentials.webhookId as string);
+      const stripe = getStripeInstance({
+        apiKey: userStripeCredentials.apiKey as string,
+      });
+      // Validate webhook exists. This function throws an error if the webhook does not exist
+      const webhook = await stripe.webhookEndpoints.retrieve(
+        userStripeCredentials.webhookId as string,
+      );
+
+      await stripe.webhookEndpoints.del(webhook.id);
     }
 
     await prisma.userStripeCredentials.delete({

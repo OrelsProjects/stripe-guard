@@ -104,7 +104,7 @@ export function NotificationSettings({
               }}
               onBlur={formik.handleBlur}
               name="value"
-              className="w-full md:w-auto"
+              className="w-full md:max-w-md"
             />
             {formik.touched.value && formik.errors.value ? (
               <p className="text-sm text-red-500">{formik.errors.value}</p>

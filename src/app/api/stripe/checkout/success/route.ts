@@ -1,5 +1,7 @@
 import prisma from "@/app/api/_db/db";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
+import { sendMail } from "@/app/api/_utils/mail/mail";
+import { successfulTokensPurchaseEmail } from "@/app/api/_utils/mail/templates";
 import loggerServer from "@/loggerServer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -33,6 +35,7 @@ export async function GET(req: NextRequest) {
     const product = await getStripeInstance().products.retrieve(productId);
     const price = await getStripeInstance().prices.retrieve(priceId);
     const tokens = parseInt(product.metadata.tokens || "40021");
+    const amountReceived = (price.unit_amount as number) / 100;
 
     await prisma.payment.create({
       data: {
@@ -42,7 +45,7 @@ export async function GET(req: NextRequest) {
         productName: product.name,
         tokensAdded: tokens,
         status: session.payment_status,
-        amountReceived: (price.unit_amount as number) / 100,
+        amountReceived,
         currency: price.currency as string,
         appUser: {
           connect: { id: userId },
@@ -87,6 +90,13 @@ export async function GET(req: NextRequest) {
 
     const shouldOnboard =
       !user?.connected && !user?.apiKey && (newUserTokens?.tokensLeft || 0) > 0;
+
+    await sendMail(
+      session.customer_email || "",
+      process.env.NEXT_PUBLIC_APP_NAME as string,
+      "Payment confirmation",
+      successfulTokensPurchaseEmail(tokens, amountReceived),
+    );
 
     return NextResponse.redirect(
       req.nextUrl.origin +
