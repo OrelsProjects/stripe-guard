@@ -1,7 +1,7 @@
 "use client";
 
-import "highlight.js/styles/atom-one-dark.css"; // Or whichever style you prefer
-import { useEffect, useState, useRef } from "react";
+import "highlight.js/styles/atom-one-dark.css";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Marked } from "marked";
@@ -9,9 +9,17 @@ import { markedHighlight } from "marked-highlight";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import Image from "next/image";
-import { CalendarIcon, ClockIcon, ArrowLeft } from "lucide-react";
+
+import { CalendarIcon, ClockIcon, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Logo from "@/components/ui/Logo";
 
 interface Frontmatter {
   slug: string;
@@ -26,17 +34,21 @@ interface Frontmatter {
   };
 }
 
+interface Heading {
+  id: string;
+  text: string;
+  level: number;
+}
+
 export default function BlogPost({ params }: { params: { slug: string } }) {
   const [blogData, setBlogData] = useState<Frontmatter | null>(null);
   const [contentHtml, setContentHtml] = useState("");
+  const [showTopBar, setShowTopBar] = useState(false);
+  const [headings, setHeadings] = useState<Heading[]>([]);
+  const [activeHeadingId, setActiveHeadingId] = useState("");
   const [error, setError] = useState(false);
 
-  // Scroll progress states
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [showTopBar, setShowTopBar] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  // Prepare marked with syntax highlighting
+  // ============== 1) Parse Markdown + Extract Headings ==============
   const customMarked = new Marked(
     markedHighlight({
       langPrefix: "language-",
@@ -51,7 +63,6 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     },
   );
 
-  // Fetch Markdown file from public folder
   useEffect(() => {
     async function fetchMarkdown() {
       try {
@@ -59,17 +70,12 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         if (!res.ok) throw new Error("Markdown file not found");
 
         const rawMd = await res.text();
-
-        // 1) Parse frontmatter (YAML) and content
         const { data, content } = matter(rawMd);
 
-        // 2) Replace references to process.env.XYZ with the actual values
-        //    Only NEXT_PUBLIC_* vars are available on the client.
+        // Replace references to process.env
         let replacedContent = content.replace(
           /process\.env\.(\w+)/g,
           (_, envName) => {
-            // We'll look up the env name in NEXT_PUBLIC_ + envName
-            // e.g. process.env.SOME_VAR => process.env.NEXT_PUBLIC_SOME_VAR
             switch (envName) {
               case "NEXT_PUBLIC_APP_URL":
                 return process.env.NEXT_PUBLIC_APP_URL || "";
@@ -81,7 +87,29 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           },
         );
 
-        // 3) Convert frontmatter to your needed interface shape
+        // Convert MD => HTML
+        let htmlContent = await customMarked.parse(replacedContent);
+
+        // Insert IDs
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlContent;
+
+        const extracted: Heading[] = [];
+        tempDiv.querySelectorAll("h1, h2, h3, h4").forEach(el => {
+          const text = el.textContent ?? "";
+          const level = Number(el.tagName.replace("H", "")) || 2;
+          const slug = text
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w]+/g, "-");
+
+          el.setAttribute("id", slug);
+          extracted.push({ id: slug, text, level });
+        });
+
+        htmlContent = tempDiv.innerHTML;
+
+        // Build frontmatter
         const fm: Frontmatter = {
           slug: data.slug ?? params.slug,
           title: data.title,
@@ -95,37 +123,77 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           },
         };
 
-        // 4) Convert the final replaced Markdown into HTML
-        const htmlContent = customMarked.parse(replacedContent) as string;
-
         setBlogData(fm);
         setContentHtml(htmlContent);
-      } catch (error) {
+        setHeadings(extracted);
+      } catch {
         setError(true);
       }
     }
 
     fetchMarkdown();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.slug]);
 
-  // Handle scroll progress and top bar visibility
+  // ============== 2) Manual Scroll-Spy on scroll ==============
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const fullHeight = document.documentElement.scrollHeight;
+    // If no headings, skip
+    if (!headings.length) return;
 
-      const progress = (scrollPosition / (fullHeight - windowHeight)) * 100;
-      setScrollProgress(progress);
-      setShowTopBar(scrollPosition > 100);
+    function handleScroll() {
+      /*
+       * We'll find the heading that is closest to the top
+       * but still below the top of the viewport (scrollY).
+       * Then we set that heading's ID as active.
+       */
+
+      // Convert NodeList to an array of HTML elements
+      const headingEls = Array.from(
+        document.querySelectorAll("h1, h2, h3, h4"),
+      ) as HTMLElement[];
+
+      // The vertical scroll offset from top
+      const scrollPos = window.scrollY;
+      if (scrollPos > 100) {
+        setShowTopBar(true);
+      } else {
+        setShowTopBar(false);
+      }
+      // We'll also consider the viewport's top offset so we highlight
+      // the heading that has just scrolled *past* the top by a bit.
+      // Tweak offset to match your sticky header height if needed.
+      const offset = 240; // e.g., if you have a sticky header of 80px
+
+      let currentId = "";
+      for (const el of headingEls) {
+        const elTop = el.offsetTop - offset;
+        if (scrollPos >= elTop) {
+          currentId = el.id;
+        } else {
+          // Because headings are in order, as soon as we find one that is above the scroll,
+          // everything else is below it.
+          break;
+        }
+      }
+
+      // If no heading found, maybe you're above the first heading => currentId = ""
+      if (currentId) {
+        setActiveHeadingId(currentId);
+      } else {
+        // optional: If you want no highlight when you're above the first heading
+        // setActiveHeadingId("");
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Fire once on mount to highlight if we're already scrolled
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
     };
+  }, [headings]);
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // If there was an error fetching the file, show a simple fallback
+  // ============== Fallbacks, Loading, etc. ==============
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -137,7 +205,6 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     );
   }
 
-  // If we haven't loaded data yet, show a loading state
   if (!blogData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -146,8 +213,9 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     );
   }
 
+  // ============== 3) Render ==============
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative">
+    <div className="relative flex min-h-screen">
       {/* Top Bar */}
       <div
         className={`fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-md transition-transform duration-300 z-10 ${
@@ -156,7 +224,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       >
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <Link href="/blog" passHref>
-            <Button variant="ghost" size="sm" className="flex items-center">
+            <Button variant="outline" size="sm" className="flex items-center">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blogs
             </Button>
           </Link>
@@ -166,20 +234,37 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         </div>
       </div>
 
-      {/* Progress Sidebar */}
-      <div className="fixed right-0 top-0 bottom-0 w-2 z-20">
-        <Progress value={scrollProgress} className="h-full w-full" />
-      </div>
+      {/* Sticky ToC */}
+      <aside className="hidden lg:block w-[22rem] flex-shrink-0 border-r border-border p-8 sticky top-0 h-screen overflow-y-auto">
+        <nav className="space-y-2 text-primary mt-10">
+          <h2 className="text-3xl font-bold mb-4">Contents</h2>
+          {headings.map(heading => (
+            <a
+              key={heading.id}
+              href={`#${heading.id}`}
+              className={`block transition-opacity my-1 text-xl pl-${
+                (heading.level - 1) * 4
+              } ${
+                activeHeadingId === heading.id
+                  ? "opacity-100 font-semibold"
+                  : "opacity-50"
+              }`}
+            >
+              {heading.text}
+            </a>
+          ))}
+        </nav>
+      </aside>
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Back to Blogs Link */}
+      {/* Main */}
+      <main className="flex-1 container mx-auto px-4 py-16">
         <Link href="/blog" passHref className="inline-block mb-8">
           <Button variant="outline" size="sm" className="flex items-center">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blogs
           </Button>
         </Link>
 
-        {/* Article Header */}
+        {/* Header */}
         <header className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
             {blogData.title}
@@ -200,7 +285,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           </div>
         </header>
 
-        {/* Author Info */}
+        {/* Author */}
         <div className="flex items-center justify-center mb-12">
           <div className="flex items-center space-x-4">
             <Image
@@ -216,17 +301,54 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           </div>
         </div>
 
-        {/* Render HTML content with styled typography */}
-        <article
-          className="prose prose-lg dark:prose-invert max-w-none"
-          ref={contentRef}
-        >
+        {/* Content */}
+        <article className="prose prose-lg dark:prose-invert max-w-none">
           <div
-            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8"
+            className="bg-background shadow-lg rounded-lg p-8"
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
         </article>
-      </div>
+
+        {/* CTA, etc. */}
+        <Card className="mt-8 bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center text-2xl font-bold text-primary">
+              <Logo />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="mb-4 text-lg">
+              Don&apos;t let critical payment webhook failures go unnoticed.
+              StripeProtect monitors your Stripe webhooks in real-time, ensuring
+              you never miss a beat in your payment processing.
+            </p>
+            <ul className="ml-6 list-disc space-y-2">
+              <li>Real-time monitoring of crucial Stripe webhooks</li>
+              <li>Instant notifications for potential issues</li>
+              <li>
+                Reduce churn with proactive email to the affected customer
+              </li>
+              <li>Comprehensive dashboard for at-a-glance insights</li>
+            </ul>
+          </CardContent>
+          <CardFooter className="flex flex-col items-start space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <Button asChild size="lg" className="w-full sm:w-auto">
+              <Link href={process.env.NEXT_PUBLIC_APP_URL || "/"}>
+                Protect Your Payments Now
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Link
+              href={
+                (process.env.NEXT_PUBLIC_APP_URL || "/") + "#how-does-it-work"
+              }
+              className="text-sm text-primary hover:underline"
+            >
+              Learn more about StripeProtect
+            </Link>
+          </CardFooter>
+        </Card>
+      </main>
     </div>
   );
 }

@@ -46,7 +46,7 @@ export const WebhookAnimation = () => {
   const [stage, setStage] = useState<
     "initial" | "processing" | "success" | "failure" | "loading"
   >("initial");
-  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [timesTried, setTimesTried] = useState(0);
   const [webhookVisible, setWebhookVisible] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [stripeAnimationKey, setStripeAnimationKey] = useState(0);
@@ -80,8 +80,9 @@ export const WebhookAnimation = () => {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const userServerSuccess = Math.random() > 0.99; // Simulate a 50% chance of success
-    if (userServerSuccess && !isFirstTime) {
+    const userServerSuccess = timesTried % 2 === 1;
+    setTimesTried(prev => prev + 1);
+    if (userServerSuccess) {
       setStage("success");
       setUserServerStage("success");
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -90,7 +91,6 @@ export const WebhookAnimation = () => {
       setSelectedEvent(null);
       setAnimatingEvent(null);
     } else {
-      setIsFirstTime(false);
       setStage("failure");
       setUserServerStage("failure");
       await new Promise(resolve => setTimeout(resolve, 1200));
@@ -148,7 +148,10 @@ export const WebhookAnimation = () => {
   }, []);
 
   return (
-    <motion.section className="hidden md:flex flex-col items-center justify-center min-h-[70vh] p-8 relative bg-muted">
+    <motion.section
+      id="how-does-it-work"
+      className="hidden md:flex flex-col items-center justify-center min-h-[70vh] p-8 relative bg-muted"
+    >
       <motion.h1
         initial="hidden"
         whileInView="visible"
@@ -163,7 +166,7 @@ export const WebhookAnimation = () => {
         <div className="h-60 container relative">
           <div className="absolute left-0 top-0 p-4 flex flex-col space-y-4 overflow-visible">
             <AnimatePresence>
-              {isFirstTime && stage === "initial" && (
+              {timesTried === 0 && stage === "initial" && (
                 <motion.div
                   key="press-event-instruction"
                   initial="hidden"
@@ -263,7 +266,7 @@ export const WebhookAnimation = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          {animationOngoing || !isFirstTime ? (
+          {animationOngoing || timesTried > 0 ? (
             <motion.div
               key={stripeAnimationKey}
               whileInView="visible"

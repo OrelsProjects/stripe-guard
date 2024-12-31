@@ -332,7 +332,7 @@ export async function POST(
   { params }: { params: { userId?: string[] } },
 ) {
   const signature = req.headers.get("stripe-signature");
-  const body: string = await req.text();
+  const body = await req.text();
   let event: Event | null = null;
 
   // validate webhook
