@@ -161,7 +161,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       // We'll also consider the viewport's top offset so we highlight
       // the heading that has just scrolled *past* the top by a bit.
       // Tweak offset to match your sticky header height if needed.
-      const offset = 240; // e.g., if you have a sticky header of 80px
+      const offset = 140; // e.g., if you have a sticky header of 80px
 
       let currentId = "";
       for (const el of headingEls) {
