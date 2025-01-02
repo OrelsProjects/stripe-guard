@@ -17,6 +17,7 @@ import loggerServer from "@/loggerServer";
 import { Event, sendAlertToUserEvents } from "@/models/payment";
 import { UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import moment from "moment";
 
 // TODO: Send the user an email when a webhook fails and add a button to contact support.
 
@@ -251,12 +252,23 @@ async function handleWebhookFailure(
   const failedWebhooks = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
   const eventType = event.type;
 
+  const fourHoursAgo = moment().subtract(4, "hours").toDate();
+
   const emailsSentForEvent = await prisma.emailSent.findMany({
     where: {
-      webhookEvent: {
-        eventId: event.id,
-        succeeded: false,
-      },
+      AND: [
+        {
+          webhookEvent: {
+            eventId: event.id,
+            succeeded: false,
+          },
+        },
+        {
+          createdAt: {
+            gte: fourHoursAgo,
+          },
+        },
+      ],
     },
     select: {
       sentToUser: true,

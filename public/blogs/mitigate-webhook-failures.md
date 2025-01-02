@@ -11,20 +11,20 @@ author:
 ---
 
 ## Introduction
-Stripe webhooks are a vital part of payment processing, enabling seamless communication between Stripe and your application. However, webhook failures can disrupt operations, causing missed payment notifications, subscription mismanagement, and potential customer churn. 
+Stripe webhooks are a vital part of payment processing, enabling seamless communication between Stripe and your application. However, webhook failures can disrupt operations, causing missed payment notifications, subscription mismanagement, and potential customer churn.
 
-This guide outlines best practices to prevent and mitigate webhook failures, ensuring your Stripe webhooks stay reliable and effective. Plus, we'll demonstrate how these practices integrate with process.env.NEXT_PUBLIC_APP_NAME, your go-to solution for monitoring payment-critical webhooks.
+This guide outlines best practices to prevent and mitigate webhook failures, ensuring your Stripe webhooks stay reliable and effective. Plus, we’ll demonstrate how these practices integrate with `process.env.NEXT_PUBLIC_APP_NAME`, your go-to solution for monitoring payment-critical webhooks.
 
 ---
 
 ## Common Causes of Webhook Failures
 Before diving into mitigations, let’s explore the typical culprits behind webhook failures:
 
-1. **Dead or Idle Endpoints**: Webhooks pointing to outdated or inactive URLs result in Stripe retrying the delivery, which both Stripe and monitoring systems like process.env.NEXT_PUBLIC_APP_NAME flag as failures.
-2. **Timeouts**: If your endpoint takes too long to respond, Stripe considers it a failure.
-3. **Security Misconfigurations**: Missing or invalid webhook signing secrets can lead to rejected requests.
-4. **Code Errors**: Bugs or unhandled exceptions in your webhook handler can return 4xx or 5xx responses.
-5. **Rate Limits**: High webhook traffic might overwhelm your server, causing failures.
+1. **Dead or Idle Endpoints**  
+2. **Timeouts**  
+3. **Security Misconfigurations**  
+4. **Code Errors**  
+5. **Rate Limits**  
 
 ---
 
@@ -36,7 +36,7 @@ Idle or forgotten endpoints are a frequent source of failures. Review your webho
 - Disable or delete endpoints no longer in use.
 - Consolidate endpoints to simplify management.
 
-**How process.env.NEXT_PUBLIC_APP_NAME Helps:**
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
 - Automatically flags repeated failures on idle endpoints.
 - Sends real-time notifications, prompting you to act quickly.
 
@@ -44,9 +44,9 @@ Idle or forgotten endpoints are a frequent source of failures. Review your webho
 Stripe requires webhooks to respond within 300ms. Ensure:
 
 - Your endpoint performs minimal processing.
-- Long-running tasks (e.g., database updates) are offloaded to background jobs.
+- Long-running tasks are offloaded to background jobs.
 
-**How process.env.NEXT_PUBLIC_APP_NAME Helps:**
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
 - Monitors response times and alerts you if they exceed the limit.
 
 ### 3. **Implement Robust Error Handling**
@@ -56,7 +56,7 @@ Unexpected errors in your webhook handler can propagate failures. Mitigate this 
 - Logging all incoming events for troubleshooting.
 - Ensuring proper exception handling to avoid 5xx responses.
 
-**How process.env.NEXT_PUBLIC_APP_NAME Helps:**
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
 - Logs failed webhook payloads, helping you debug faster.
 
 ### 4. **Verify Webhook Security**
@@ -65,7 +65,7 @@ Stripe signs all webhook requests. To ensure secure processing:
 - Verify the `Stripe-Signature` header in incoming requests.
 - Rotate webhook signing secrets periodically.
 
-**How process.env.NEXT_PUBLIC_APP_NAME Helps:**
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
 - Alerts you to invalid webhook signatures, reducing vulnerability to spoofed requests.
 
 ### 5. **Scale for Traffic Spikes**
@@ -74,7 +74,7 @@ Heavy traffic can overwhelm your servers. To handle spikes:
 - Use autoscaling for webhook servers.
 - Implement rate-limiting mechanisms to manage high volumes gracefully.
 
-**How process.env.NEXT_PUBLIC_APP_NAME Helps:**
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
 - Detects patterns in traffic surges and warns you of potential rate limits.
 
 ### 6. **Test Your Webhook Endpoints Regularly**
@@ -83,9 +83,36 @@ Proactive testing ensures that changes in your application don’t break webhook
 - Use Stripe’s CLI to test webhook payloads against your endpoint.
 - Simulate failure scenarios to validate fallback mechanisms.
 
-**How process.env.NEXT_PUBLIC_APP_NAME Helps:**
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
 - Provides historical logs for webhook events, letting you analyze and validate fixes.
-- Provides an analytics dashboard to track webhook performance over time.
+- Offers an analytics dashboard to track webhook performance over time.
+
+### 7. **Send 2xx Status Upon Receiving**
+
+Stripe advises that your server responds with a 2xx status code after successfully receiving a webhook. This prevents retries and ensures smoother operations. To implement this:
+
+- Ensure your endpoint sends a 2xx response immediately after receiving and validating the webhook payload.
+- Avoid performing complex operations before responding.
+
+#### Example, NextJS:
+```javascript
+export async function POST(req, res) {
+  try {
+    const event = await stripe.webhooks.constructEvent(req.body, req.headers["stripe-signature"], process.env.STRIPE_WEBHOOK_SECRET);
+    // Async logic function
+    logic(); // This function should be non-blocking. Don't worry, even if it's async, it will be executed even though the response is sent.
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error(`Webhook Error: ${err.message}`);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+}
+```
+
+**How `process.env.NEXT_PUBLIC_APP_NAME` Helps:**
+
+- Tracks response status codes and alerts you if non-2xx codes are detected.
+
 ---
 
 ## Validating Webhooks in Next.js
@@ -105,7 +132,7 @@ export async function POST(req, res) {
     const body = await req.text();
 
     // Verify the event using Stripe's library
-    const event = stripe.webhooks.constructEvent(body, signature!, webhookSecret);
+    const event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
 
     // Handle the event
     switch (event.type) {
@@ -119,12 +146,12 @@ export async function POST(req, res) {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
+    return new Response(
+      JSON.stringify({ error: "Internal Server Error" }),
+      { status: 500 }
     );
   }
 }
