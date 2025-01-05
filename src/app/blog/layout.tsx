@@ -10,48 +10,53 @@ export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}): Promise<Metadata> {
+}): Promise<Metadata | undefined> {
   const { slug } = params;
 
   // Read the markdown file
-  const blogsPath =
-    process.env.NODE_ENV === "development" ? "/public/blogs" : "/blogs";
-  const filePath = path.join(process.cwd(), blogsPath, `${slug}.md`);
-  loggerServer.info(`Reading file: ${filePath}`);
-  const fileContents = await fs.readFile(filePath, "utf-8");
-  const { data } = matter(fileContents);
+  const url = process.env.NEXT_PUBLIC_APP_URL + "/blogs/" + slug + ".md";
 
-  // Extract metadata from frontmatter
-  const metadata = {
-    title: data.title,
-    description: data.excerpt,
-    keywords: ["Accessibility", slug, "WCAG", "A11y"],
-    openGraph: {
+  try {
+    // get file from the url.
+    const fileContents = await fetch(url).then(res => res.text());
+    const { data } = matter(fileContents);
+
+    // Extract metadata from frontmatter
+    const metadata = {
       title: data.title,
       description: data.excerpt,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`,
-      siteName: "Shadcn Themes",
-      images: [
-        {
-          url: `${process.env.NEXT_PUBLIC_APP_URL}/og-image-${slug}.png`,
-          width: 1200,
-          height: 630,
-        },
-      ],
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: data.title,
-      description: data.excerpt,
-      images: [`${process.env.NEXT_PUBLIC_APP_URL}/og-image-${slug}.png`],
-      creator: "@YourTwitterHandle",
-    },
-  };
+      keywords: ["Accessibility", slug, "WCAG", "A11y"],
+      openGraph: {
+        title: data.title,
+        description: data.excerpt,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`,
+        siteName: "Shadcn Themes",
+        images: [
+          {
+            url: `${process.env.NEXT_PUBLIC_APP_URL}/og-image-${slug}.png`,
+            width: 1200,
+            height: 630,
+          },
+        ],
+        locale: "en_US",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: data.title,
+        description: data.excerpt,
+        images: [`${process.env.NEXT_PUBLIC_APP_URL}/og-image-${slug}.png`],
+        creator: "@YourTwitterHandle",
+      },
+    };
 
-  return metadata;
+    return metadata;
+  } catch (error) {
+    console.error("Error reading file", error);
+    loggerServer.error("Error reading file", "", { data: error });
+  }
 }
+
 
 // 2. Optional: Add a JSON-LD script for structured data
 function StructuredData({ metadata }: { metadata: any }) {
