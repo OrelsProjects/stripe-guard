@@ -57,10 +57,10 @@ export const NotificationEmail = ({
       <DialogTrigger asChild>
         <motion.div
           initial={{ x: 0, y: 60, opacity: 0 }}
-          animate={{ x: 350, y: isAlert ? 80 : -140, opacity: 1 }}
+          animate={{ x: 300, y: isAlert ? 80 : -140, opacity: 1 }}
           transition={{ duration: 0.5, delay }}
           className={cn(
-            "absolute left-1/2 top-1/2 flex items-center gap-3 bg-card p-4 rounded-lg min-w-[200px]",
+            "absolute left-1/2 top-1/2 flex items-center gap-3 bg-card p-4 rounded-lg max-w-[280px]",
             {
               "transition-shadow shadow-sm duration-300 cursor-pointer hover:shadow-lg":
                 clickable,

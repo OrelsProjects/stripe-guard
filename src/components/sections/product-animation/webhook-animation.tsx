@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  ArrowUp,
   CogIcon,
   MousePointerClick,
   User,
@@ -44,8 +45,8 @@ export const WebhookAnimation = () => {
     "initial" | "processing" | "success" | "failure" | "loading"
   >("initial");
   const [stage, setStage] = useState<
-    "initial" | "processing" | "success" | "failure" | "loading"
-  >("initial");
+    "idle" | "initial" | "processing" | "success" | "failure" | "loading"
+  >("idle");
   const [timesTried, setTimesTried] = useState(0);
   const [webhookVisible, setWebhookVisible] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -61,6 +62,7 @@ export const WebhookAnimation = () => {
   } | null>(null);
 
   const runAnimation = async (event: string) => {
+    setTimesTried(prev => prev + 1);
     setSelectedEvent(event);
     setStage("initial");
     setStripeProtectServerStage("initial");
@@ -81,7 +83,7 @@ export const WebhookAnimation = () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const userServerSuccess = timesTried % 2 === 1;
-    setTimesTried(prev => prev + 1);
+
     if (userServerSuccess) {
       setStage("success");
       setUserServerStage("success");
@@ -150,7 +152,7 @@ export const WebhookAnimation = () => {
   return (
     <motion.section
       id="how-does-it-work"
-      className="hidden md:flex flex-col items-center justify-center min-h-[70vh] p-8 relative bg-muted"
+      className="hidden md:flex flex-col items-center justify-center min-h-[70vh] p-8 relative bg-muted px-16"
     >
       <motion.h1
         initial="hidden"
@@ -162,27 +164,9 @@ export const WebhookAnimation = () => {
         {" "}
         How does it work - In practice
       </motion.h1>
-      <div className="relative h-fit w-full flex justify-center">
+      <div className="relative container max- h-fit w-full flex justify-start">
         <div className="h-60 container relative">
-          <div className="absolute left-0 top-0 p-4 flex flex-col space-y-4 overflow-visible">
-            <AnimatePresence>
-              {timesTried === 0 && stage === "initial" && (
-                <motion.div
-                  key="press-event-instruction"
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={eventNameVariants}
-                  transition={{ delay: 2, duration: 1.2 }}
-                  className="absolute -left-60 top-24 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg flex items-center gap-3 w-56"
-                >
-                  <p className="text-sm font-medium">
-                    Click an event to see how it works in practice.
-                  </p>
-                  <MousePointerClick className="w-6 h-6 animate-bounce" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <div className="w-fit relative py-4 flex flex-col items-center space-y-4 overflow-visible">
             {sendAlertToUserEvents.map((ev, index) => (
               <motion.div
                 key={ev}
@@ -192,7 +176,7 @@ export const WebhookAnimation = () => {
                 variants={eventNameVariants}
                 transition={{ delay: 0.3 + index * 0.2 }}
                 whileHover={{ scale: 1.02 }}
-                className="relative"
+                className="relative w-64"
                 onMouseEnter={() => setHoveredEvent(ev)}
                 onMouseLeave={() => setHoveredEvent(null)}
               >
@@ -219,6 +203,31 @@ export const WebhookAnimation = () => {
                 </Button>
               </motion.div>
             ))}
+            <AnimatePresence>
+              {timesTried === 0 && stage === "idle" && (
+                <motion.div
+                  key="press-event-instruction"
+                  initial="hidden"
+                  exit="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={{
+                    ...eventNameVariants,
+                    visible: {
+                      ...eventNameVariants.visible,
+                      transition: { duration: 0.5, delay: 2 },
+                    },
+                  }}
+                  transition={{ duration: 1.2 }}
+                  className="absolute -bottom-20 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg flex items-center gap-3 w-56"
+                >
+                  <p className="text-sm font-medium">
+                    Click an event to see how it works in practice.
+                  </p>
+                  <ArrowUp className="w-7 h-7 animate-bounce" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <AnimatePresence>
@@ -251,6 +260,7 @@ export const WebhookAnimation = () => {
             )}
           </AnimatePresence>
 
+          {/* Loading stripe */}
           <AnimatePresence>
             {stage === "loading" && !webhookVisible && (
               <motion.div
@@ -266,6 +276,7 @@ export const WebhookAnimation = () => {
               </motion.div>
             )}
           </AnimatePresence>
+          {/* Stripe image */}
           {animationOngoing || timesTried > 0 ? (
             <motion.div
               key={stripeAnimationKey}
@@ -309,21 +320,18 @@ export const WebhookAnimation = () => {
             </motion.div>
           )}
 
+          {/* Webhook  */}
           <AnimatePresence>
             {webhookVisible && (
               <motion.div
                 key="stripe-protect-server-webhook"
                 initial={{ x: -400, y: 0, opacity: 1 }}
-                animate={{ x: -30, y: 90, opacity: 1 }}
+                animate={{ x: -70, y: 90, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  // duration: 0.6,
-                  // type: "spring",
-                  // stiffness: 100,
-                  // damping: 20,
                   delay: 1,
                 }}
-                className="absolute left-[66%] top-[36%] bg-primary p-4 rounded-xl duration-300 ease-linear"
+                className="absolute left-[70%] top-[36%] bg-primary p-4 rounded-xl duration-300 ease-linear"
               >
                 <Webhook className="w-12 h-12 text-primary-foreground" />
               </motion.div>
@@ -334,16 +342,12 @@ export const WebhookAnimation = () => {
               <motion.div
                 id="user-server-webhook"
                 initial={{ x: -400, y: 0, opacity: 1 }}
-                animate={{ x: -30, y: -90, opacity: 1 }}
+                animate={{ x: -70, y: -90, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  // duration: 1,
-                  // type: "spring",
-                  // stiffness: 100,
-                  // damping: 20,
                   delay: 1,
                 }}
-                className="absolute left-[66%] top-[36%] bg-primary p-4 rounded-xl duration-300 ease-linear"
+                className="absolute left-[70%] top-[36%] bg-primary p-4 rounded-xl duration-300 ease-linear"
               >
                 <Webhook className="w-12 h-12 text-primary-foreground" />
               </motion.div>

@@ -35,7 +35,9 @@ export default function NavigationBar() {
                   href={
                     item === "Read more"
                       ? "/blog"
-                      : `#${item.toLowerCase().replace(/\s+/g, "-")}`
+                      : item === "How it Works"
+                        ? "#how-does-it-work"
+                        : `#${item.toLowerCase().replace(/\s+/g, "-")}`
                   }
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
@@ -46,9 +48,9 @@ export default function NavigationBar() {
           )}
           <Button className="md:px-16 md:py-5" asChild>
             <Link href="/login">
-            <span className="hidden md:block">Protect your revenue</span>
-            <span className="md:hidden">Get started</span>
-               <ArrowRight />
+              <span className="hidden md:block">Protect your revenue</span>
+              <span className="md:hidden">Get started</span>
+              <ArrowRight />
             </Link>
           </Button>
         </nav>
