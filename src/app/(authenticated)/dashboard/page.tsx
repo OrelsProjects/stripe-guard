@@ -77,7 +77,7 @@ function Dashboard() {
       <div className="container flex flex-col gap-2 bg-background py-8">
         <h1 className="text-4xl font-bold">Webhook Monitor</h1>
         <h2 className="text-xl">Today&apos;s Webhook Performance</h2>
-        <div className="w-full h-full flex flex-col gap-8 relative">
+        <div className="w-full h-full flex flex-col gap-1 mt-6 relative">
           {/* Cards Mapping */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 z-10">
             {loading
