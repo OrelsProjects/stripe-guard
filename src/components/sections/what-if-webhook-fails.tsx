@@ -126,7 +126,7 @@ export function StepItem({ number, text, delay }: StepItemProps) {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="flex items-center gap-3 bg-secondary/20 p-3 rounded-lg"
+      className="flex items-center gap-3 bg-secondary/5 p-3 rounded-lg"
     >
       <span className="text-primary font-bold">{number}.</span>
       {text}
