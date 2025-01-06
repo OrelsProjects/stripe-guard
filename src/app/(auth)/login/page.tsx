@@ -9,7 +9,7 @@ const appName = process.env.NEXT_PUBLIC_APP_NAME;
 
 const Auth = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4 font-['Montserrat']">
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
