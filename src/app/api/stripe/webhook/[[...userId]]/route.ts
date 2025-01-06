@@ -111,7 +111,7 @@ async function getUserStripeCredentials(
 }
 
 function areTherePendingWebhooks(pendingHooks: number): boolean {
-  return pendingHooks > REGISTERED_CONNECTED_HOOKS;
+  return pendingHooks > 0;
 }
 
 async function retryPendingWebhooks(
@@ -330,13 +330,21 @@ async function processStripeEvent(
     throw new Error("Stripe not initialized");
   }
 
-  let pendingHooks = event.pending_webhooks;
+  // await 3000 ms, give the response to stripe time to reach their servers, so we don't have extra pending webhooks
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  const newEvent = await stripe.events.retrieve(event.id);
+  let pendingHooks = newEvent.pending_webhooks;
 
   const webhookSucceeded = !areTherePendingWebhooks(pendingHooks)
     ? true
-    : await retryPendingWebhooks(stripe, event.id);
+    : await retryPendingWebhooks(stripe, newEvent.id);
 
-  await handleWebhookResolution(event, userStripeCredentials, webhookSucceeded);
+  await handleWebhookResolution(
+    newEvent,
+    userStripeCredentials,
+    webhookSucceeded,
+  );
 }
 
 export async function POST(
@@ -402,7 +410,7 @@ export async function POST(
       );
     }
 
-    await processStripeEvent(userStripeCredentials, event);
+    processStripeEvent(userStripeCredentials, event);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {

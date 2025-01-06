@@ -119,8 +119,8 @@ export function HeroSection() {
             <FadeIn direction="up" delay={0.1}>
               <p className="text-lg text-gray-400 max-w-2xl mx-auto">
                 Missed payments can hurt your revenue and customer experience.
-                Monitor your webhooks seamlessly, fix issues instantly, and keep
-                your business running smoothly.
+                Monitor your Stripe webhooks seamlessly, fix issues instantly, and
+                keep your business running smoothly.
               </p>
             </FadeIn>
 
