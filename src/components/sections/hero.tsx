@@ -9,6 +9,7 @@ import Link from "next/link";
 import Logo from "@/components/ui/Logo";
 import { NotificationComponent } from "@/components/sections/notification";
 import { FlipWords } from "@/components/ui/flipWords";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 interface Error {
   title: string;
@@ -106,11 +107,11 @@ export function HeroSection() {
             {/* Main heading */}
             <FadeIn direction="up">
               <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-tight text-foreground">
-                <span>Your</span>{" "}
-                <motion.span className="text-primary inline-block">
-                  Safety Net
-                </motion.span>
-                <p>For Webhook Failures</p>
+                Don&apos;t Let Failed Webhooks
+                <AnimatedText
+                  className="text-secondary inline-block text-4xl md:text-6xl lg:text-7xl"
+                  text=" Kill Your Revenue"
+                />
               </h1>
             </FadeIn>
 
