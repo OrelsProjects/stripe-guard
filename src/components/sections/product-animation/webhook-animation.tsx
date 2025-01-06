@@ -2,12 +2,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowUp,
   CogIcon,
-  MousePointerClick,
   User,
   UserCog,
   Webhook,
 } from "lucide-react";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ServerIcon } from "./server-icon";
 import { NotificationEmail } from "./notification-email";
 import { sendAlertToUserEvents } from "@/models/payment";

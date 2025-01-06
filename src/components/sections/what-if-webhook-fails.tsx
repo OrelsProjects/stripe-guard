@@ -144,10 +144,10 @@ export function WhatIfWebhookFails() {
         className="text-center"
       >
         <h2 className="text-3xl font-bold tracking-tight mb-2">
-          Webhook Insurance for Your Business
+          Don&apos;t Let Failed Webhooks Kill Your Revenue
         </h2>
         <p className="text-lg text-muted-foreground">
-          Because peace of mind is priceless.
+          Protect your business from missed payments and lost transactions.
         </p>
       </motion.div>
 
@@ -159,31 +159,31 @@ export function WhatIfWebhookFails() {
           transition={{ duration: 0.5 }}
         >
           <Alert className="bg-primary/5 border-primary/20">
-            <AlertTitle className="text-primary">Comprehensive Monitoring</AlertTitle>
+            <AlertTitle className="text-primary">Revenue Protection</AlertTitle>
             <AlertDescription>
-              Get notified immediately when payment webhooks encounter issues.
+              Catch failed payment webhooks before they impact your bottom line.
             </AlertDescription>
           </Alert>
         </motion.div>
 
         <AnimatedCard delay={0.2}>
           <h3 className="font-semibold text-lg mb-4">
-            What happens when a webhook fails?
+            How we protect your revenue stream:
           </h3>
           <div className="grid gap-3">
             <StepItem
               number={1}
-              text="Receive instant notifications."
+              text="Instant alerts when payment webhooks fail, preventing revenue loss."
               delay={0.3}
             />
             <StepItem
               number={2}
-              text="Customers are reassured with friendly emails."
+              text="Automated customer communication to ensure payment completion."
               delay={0.4}
             />
             <StepItem
               number={3}
-              text="Continue smooth operations while addressing the issue."
+              text="Quick recovery process to maintain steady cash flow."
               delay={0.5}
             />
           </div>
@@ -191,8 +191,7 @@ export function WhatIfWebhookFails() {
 
         <AnimatedCard delay={0.6} className="bg-primary/5 border-primary/20">
           <p className="text-lg">
-            Set it up once and rest assured—we’ve got your back, allowing you to
-            focus on growing your business.
+            Set it up once and secure your revenue stream—we monitor your webhooks 24/7 so you never miss a payment.
           </p>
         </AnimatedCard>
       </div>
