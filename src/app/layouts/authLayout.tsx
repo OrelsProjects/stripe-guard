@@ -1,5 +1,4 @@
 import type { Viewport } from "next";
-import AuthProvider from "@/app/providers/AuthProvider";
 
 interface RootLayoutProps {
   children: React.ReactNode;

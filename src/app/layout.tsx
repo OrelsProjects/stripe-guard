@@ -18,13 +18,14 @@ interface RootLayoutProps {
   locale: never;
 }
 
-const OG_IMAGE_URL = process.env.NEXT_PUBLIC_OG_IMAGE_URL as string;
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 const APP_DEFAULT_TITLE = process.env.NEXT_PUBLIC_APP_DEFAULT_TITLE as string;
 const APP_TITLE_TEMPLATE = process.env.NEXT_PUBLIC_APP_TITLE_TEMPLATE as string;
 const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION as string;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL as string;
 const APP_STARTUP_IMAGE = process.env.NEXT_PUBLIC_APP_STARTUP_IMAGE as string;
+const TWITTER_OG_IMAGE_URL = process.env
+  .NEXT_PUBLIC_TWITTER_OG_IMAGE_URL as string;
 
 export const metadata: Metadata = {
   applicationName: APP_NAME, // Name of the application, used in app manifest files and app listing.
@@ -52,17 +53,17 @@ export const metadata: Metadata = {
       template: APP_TITLE_TEMPLATE, // Template for title formatting in Open Graph to create page-specific titles.
     },
     description: APP_DESCRIPTION, // Description used in Open Graph for richer social media previews.
-    images: { url: OG_IMAGE_URL, width: 1200, height: 630 }, // Default Open Graph image with recommended size.
+    images: { url: TWITTER_OG_IMAGE_URL, width: 1200, height: 630 }, // Default Open Graph image with recommended size.
   },
   twitter: {
-    card: "summary", // Sets Twitter card type to 'summary', showing a small preview image and description. To show big image, use 'summary_large_image'.
+    card: "summary_large_image", // Sets Twitter card type to 'summary', showing a small preview image and description. To show big image, use 'summary_large_image'.
     title: {
       default: APP_DEFAULT_TITLE, // Default title used in Twitter metadata for page previews.
       template: APP_TITLE_TEMPLATE, // Template for Twitter title formatting to include specific page names.
     },
     description: APP_DESCRIPTION, // Description displayed in Twitter card previews.
     images: {
-      url: OG_IMAGE_URL,
+      url: TWITTER_OG_IMAGE_URL,
       width: 1200,
       height: 630,
       alt: APP_DESCRIPTION,
