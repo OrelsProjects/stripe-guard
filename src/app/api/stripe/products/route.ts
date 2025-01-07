@@ -4,6 +4,9 @@ import loggerServer from "@/loggerServer";
 import { Product } from "@/models/payment";
 import { NextRequest, NextResponse } from "next/server";
 
+// revalidate always
+export const revalidate = 0;
+
 const appName = process.env.NEXT_PUBLIC_APP_NAME as string;
 
 export async function GET(req: NextRequest) {
