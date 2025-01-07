@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Coupon } from "@/models/payment";
-import { Check, CheckCircle, Loader2 } from "lucide-react";
+import { Check, CheckCircle, Loader2, Clock } from "lucide-react";
 import { useState } from "react";
 
 interface PromotionalBannerProps {
@@ -16,14 +16,37 @@ export function PromotionalBanner({
   applied,
 }: PromotionalBannerProps) {
   const [loading, setLoading] = useState(false);
+  const timesRedeemed = coupon.timesRedeemed || 0;
+  const maxRedemptions = coupon.maxRedemptions || 0;
+  const remainingRedemptions = maxRedemptions - timesRedeemed;
+
+  if (maxRedemptions && timesRedeemed && remainingRedemptions <= 0) {
+    return null;
+  }
+
+  const urgencyText =
+    remainingRedemptions > 0
+      ? remainingRedemptions === 1
+        ? "Last chance! Only 1 offer left"
+        : `Hurry! Only ${remainingRedemptions} offers left`
+      : "";
+
   return (
     <div className="w-fit bg-secondary p-4 rounded-lg mb-4 flex items-center justify-between">
       <div className="flex items-center">
-        <span className="text-2xl mr-2">❄️</span>
-        <span className="font-medium text-secondary-foreground">
-          Use the code <strong> {coupon.name}</strong> for{" "}
-          <strong>{coupon.percent_off}%</strong> off this month only.
-        </span>
+        <span className="text-2xl mr-2">{coupon.emoji}</span>
+        <div className="flex flex-col text-secondary-foreground">
+          <span className="font-medium">
+            Use the code <strong>{coupon.name}</strong> for{" "}
+            <strong>{coupon.percentOff}%</strong> off this month only.
+          </span>
+          {urgencyText && (
+            <span className="text-sm mt-1 flex items-center">
+              <Clock className="w-3 h-3 mr-1" />
+              {urgencyText}
+            </span>
+          )}
+        </div>
       </div>
       <Button
         onClick={() => {
@@ -41,10 +64,10 @@ export function PromotionalBanner({
         ) : applied ? (
           <div className="flex items-center text-green-500">
             <CheckCircle className="w-4 h-4" />
-            <span className="ml-2 font-bold">Saved {coupon.percent_off}%</span>
+            <span className="ml-2 font-bold">Saved {coupon.percentOff}%</span>
           </div>
         ) : (
-          `Get Deal`
+          `Claim Now`
         )}
       </Button>
     </div>

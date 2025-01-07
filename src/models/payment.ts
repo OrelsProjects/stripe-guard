@@ -58,7 +58,10 @@ export interface Product {
 export interface Coupon {
   id: string;
   name: string;
-  percent_off: number;
+  emoji: string;
+  percentOff: number;
+  maxRedemptions: number | null;
+  timesRedeemed: number | null;
 }
 
 export interface ProductsResponse {

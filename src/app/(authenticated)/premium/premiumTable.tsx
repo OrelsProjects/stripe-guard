@@ -85,7 +85,7 @@ export function PremiumTable({
 
   const calculateDiscountedPrice = (price: number) => {
     if (!discountApplied || !coupon) return price;
-    return price - (price * coupon.percent_off) / 100;
+    return price - (price * coupon.percentOff) / 100;
   };
 
   const renderPriceColumn = (product: Product) => {

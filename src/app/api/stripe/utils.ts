@@ -1,19 +1,23 @@
+import { Coupon } from "@/models/payment";
 import Stripe from "stripe";
 
-export async function getCoupon(stripe: Stripe, month: string) {
+const LAUNCH_COUPON_NAME = "LAUNCH";
+const LAUNCH_EMOJI = "🚀";
+
+async function findCoupon(stripe: Stripe, month: string) {
   const coupons = await stripe.coupons.list();
   const coupon = coupons.data.find(coupon => coupon.name === month);
   return coupon;
 }
 
-export async function getOrCreateMonthlyCoupon(stripe: Stripe) {
+async function getOrCreateMonthlyCoupon(stripe: Stripe) {
   const thisMonthName = new Date()
     .toLocaleString("default", {
       month: "long",
     })
     .toUpperCase();
 
-  const existingCoupon = await getCoupon(stripe, thisMonthName);
+  const existingCoupon = await findCoupon(stripe, thisMonthName);
   if (existingCoupon) {
     return existingCoupon;
   }
@@ -53,4 +57,20 @@ export async function getOrCreateMonthlyCoupon(stripe: Stripe) {
   }
 
   return coupon;
+}
+
+export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
+  const coupons = await stripe.coupons.list();
+  const coupon = coupons.data.find(
+    coupon => coupon.name === LAUNCH_COUPON_NAME,
+  );
+  const value = coupon || (await getOrCreateMonthlyCoupon(stripe));
+  return {
+    id: value.id,
+    name: value.name || "",
+    percentOff: value.percent_off || 0,
+    timesRedeemed: value.times_redeemed,
+    maxRedemptions: value.max_redemptions,
+    emoji: value.metadata?.seasonEmoji || LAUNCH_EMOJI,
+  };
 }
