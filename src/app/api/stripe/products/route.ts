@@ -1,4 +1,5 @@
 import { getStripeInstance } from "@/app/api/_payment/stripe";
+import { getOrCreateMonthlyCoupon } from "@/app/api/stripe/utils";
 import loggerServer from "@/loggerServer";
 import { Product } from "@/models/payment";
 import { NextRequest, NextResponse } from "next/server";
@@ -51,7 +52,12 @@ export async function GET(req: NextRequest) {
       (a, b) => b.priceStructure.price - a.priceStructure.price,
     );
 
-    return NextResponse.json(productsSortedByPrice, { status: 200 });
+    const coupon = await getOrCreateMonthlyCoupon(stripe);
+
+    return NextResponse.json(
+      { products: productsSortedByPrice, coupon },
+      { status: 200 },
+    );
   } catch (error: any) {
     loggerServer.error("Error getting products", "system", error);
     return NextResponse.json(

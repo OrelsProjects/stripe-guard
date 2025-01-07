@@ -1,27 +1,29 @@
 import axios from "axios";
 import { Logger } from "@/logger";
-import { Product } from "@/models/payment";
+import { ProductsResponse } from "@/models/payment";
 import { loadStripe } from "@stripe/stripe-js";
 import { useAppDispatch } from "@/lib/hooks/redux";
-import { setProducts } from "@/lib/features/products/productsSlice";
+import { setCoupon, setProducts } from "@/lib/features/products/productsSlice";
 import { useRef } from "react";
 
-const stripePromise = () => loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-);
+const stripePromise = () =>
+  loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function usePayments() {
   const dispatch = useAppDispatch();
   const loadingProducts = useRef(false);
 
-  const getProducts = async () => {
+  const getProducts = async (): Promise<ProductsResponse | null> => {
     try {
       if (loadingProducts.current) {
-        return;
+        return null;
       }
       loadingProducts.current = true;
-      const response = await axios.get<Product[]>("/api/stripe/products");
-      dispatch(setProducts(response.data));
+      const response = await axios.get<ProductsResponse>(
+        "/api/stripe/products",
+      );
+      dispatch(setProducts(response.data.products));
+      dispatch(setCoupon(response.data.coupon));
       return response.data;
     } catch (error: any) {
       Logger.error("Error getting products", { error });
@@ -31,11 +33,15 @@ export default function usePayments() {
     }
   };
 
-  const goToCheckout = async (priceId: string, productId: string) => {
+  const goToCheckout = async (
+    priceId: string,
+    productId: string,
+    discountApplied: boolean,
+  ) => {
     try {
       const response = await axios.post<{ sessionId: string }>(
         "/api/stripe/checkout",
-        { priceId, productId },
+        { priceId, productId, discountApplied },
       );
       const stripe = await stripePromise();
       const { error } = await stripe!.redirectToCheckout({

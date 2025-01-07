@@ -1,4 +1,5 @@
 import { getStripeInstance } from "@/app/api/_payment/stripe";
+import { getOrCreateMonthlyCoupon } from "@/app/api/stripe/utils";
 import { authOptions } from "@/auth/authOptions";
 import loggerServer from "@/loggerServer";
 import { getServerSession } from "next-auth";
@@ -11,8 +12,12 @@ export async function POST(req: NextRequest) {
   }
   try {
     const nextUrl = req.nextUrl;
-    const { priceId, productId } = await req.json();
+    const { priceId, productId, discountApplied } = await req.json();
     const stripe = getStripeInstance();
+
+    const coupon = discountApplied
+      ? await getOrCreateMonthlyCoupon(stripe)
+      : undefined;
 
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -23,6 +28,9 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: "payment",
+      ...(coupon && {
+        discounts: [{ coupon: coupon.id }],
+      }),
       success_url: `${nextUrl.origin}/api/stripe/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${nextUrl.origin}/cancel`,
       client_reference_id: session.user.userId,
@@ -31,8 +39,10 @@ export async function POST(req: NextRequest) {
         clientName: session.user.name || "",
         productId,
         priceId,
+        ...(coupon && { appliedCoupon: coupon.id }),
       },
     });
+    
     return NextResponse.json({ sessionId: stripeSession.id }, { status: 200 });
   } catch (error: any) {
     loggerServer.error(

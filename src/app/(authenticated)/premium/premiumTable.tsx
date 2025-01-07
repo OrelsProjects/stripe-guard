@@ -9,17 +9,26 @@ import usePayments from "@/lib/hooks/usePayments";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Logger } from "@/logger";
+import { Product } from "@/models/payment";
+import { PromotionalBanner } from "@/app/(authenticated)/premium/promotionalBanner";
 
 export interface PremiumTableProps {
   buyText?: string;
   onCheckout?: (priceId: string, productId: string) => void;
+  onDiscountEnabled?: () => void;
 }
 
-export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
+export function PremiumTable({
+  onCheckout,
+  buyText,
+  onDiscountEnabled,
+}: PremiumTableProps) {
   const { getProducts, goToCheckout } = usePayments();
-  const { products } = useAppSelector(state => state.products);
+  const { products, coupon } = useAppSelector(state => state.products);
   const [loading, setLoading] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
+  const [discountApplied, setDiscountApplied] = useState(false);
+  const [applyingDiscount, setApplyingDiscount] = useState(false);
   const loadingRef = useRef(false);
 
   useEffect(() => {
@@ -53,7 +62,7 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
     }
     setLoadingCheckout(true);
     try {
-      await goToCheckout(priceId, productId);
+      await goToCheckout(priceId, productId, discountApplied);
     } catch (error: any) {
       toast.error("Something went wrong. Try again :)");
       Logger.error("Error starting checkout:", error);
@@ -62,9 +71,56 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
     }
   };
 
+  const applyDiscount = async () => {
+    if (!coupon) return;
+    if (discountApplied) return;
+    setApplyingDiscount(true);
+    await new Promise(resolve => setTimeout(resolve, 400)); // Simulating API call
+    setDiscountApplied(true);
+    setApplyingDiscount(false);
+    if (onDiscountEnabled) {
+      onDiscountEnabled();
+    }
+  };
+
+  const calculateDiscountedPrice = (price: number) => {
+    if (!discountApplied || !coupon) return price;
+    return price - (price * coupon.percent_off) / 100;
+  };
+
+  const renderPriceColumn = (product: Product) => {
+    const originalPrice = product.priceStructure.price;
+    const discountedPrice = calculateDiscountedPrice(originalPrice);
+
+    return (
+      <td className="p-8 text-center font-bold">
+        {discountApplied ? (
+          <>
+            <span className="text-gray-500 line-through">${originalPrice}</span>{" "}
+            <span className="text-primary">${discountedPrice.toFixed(2)}</span>{" "}
+            <span className="text-green-500 text-sm">
+              save ${(originalPrice - discountedPrice).toFixed(2)}
+            </span>
+          </>
+        ) : (
+          <span className="text-primary">${originalPrice}</span>
+        )}
+      </td>
+    );
+  };
+
   return (
-    <div className="overflow-hidden border border-muted rounded-lg">
-      <div className="hidden md:block">
+    <div className="rounded-lg">
+      {coupon && (
+        <div className="w-full flex justify-center">
+          <PromotionalBanner
+            coupon={coupon}
+            onApply={applyDiscount}
+            applied={discountApplied}
+          />
+        </div>
+      )}
+      <div className="hidden md:block border border-muted rounded-lg">
         {" "}
         {/* Desktop view */}
         <table className="w-full table-auto text-center">
@@ -77,7 +133,7 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
+            {loading || applyingDiscount ? (
               <tr>
                 <td colSpan={4} className="p-4 text-center">
                   <Skeleton className="h-24 w-full" />
@@ -101,13 +157,11 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
                         product.priceStructure.tokens,
                       )}
                     </td>
-                    <td className="p-8 text-center font-bold text-primary">
-                      ${product.priceStructure.price}
-                    </td>
+                    {renderPriceColumn(product)}
                     <td className="p-8 text-center text-muted-foreground">
                       $
                       {(
-                        product.priceStructure.price /
+                        calculateDiscountedPrice(product.priceStructure.price) /
                         product.priceStructure.tokens
                       ).toFixed(4)}
                     </td>
@@ -136,7 +190,7 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
       <div className="flex flex-col gap-6 md:hidden">
         {" "}
         {/* Mobile view */}
-        {loading ? (
+        {loading || applyingDiscount ? (
           <div className="p-4">
             <Skeleton className="h-48 w-full" />
             <Skeleton className="h-48 w-full mt-4" />
@@ -167,8 +221,24 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
                   <span className="text-sm font-medium text-muted-foreground">
                     PRICE
                   </span>
-                  <span className="text-lg font-bold text-primary">
-                    ${product.priceStructure.price}
+                  <span className="text-lg font-bold">
+                    {discountApplied ? (
+                      <>
+                        <span className="text-gray-500 line-through">
+                          ${product.priceStructure.price}
+                        </span>{" "}
+                        <span className="text-primary">
+                          $
+                          {calculateDiscountedPrice(
+                            product.priceStructure.price,
+                          ).toFixed(2)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-primary">
+                        ${product.priceStructure.price}
+                      </span>
+                    )}
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-4">
@@ -178,7 +248,7 @@ export function PremiumTable({ onCheckout, buyText }: PremiumTableProps) {
                   <span className="text-sm text-muted-foreground">
                     $
                     {(
-                      product.priceStructure.price /
+                      calculateDiscountedPrice(product.priceStructure.price) /
                       product.priceStructure.tokens
                     ).toFixed(4)}
                   </span>

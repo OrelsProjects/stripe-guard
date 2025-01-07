@@ -2,12 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { PremiumTable } from "@/app/(authenticated)/premium/premiumTable";
+import { useState } from "react";
 
 export function Pricing() {
   const router = useRouter();
-
+  const [discountApplied, setDiscountApplied] = useState(false);
   const handleCheckout = (priceId: string, productId: string) => {
-    router.push(`/login?pri_id=${priceId}&pro_id=${productId}`);
+    router.push(
+      `/login?pri_id=${priceId}&pro_id=${productId}&promo=${discountApplied}`,
+    );
   };
 
   return (
@@ -19,7 +22,13 @@ export function Pricing() {
         <p className="text-xl text-center text-muted-foreground mb-12">
           Secure your webhooks with our flexible pricing options
         </p>
-        <PremiumTable onCheckout={handleCheckout} buyText="Protect now" />
+        <PremiumTable
+          onDiscountEnabled={() => {
+            setDiscountApplied(true);
+          }}
+          onCheckout={handleCheckout}
+          buyText="Protect now"
+        />
       </div>
     </section>
   );

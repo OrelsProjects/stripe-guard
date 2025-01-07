@@ -75,6 +75,7 @@ export default function InitiatePlanFromLandingProvider({
 
   const productId = searchParams.get("pro_id");
   const priceId = searchParams.get("pri_id");
+  const discountApplied = searchParams.get("promo");
 
   useEffect(() => {
     if (productId && priceId) {
@@ -83,10 +84,12 @@ export default function InitiatePlanFromLandingProvider({
       loadingRedirectRef.current = true;
       setLoadingRedirect(true);
 
-      goToCheckout(priceId, productId).finally(() => {
-        loadingRedirectRef.current = false;
-        setLoadingRedirect(false);
-      });
+      goToCheckout(priceId, productId, discountApplied === "true").finally(
+        () => {
+          loadingRedirectRef.current = false;
+          setLoadingRedirect(false);
+        },
+      );
     }
   }, [productId, priceId]);
 

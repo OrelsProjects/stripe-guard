@@ -54,3 +54,14 @@ export interface Product {
   features: string[];
   recommended?: boolean;
 }
+
+export interface Coupon {
+  id: string;
+  name: string;
+  percent_off: number;
+}
+
+export interface ProductsResponse {
+  products: Product[];
+  coupon: Coupon;
+}

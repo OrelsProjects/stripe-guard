@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Product } from "@/models/payment";
+import { Product, Coupon } from "@/models/payment";
 
 export interface ProductsState {
   products: Product[];
+  coupon: Coupon | null;
 }
 
 export const initialState: ProductsState = {
   products: [],
+  coupon: null,
 };
 
 const productsSlice = createSlice({
@@ -16,9 +18,12 @@ const productsSlice = createSlice({
     setProducts(state, action) {
       state.products = action.payload;
     },
+    setCoupon(state, action) {
+      state.coupon = action.payload;
+    },
   },
 });
 
-export const { setProducts } = productsSlice.actions;
+export const { setProducts, setCoupon } = productsSlice.actions;
 
 export default productsSlice.reducer;
