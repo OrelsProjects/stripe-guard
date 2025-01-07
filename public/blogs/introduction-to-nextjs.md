@@ -6,7 +6,7 @@ publishedAt: "2024-12-01T10:00:00Z"
 readingTime: "6 min read"
 author:
   name: "Orel Zilberman"
-  role: "Starter"
+  role: "Founder of StripeProtect"
   avatar: "/founder-image.jpg"
 ---
 
