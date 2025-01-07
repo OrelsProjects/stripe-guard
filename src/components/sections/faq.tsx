@@ -80,8 +80,7 @@ export function FAQSection() {
             Questions? We&apos;ve Got Answers
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16">
-            Here are some common questions about our service. If you need more
-            information, our support team is always here to help.
+            Here are some common questions about our service.
           </p>
         </FadeIn>
 
