@@ -1,9 +1,12 @@
+import loggerServer from "@/loggerServer";
 import { Coupon } from "@/models/payment";
 import Stripe from "stripe";
 
 const LAUNCH_COUPON_NAME = "LAUNCH";
 const MAX_PERCENT_OFF = 20;
 const LAUNCH_EMOJI = "🚀";
+
+const appName = process.env.NEXT_PUBLIC_APP_NAME;
 
 async function findCoupon(stripe: Stripe, month: string) {
   const coupons = await stripe.coupons.list();
@@ -42,7 +45,12 @@ async function getOrCreateMonthlyCoupon(stripe: Stripe) {
           : "🍂";
   // Find coupon that's called DECEMBER, for example, if it's December
   const coupons = await stripe.coupons.list();
-  let coupon = coupons.data.find(coupon => coupon.name === thisMonthName);
+  loggerServer.info("Coupons", "system", {
+    coupons,
+  });
+  let coupon = coupons.data.find(
+    coupon => coupon.name === thisMonthName && coupon.metadata?.app === appName,
+  );
   if (!coupon) {
     coupon = await stripe.coupons.create({
       name: thisMonthName,
@@ -52,6 +60,7 @@ async function getOrCreateMonthlyCoupon(stripe: Stripe) {
         month: thisMonthName,
         season,
         seasonEmoji,
+        app: appName || "",
       },
       percent_off: MAX_PERCENT_OFF,
     });
@@ -62,8 +71,12 @@ async function getOrCreateMonthlyCoupon(stripe: Stripe) {
 
 export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
   const coupons = await stripe.coupons.list();
+  loggerServer.info("Coupons", "system", {
+    coupons,
+  });
   const coupon = coupons.data.find(
-    coupon => coupon.name === LAUNCH_COUPON_NAME,
+    coupon =>
+      coupon.name === LAUNCH_COUPON_NAME && coupon.metadata?.app === appName,
   );
   let value = coupon || (await getOrCreateMonthlyCoupon(stripe));
   const redeemBy = (coupon?.redeem_by || 0) * 1000;
