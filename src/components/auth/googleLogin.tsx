@@ -5,11 +5,11 @@ import { toast } from "react-toastify";
 import { UnknownUserError } from "@/models/errors/UnknownUserError";
 import UserAlreadyExistsError from "@/models/errors/UserAlreadyExistsError";
 import Image from "next/image";
-import CustomLink from "@/components/customLink";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
+import { EventTracker } from "@/eventTracker";
 
 interface GoogleLoginProps {
   className?: string;
@@ -24,17 +24,23 @@ export default function GoogleLogin({
 
   const handleGoogleLogin = async () => {
     try {
-      toast.promise(signInWithGoogle(), {
+      EventTracker.track("google_sign_in_attempt");
+      await toast.promise(signInWithGoogle(), {
         pending: "Signing in...",
       });
+      EventTracker.track("google_sign_in_success");
     } catch (error: any) {
       if (error instanceof InvalidCredentialsError) {
+        EventTracker.track("google_sign_in_error", { type: "invalid_credentials" });
         toast.error("Invalid credentials");
       } else if (error instanceof UnknownUserError) {
+        EventTracker.track("google_sign_in_error", { type: "unknown_user" });
         toast.error("Unknown user");
       } else if (error instanceof UserAlreadyExistsError) {
+        EventTracker.track("google_sign_in_error", { type: "user_exists" });
         toast.error("User already exists");
       } else {
+        EventTracker.track("google_sign_in_error", { type: "unknown" });
         toast.error("Unknown error");
       }
     }

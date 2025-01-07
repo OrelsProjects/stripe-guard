@@ -13,6 +13,7 @@ import { sendAlertToUserEvents } from "@/models/payment";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/ui/Logo";
+import { EventTracker } from "@/eventTracker";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -91,6 +92,10 @@ export const WebhookAnimation = () => {
       setAnimationOngoing(false);
       setSelectedEvent(null);
       setAnimatingEvent(null);
+      EventTracker.track("webhook_demo_success", {
+        event_type: selectedEvent,
+        times_tried: timesTried,
+      });
     } else {
       setStage("failure");
       setUserServerStage("failure");
@@ -98,6 +103,10 @@ export const WebhookAnimation = () => {
       setStripeProtectServerStage("triggered");
       await new Promise(resolve => setTimeout(resolve, 1000));
       setShowNotifications(true);
+      EventTracker.track("webhook_demo_failure", {
+        event_type: selectedEvent,
+        times_tried: timesTried,
+      });
     }
   };
 
@@ -108,6 +117,10 @@ export const WebhookAnimation = () => {
     y: number,
   ) => {
     if (animationOngoing) return;
+    EventTracker.track("webhook_demo_event_clicked", {
+      event_type: event,
+      index,
+    });
     setSelectedEvent(event);
     setAnimatingEvent({
       name: event,
@@ -116,6 +129,32 @@ export const WebhookAnimation = () => {
       y,
     });
     setAnimationOngoing(true);
+  };
+
+  const handleProcessingComplete = () => {
+    const userServerSuccess = timesTried % 2 === 1;
+    
+    if (userServerSuccess) {
+      setStage("success");
+      setUserServerStage("success");
+      setStripeProtectServerStage("success");
+      setAnimationOngoing(false);
+      setSelectedEvent(null);
+      setAnimatingEvent(null);
+      EventTracker.track("webhook_demo_success", {
+        event_type: selectedEvent,
+        times_tried: timesTried,
+      });
+    } else {
+      setStage("failure");
+      setUserServerStage("failure");
+      setStripeProtectServerStage("triggered");
+      setShowNotifications(true);
+      EventTracker.track("webhook_demo_failure", {
+        event_type: selectedEvent,
+        times_tried: timesTried,
+      });
+    }
   };
 
   useEffect(() => {

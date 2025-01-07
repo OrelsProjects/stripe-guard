@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CheckCircle } from "lucide-react";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
+import { EventTracker } from "@/eventTracker";
 
 export default function PurchaseConfirmationPage() {
   const searchParams = useSearchParams();
@@ -27,12 +28,17 @@ export default function PurchaseConfirmationPage() {
 
   const handleOpenCheckout = (open: boolean) => {
     if (!open) {
+      EventTracker.track("purchase_confirmation_exit", { name });
       router.push("/dashboard", {
         preserveQuery: true,
         paramsToRemove: ["welcome", "name"],
       });
     }
   };
+
+  React.useEffect(() => {
+    EventTracker.track("purchase_confirmation_view", { name });
+  }, [name]);
 
   return (
     <div

@@ -12,9 +12,9 @@ import TopEventTypeDistributionGraph from "@/app/(authenticated)/dashboard/compo
 import WebhookErrorsCard from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhooksErrorsCard";
 import WebhooksSentOverTimeChart from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhooksSentOverTimeChart";
 import WebhookGraph from "@/app/(authenticated)/dashboard/components/graphs.tsx/webhookGraph";
-import { UserWebhookEvent } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import { EventTracker } from "@/eventTracker";
 
 function Dashboard() {
   const [selectedError, setSelectedError] = useState<WebhookError | null>(null);
@@ -29,9 +29,16 @@ function Dashboard() {
     if (loadingWebhooks.current) return;
     loadingWebhooks.current = true;
     setLoading(true);
+    EventTracker.track("dashboard_data_fetch_attempt");
     getUserWebhookEvents() // This function should now fetch the statistics
-      .then(stats => setStatistics(stats))
-      .catch(() => toast.error("Failed to fetch data"))
+      .then(stats => {
+        setStatistics(stats);
+        EventTracker.track("dashboard_data_fetch_success");
+      })
+      .catch(() => {
+        toast.error("Failed to fetch data");
+        EventTracker.track("dashboard_data_fetch_error");
+      })
       .finally(() => {
         loadingWebhooks.current = false;
         setLoading(false);
@@ -52,6 +59,7 @@ function Dashboard() {
     );
     if (!removedError || !statistics) return;
 
+    EventTracker.track("webhook_resolve_attempt", { webhookId: userWebhookEvent.id });
     try {
       setStatistics({
         ...statistics,
@@ -61,8 +69,10 @@ function Dashboard() {
           ) || [],
       });
       await resolveWebhook(userWebhookEvent.id);
+      EventTracker.track("webhook_resolve_success", { webhookId: userWebhookEvent.id });
     } catch {
       toast.error("Failed to resolve webhook error");
+      EventTracker.track("webhook_resolve_error", { webhookId: userWebhookEvent.id });
       if (statistics) {
         setStatistics({
           ...statistics,
@@ -132,6 +142,7 @@ function Dashboard() {
               onErrorClick={error => {
                 setSelectedError(error);
                 setIsDialogOpen(true);
+                EventTracker.track("webhook_error_view", { errorId: error.userWebhookEvent.id });
               }}
               onResolve={handleResolveWebhookError}
             />

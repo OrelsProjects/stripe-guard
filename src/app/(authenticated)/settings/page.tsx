@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { ApiSettings } from "@/components/settings/api-settings";
 import { NotificationSettings } from "@/components/settings/notification-settings";
-import { RetrySettings } from "@/components/settings/retry-settings";
 import { BillingSettings } from "@/components/settings/billing-settings";
 import { ThemeSettings } from "@/components/settings/theme-settings";
 import { useAppSelector } from "@/lib/hooks/redux";
@@ -19,6 +18,7 @@ import { User } from 'lucide-react';
 import { selectAuth } from "@/lib/features/auth/authSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logger } from "@/logger";
+import { EventTracker } from "@/eventTracker";
 
 export default function SettingsPage() {
   const { user, loading } = useAppSelector(selectAuth);
@@ -47,9 +47,12 @@ export default function SettingsPage() {
       return;
     }
     setLoadingSettings(true);
+    EventTracker.track("settings_save_attempt");
     try {
       await updateUserSettings(userSettings);
+      EventTracker.track("settings_save_success");
     } catch (error: any) {
+      EventTracker.track("settings_save_error", { error: error.message });
       Logger.error(error);
     } finally {
       setLoadingSettings(false);
@@ -96,6 +99,7 @@ export default function SettingsPage() {
           <NotificationSettings
             notificationEmail={userSettings.notificationChannels.email}
             onChange={(value: NotificationsChannel) => {
+              EventTracker.track("notification_settings_change", { value });
               setUserSettings({
                 ...userSettings,
                 notificationChannels: {

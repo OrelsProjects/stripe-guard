@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/fade-in";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import Logo from "@/components/ui/Logo";
 import { NotificationComponent } from "@/components/sections/notification";
 import { FlipWords } from "@/components/ui/flipWords";
 import { AnimatedText } from "@/components/ui/animated-text";
+import { EventTracker } from "@/eventTracker";
 
 interface Error {
   title: string;
@@ -90,6 +91,13 @@ export function HeroSection() {
     // "Dispute",
   ]);
 
+  const handleCTAClick = () => {
+    EventTracker.track("hero_cta_clicked", {
+      location: "hero_section",
+      button_text: "Get Started",
+    });
+  };
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center sm:justify-start bg-background pb-24 sm:pt-10 overflow-hidden">
       {/* Background gradient effect */}
@@ -131,8 +139,12 @@ export function HeroSection() {
                   size="lg"
                   className="bg-blue-500 hover:bg-blue-600 text-white px-8"
                   asChild
+                  onClick={handleCTAClick}
                 >
-                  <Link href="/login">Start Monitoring now</Link>
+                  <Link href="/login">
+                    Get Started
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
                 <Button
                   size="lg"

@@ -4,10 +4,24 @@ import SecurityFeatures from "@/app/(auth)/login/components/security-features";
 import GoogleLogin from "@/components/auth/googleLogin";
 import Logo from "@/components/ui/Logo";
 import { motion } from "framer-motion";
+import { EventTracker } from "@/eventTracker";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME;
 
 const Auth = () => {
+  const handleSocialSignIn = (provider: string) => {
+    EventTracker.track("social_sign_in_attempt", {
+      provider,
+      page: "login",
+    });
+  };
+
+  const handleEmailSignIn = () => {
+    EventTracker.track("email_sign_in_attempt", {
+      page: "login",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/50 flex items-center justify-center p-4">
       <motion.div
