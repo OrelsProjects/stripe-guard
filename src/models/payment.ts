@@ -62,6 +62,7 @@ export interface Coupon {
   percentOff: number;
   maxRedemptions: number | null;
   timesRedeemed: number | null;
+  redeemBy: number | null;
 }
 
 export interface ProductsResponse {

@@ -64,13 +64,21 @@ export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
   const coupon = coupons.data.find(
     coupon => coupon.name === LAUNCH_COUPON_NAME,
   );
-  const value = coupon || (await getOrCreateMonthlyCoupon(stripe));
+  let value = coupon || (await getOrCreateMonthlyCoupon(stripe));
+  const redeemBy = (coupon?.redeem_by || 0) * 1000;
+  if (redeemBy) {
+    const redeemByDate = new Date(redeemBy);
+    if (redeemByDate < new Date()) {
+      value = await getOrCreateMonthlyCoupon(stripe);
+    }
+  }
   return {
     id: value.id,
     name: value.name || "",
     percentOff: value.percent_off || 0,
     timesRedeemed: value.times_redeemed,
     maxRedemptions: value.max_redemptions,
+    redeemBy,
     emoji: value.metadata?.seasonEmoji || LAUNCH_EMOJI,
   };
 }
