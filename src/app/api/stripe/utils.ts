@@ -2,6 +2,7 @@ import { Coupon } from "@/models/payment";
 import Stripe from "stripe";
 
 const LAUNCH_COUPON_NAME = "LAUNCH";
+const MAX_PERCENT_OFF = 20;
 const LAUNCH_EMOJI = "🚀";
 
 async function findCoupon(stripe: Stripe, month: string) {
@@ -52,7 +53,7 @@ async function getOrCreateMonthlyCoupon(stripe: Stripe) {
         season,
         seasonEmoji,
       },
-      percent_off: 30,
+      percent_off: MAX_PERCENT_OFF,
     });
   }
 
