@@ -12,7 +12,7 @@ export default function NavigationBar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="h-16 sticky top-0 z-50 w-full flex justify-center items-center border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      className="h-16 sticky top-0 z-50 w-full flex justify-center items-center border-b border-border/30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
       <div className="container flex items-center h-14 justify-between">
         <Logo />

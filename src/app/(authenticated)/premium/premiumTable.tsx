@@ -120,11 +120,11 @@ export function PremiumTable({
           />
         </div>
       )}
-      <div className="hidden md:block border border-muted rounded-lg">
+      <div className="hidden md:block border border-card rounded-lg overflow-hidden">
         {" "}
         {/* Desktop view */}
         <table className="w-full table-auto text-center">
-          <thead className="bg-muted text-muted-foreground">
+          <thead className="bg-card text-card-foreground">
             <tr>
               <th className="p-4 font-medium">PROTECTED WEBHOOK</th>
               <th className="p-4 font-medium text-center">PRICE</th>
@@ -150,7 +150,7 @@ export function PremiumTable({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     key={product.id}
-                    className="text-lg md:text-xl text-center border-b border-muted/80"
+                    className="text-lg md:text-xl text-center border-b border-card/80"
                   >
                     <td className="p-8 font-bold text-foreground">
                       {new Intl.NumberFormat("en-US").format(
@@ -158,7 +158,7 @@ export function PremiumTable({
                       )}
                     </td>
                     {renderPriceColumn(product)}
-                    <td className="p-8 text-center text-muted-foreground">
+                    <td className="p-8 text-center text-card-foreground">
                       $
                       {(
                         calculateDiscountedPrice(product.priceStructure.price) /
@@ -205,10 +205,10 @@ export function PremiumTable({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 key={product.id}
-                className="p-4 border-b border-muted/80 last:border-b-0"
+                className="p-4 border-b border-card/80 last:border-b-0"
               >
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">
+                  <span className="text-sm font-medium text-card-foreground">
                     PROTECTED WEBHOOK
                   </span>
                   <span className="text-lg font-bold text-foreground">
@@ -218,7 +218,7 @@ export function PremiumTable({
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">
+                  <span className="text-sm font-medium text-card-foreground">
                     PRICE
                   </span>
                   <span className="text-lg font-bold">
@@ -242,10 +242,10 @@ export function PremiumTable({
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm font-medium text-muted-foreground">
+                  <span className="text-sm font-medium text-card-foreground">
                     PER WEBHOOK
                   </span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-card-foreground">
                     $
                     {(
                       calculateDiscountedPrice(product.priceStructure.price) /

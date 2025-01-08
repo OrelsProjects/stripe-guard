@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  ArrowDown,
+  AlertTriangle,
+  Mail,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/fade-in";
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
-import { NotificationComponent } from "@/components/sections/notification";
-import { FlipWords } from "@/components/ui/flipWords";
 import { AnimatedText } from "@/components/ui/animated-text";
 import { EventTracker } from "@/eventTracker";
+import { cn } from "@/lib/utils";
 
 interface Error {
   title: string;
@@ -77,20 +83,93 @@ function ShowMoreSection({ error }: { error: Error | null }) {
   );
 }
 
-export function HeroSection() {
-  const [webhookErrors] = useState<string[]>([
-    "Failed Payment",
-    // "Card Declined",
-    // "Insufficient Funds",
-    // "Expired Card",
-    // "Incorrect CVC",
-    // "Processing Error",
-    // "Fraudulent",
-    // "Payment Intent Failed",
-    // "Chargeback",
-    // "Dispute",
-  ]);
+const FlowItem = ({
+  icon: Icon,
+  title,
+  delay,
+  textColor = "text-foreground",
+  iconBg = "bg-background/10",
+  iconColor = "text-foreground",
+  borderColor = "border-border",
+}: {
+  icon: any;
+  title: string;
+  delay: number;
+  textColor?: string;
+  iconBg?: string;
+  iconColor?: string;
+  borderColor?: string;
+}) => (
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, scale: 0.85 },
+      visible: {
+        opacity: 1,
+        scale: [0.85, 0.85, 1],
+        transition: {
+          duration: 0.7,
+          delay,
+          ease: "easeInOut",
+        },
+      },
+    }}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true }}
+    className={`relative flex items-center gap-4 px-2 py-2 rounded-2xl w-full max-w-2xl shadow-sm z-20 bg-background/5 backdrop-blur-sm border ${borderColor}`}
+  >
+    <div className={`shrink-0 mt-1`}>
+      {typeof Icon === "function" ? (
+        <Icon className={`w-8 h-8 ${iconColor}`} />
+      ) : (
+        Icon
+      )}
+    </div>
+    <h3
+      className={cn(
+        "2xl:absolute w-full font-bold text-base md:text-xl text-center",
+        textColor,
+      )}
+    >
+      {title}
+    </h3>
+  </motion.div>
+);
 
+const ConnectorLine = ({ delay, color }: { delay: number; color: string }) => (
+  <motion.div
+    className="h-24 relative z-10"
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ delay }}
+  >
+    <motion.svg
+      // slowly build the line
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ duration: 1, delay }}
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      viewBox="0 0 800 800"
+      className="h-24 md:h-36 absolute -top-3.5 left-1/2 -translate-x-1/2"
+    >
+      <g
+        strokeWidth="20"
+        className={color}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="62 62"
+        transform="rotate(45, 400, 400)"
+      >
+        <line x1="167.5" y1="167.5" x2="570.5" y2="570.5" />
+      </g>
+    </motion.svg>
+  </motion.div>
+);
+
+export function HeroSection() {
   const handleCTAClick = () => {
     EventTracker.track("hero_cta_clicked", {
       location: "hero_section",
@@ -99,196 +178,123 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center sm:justify-start bg-background pb-24 sm:pt-10 overflow-hidden">
-      {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
-      <div className="container px-4 mx-auto relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="space-y-8">
-            {/* Badge */}
-            <div className="flex justify-center">
-              <div className="inline-flex items-center gap-3 rounded-full border border-primary backdrop-blur-sm px-3 py-1 text-sm text-muted-foreground">
-                <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_3px_hsl(var(--primary))]"></div>
-                <p>Never lose revenue again</p>
-              </div>
-            </div>
+    <section className="container mx-auto flex flex-col lg:flex-row items-start justify-center gap-16 lg:gap-16 px-8 py-12 lg:py-32">
+      <div className="container px-4 relative z-10">
+        <div className="text-center">
+          <div className="space-y-10 lg:space-y-12 text-start">
             {/* Main heading */}
-            <FadeIn direction="up">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-tight text-foreground">
-                Don&apos;t Let Failed Webhooks
-                <AnimatedText
-                  className="text-secondary inline-block text-4xl md:text-6xl lg:text-7xl"
-                  text=" Kill Your Revenue"
-                />
-              </h1>
-            </FadeIn>
+            <div className="!w-fit text-center lg:text-left">
+              <motion.h1 className="font-medium text-4xl lg:text-6xl tracking-tight text-foreground">
+                Don&apos;t let a{" "}
+                <strong className="italic font-black">failed webhook</strong>{" "}
+                <br />
+                cost you a{" "}
+                <strong className="font-black text-primary">customer</strong>
+              </motion.h1>
+            </div>
 
             {/* Description */}
-            <FadeIn direction="up" delay={0.1}>
-              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            <div className="!w-fit">
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Missed payments can hurt your revenue and customer experience.
-                Monitor your Stripe webhooks seamlessly, fix issues instantly, and
-                keep your business running smoothly.
+                Monitor your Stripe webhooks seamlessly, fix issues instantly,
+                and keep your business running smoothly.
               </p>
-            </FadeIn>
+
+              {/* Benefits list */}
+              <div className="mt-6 space-y-2 text-start">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-5 h-5 text-green-500 shrink-0"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                    />
+                  </svg>
+                  <span>1-minute setup with your Stripe account</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-5 h-5 text-green-500 shrink-0"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                    />
+                  </svg>
+                  <span>Save an average of $50 per avoided churn</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-5 h-5 text-green-500 shrink-0"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                    />
+                  </svg>
+                  <span>Avoid losing customers over failed webhooks</span>
+                </div>
+              </div>
+            </div>
 
             {/* CTA Buttons */}
-            <FadeIn direction="up" delay={0.2}>
+            <div className="!w-fit">
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Button
-                  size="lg"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-8"
-                  asChild
-                  onClick={handleCTAClick}
-                >
+                <Button size="xl" asChild onClick={handleCTAClick}>
                   <Link href="/login">
-                    Get Started
+                    Protect your webhooks now
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="bg-transparent border border-foreground text-foreground px-8"
-                  asChild
-                >
-                  <Link href="/blog">Learn more</Link>
-                </Button>
               </div>
-            </FadeIn>
-
-            {/* Connected Line Effect */}
-            <FadeIn
-              direction="up"
-              delay={0.3}
-              className="hidden flex-row gap-0 justify-center xl:flex"
-            >
-              <div className="relative w-[412px] h-[295px]">
-                <svg
-                  width="412"
-                  height="295"
-                  viewBox="0 0 412 295"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute z-10"
-                >
-                  <motion.path
-                    id="path-left"
-                    d="M0.5 1.5H23C34.0457 1.5 43 10.4543 43 21.5V182C43 193.046 51.9543 202 63 202H387.5C398.546 202 410.5 210.954 410.5 222V295M0.5 74H24.5C34.7173 74 43 82.2827 43 92.5"
-                    stroke="url(#paint0_linear_0_54)"
-                    strokeWidth="2"
-                    initial={{ pathLength: 0, pathOffset: 1 }}
-                    animate={{ pathLength: 1, pathOffset: 0 }}
-                    transition={{
-                      duration: 2, // Duration for the animation
-                      ease: "easeInOut", // Smoothing effect
-                    }}
-                  />
-                  <defs>
-                    <linearGradient
-                      id="paint0_linear_0_54"
-                      x1="410.003"
-                      y1="290"
-                      x2="10.6043"
-                      y2="45.6676"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop
-                        offset="0.0645857"
-                        stopColor="#2563EB"
-                        stopOpacity="0.05"
-                      />
-                      <stop offset="0.547993" stopColor="#2563EB" />
-                      <stop
-                        offset="1"
-                        stopColor="#2563EB"
-                        stopOpacity="0.015"
-                      />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
-                  <NotificationComponent
-                    type="failed"
-                    message="Failed Payment"
-                    subtext="Invoice Failed Payment"
-                    time="2m ago"
-                  />
-                </div>
-                <div className="absolute flex justify-end items-center left-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-94px)] w-68 h-[10px]">
-                  <NotificationComponent
-                    type="retry"
-                    message="Retry Attempted"
-                    subtext="Webhook failed"
-                    time="2m ago"
-                  />
-                </div>
-              </div>
-              <div className="relative w-[412px] h-[295px]">
-                <svg
-                  width="414"
-                  height="295"
-                  viewBox="0 0 414 295"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <motion.path
-                    id="path-right"
-                    initial={{ pathLength: 0, pathOffset: 1 }}
-                    animate={{ pathLength: 1, pathOffset: 0 }}
-                    transition={{ duration: 2, ease: "easeInOut" }}
-                    d="M414 1.5H391.5C380.454 1.5 371.5 10.4543 371.5 21.5V182C371.5 193.046 362.546 202 351.5 202H27C15.9543 202 1.5 210.954 1.5 222V295M414 74H390C379.783 74 371.5 82.2827 371.5 92.5"
-                    stroke="url(#paint0_linear_0_55)"
-                    strokeWidth="2"
-                  />
-                  <defs>
-                    <linearGradient
-                      id="paint0_linear_0_55"
-                      x1="1.99999"
-                      y1="290"
-                      x2="402.5"
-                      y2="43.5"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop
-                        offset="0.0645857"
-                        stopColor="#2563EB"
-                        stopOpacity="0.05"
-                      />
-                      <stop offset="0.547993" stopColor="#2563EB" />
-                      <stop
-                        offset="1"
-                        stopColor="#2563EB"
-                        stopOpacity="0.015"
-                      />
-                    </linearGradient>
-                  </defs>
-                </svg>
-
-                <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-24px)] w-64 h-[10px]">
-                  <NotificationComponent
-                    type="failed"
-                    message="Failed Payment"
-                    subtext="Invoice Failed Payment"
-                    time="2m ago"
-                  />
-                </div>
-                <div className="absolute flex justify-end items-center right-[calc(43px-45.6px-15.7rem)] top-[calc(92.5px-94px)] w-68 h-[10px]">
-                  <NotificationComponent
-                    type="retry"
-                    message="Retry Attempted"
-                    subtext="Webhook failed"
-                    time="2m ago"
-                  />
-                </div>
-              </div>
-            </FadeIn>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Logo at bottom */}
-      <Logo className="hidden md:flex" />
+      {/* Flow diagram */}
+      <motion.div className="w-full flex flex-col items-center justify-center gap-1">
+        <FlowItem
+          icon={() => <AlertTriangle className="w-10 h-10 text-destructive" />}
+          title="One of your webhooks fails"
+          delay={0}
+          textColor="text-destructive"
+          iconBg="bg-destructive/10"
+          iconColor="text-destructive"
+          borderColor="border-destructive/20"
+        />
+        <ConnectorLine delay={1.5} color="stroke-destructive/20" />
+        <FlowItem
+          icon={() => <Logo withText={false} imageClassName="w-12 h-12" />}
+          title="Sends alert to your email + warm email to your customer"
+          delay={1.5}
+          textColor="text-primary"
+          iconBg="bg-primary/10"
+          iconColor="text-primary"
+          borderColor="border-primary/20"
+        />
+        <ConnectorLine delay={3} color="stroke-primary/20" />
+        <FlowItem
+          icon={() => (
+            <img
+              src="/stripe-square.jpg"
+              alt="Stripe"
+              className="w-11 h-11 object-contain rounded"
+            />
+          )}
+          title="Churn avoided = Customer saved 🥳"
+          delay={3}
+          textColor="text-foreground"
+          iconBg="bg-background/10"
+          iconColor="text-foreground"
+          borderColor="border-border"
+        />
+      </motion.div>
     </section>
   );
 }

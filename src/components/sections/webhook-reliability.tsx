@@ -1,30 +1,107 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, DollarSign, Shield, UserX, Webhook } from "lucide-react";
+import { DollarSign, UserX, Webhook } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 const MotionCard = motion(Card);
 
+const BeyondTheNumbers = () => (
+  <MotionCard
+    initial={{ opacity: 0, x: 20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: 0.4 }}
+  >
+    <CardContent className="p-6 flex items-start gap-4">
+      <div className="p-3 rounded-lg bg-destructive/10">
+        <UserX className="w-6 h-6 text-destructive" />
+      </div>
+      <div>
+        <CardTitle className="text-lg mb-2">Beyond the numbers</CardTitle>
+        <p className="text-card-foreground">
+          One failed webhook can <strong>tank your reputation</strong>. Negative
+          reviews, social backlash, and word-of-mouth damage can create lasting
+          harm that goes FAR beyond a single lost sale.
+        </p>
+      </div>
+    </CardContent>
+  </MotionCard>
+);
+
+const CustomerLifetimeValue = () => (
+  <MotionCard
+    initial={{ opacity: 0, x: 20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: 0.5 }}
+  >
+    <CardContent className="p-6 flex items-start gap-4">
+      <div className="p-3 rounded-lg bg-primary/10">
+        <DollarSign className="w-6 h-6 text-primary" />
+      </div>
+      <div>
+        <CardTitle className="text-lg mb-2">
+          Customer lifetime value at risk
+        </CardTitle>
+        <p className="text-card-foreground">
+          The average LTV (lifetime value) of a customer is $50. One failed
+          webhook can cost you 10.
+        </p>
+      </div>
+    </CardContent>
+  </MotionCard>
+);
+
+const Troubleshooting = () => (
+  <MotionCard
+    initial={{ opacity: 0, x: 20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: 0.6 }}
+  >
+    <CardContent className="p-6 flex items-start gap-4">
+      <div className="p-3 rounded-lg bg-yellow-400/20">
+        <Webhook className="w-6 h-6 text-yellow-500" />
+      </div>
+      <div>
+        <CardTitle className="text-lg mb-2 tracking-tight">
+          Troubleshooting
+        </CardTitle>
+        <p className="text-card-foreground">
+          Identifying a single faulty webhook in a massive log system can take
+          hours of developer time.
+        </p>
+      </div>
+    </CardContent>
+  </MotionCard>
+);
+
 export function WebhookReliability() {
   return (
-    <section className="py-24 bg-gradient-to-b from-background to-secondary/20">
+    <section>
       <div className="container px-4 mx-auto max-w-6xl space-y-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-4xl font-bold tracking-tight mb-4">
-            The Real Cost of Webhook Failures
+          <h2 className="text-card font-extrabold">
+            One webhook failure <br />
+            <p className="md:mt-4">
+              can
+              <span className="bg-card text-card-foreground px-2 ml-2 py-0">
+                tank your reputation
+              </span>
+            </p>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Industry standards accept a 0.5% failure rate. But what does this
-            mean for your business?
+          <p className="text-muted leading-relaxed md:text-lg max-w-3xl mx-auto">
+            According to <span className="font-medium">Shopify</span>, 0.5%
+            webhooks failure rate is good. That means that at least one webhook
+            in every 200 will fail. One failed webhook will lead to a
+            disappointed customer, negative reviews, and lost business.
           </p>
         </motion.div>
 
@@ -34,21 +111,20 @@ export function WebhookReliability() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="overflow-hidden h-full"
+            className="overflow-hidden h-full flex flex-col justify-center gap-6"
           >
-            <CardHeader className="relative">
+            <CardHeader className="relative py-0">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <Webhook className="w-12 h-12 text-primary mb-6" />
               <CardTitle className="text-2xl mb-4">
-                The 1-in-200 Reality
+                The 1-in-200 reality
               </CardTitle>
-              <p className="text-muted-foreground">
-                According to Shopify&apos;s standards, a 0.5% failure rate—or 1
-                in every 200 webhooks failing—is considered acceptable. But the
-                impact on your business is far from negligible.
+              <p className="text-card-foreground">
+                According to Shopify&apos;s standards, a 0.5% failure rate, or 1
+                in every 200 webhooks failing, is considered acceptable.
               </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-0">
               <div className="flex items-center justify-between text-sm mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-primary" />
@@ -80,7 +156,7 @@ export function WebhookReliability() {
                   transition={{ duration: 0.5, delay: 1.5 }}
                 />
               </motion.div>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-sm text-card-foreground mt-2">
                 Visual representation: 199 successful (99.5%) vs 1 failed (0.5%)
                 webhook
               </p>
@@ -88,87 +164,10 @@ export function WebhookReliability() {
           </MotionCard>
 
           <div className="space-y-6">
-            <MotionCard
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <CardContent className="p-6 flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10">
-                  <DollarSign className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg mb-2">
-                    Customer Lifetime Value at Risk
-                  </CardTitle>
-                  <p className="text-muted-foreground">
-                    With an average LTV of $50, each webhook failure puts
-                    valuable customer relationships at risk.
-                  </p>
-                </div>
-              </CardContent>
-            </MotionCard>
-
-            <MotionCard
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <CardContent className="p-6 flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-destructive/10">
-                  <UserX className="w-6 h-6 text-destructive" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg mb-2">
-                    Beyond the Numbers
-                  </CardTitle>
-                  <p className="text-muted-foreground">
-                    Failed webhooks can lead to negative reviews, word-of-mouth
-                    damage, and public backlash.
-                  </p>
-                </div>
-              </CardContent>
-            </MotionCard>
-
-            <MotionCard
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="bg-primary text-primary-foreground"
-            >
-              <CardContent className="p-6 flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary-foreground/10">
-                  <Shield className="w-6 h-6" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg mb-2 tracking-tight">
-                    The Smart Investment
-                  </CardTitle>
-                  <p className="text-primary-foreground">
-                    Invest $0.44 to protect 200 webhooks and secure a $50
-                    customer—that&apos;s a 113x return on your investment.
-                  </p>
-                </div>
-              </CardContent>
-            </MotionCard>
+            <BeyondTheNumbers />
+            <CustomerLifetimeValue />
+            <Troubleshooting />
           </div>
-        </div>
-        <div className="w-full flex flex-col items-center gap-1">
-          <Button
-            size="lg"
-            className="w-fit bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 lg:px-12 lg:py-6 text-base sm:text-lg md:text-xl lg:text-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-            asChild
-          >
-            <Link href="/login">
-              Protect your revenue <ArrowRight />
-            </Link>
-          </Button>
-          <Button asChild variant="link">
-            <Link href="/blog/webhook-failure-rate">Read More</Link>
-          </Button>
         </div>
       </div>
     </section>

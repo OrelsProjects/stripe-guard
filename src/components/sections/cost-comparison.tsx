@@ -1,92 +1,88 @@
 "use client";
 
-import {
-  Check,
-  X,
-  Clock,
-  PenToolIcon as Tool,
-  Zap,
-  DollarSign,
-  CoffeeIcon,
-  HeartPulseIcon,
-  UserMinus,
-  Repeat,
-} from "lucide-react";
 import { motion } from "framer-motion";
-import Logo from "@/components/ui/Logo";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-
-const appName = process.env.NEXT_PUBLIC_APP_NAME;
+import {
+  Clock,
+  Zap,
+  PenTool,
+  HeartPulse,
+  DollarSign,
+  Shield,
+  HeartPulseIcon,
+  Repeat,
+  Hammer,
+  Wrench,
+  X,
+} from "lucide-react";
 
 const comparisonData = [
   {
-    task: "Creating complex webhook flows and dashboards",
-    withoutStripeProtect: 1500,
-    withStripeProtect: 0,
+    task: "Building complex webhook workflows",
+    withoutStripeProtect: "$1,500",
+    withStripeProtect: "$0",
     timeIndication: "3 days",
-    icon: (
-      <Tool className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    impact: "high",
+    tooltip: "Time spent building webhook workflows",
+    icon: <Hammer className="h-6 w-6" />,
   },
   {
-    task: "Developing new features (per feature)",
-    withoutStripeProtect: 500,
-    withStripeProtect: 0,
+    task: "Developing additional features (per feature)",
+    withoutStripeProtect: "$500",
+    withStripeProtect: "$0",
     timeIndication: "1 day",
-    icon: (
-      <Zap className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    icon: <Zap className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Cost of developing additional features",
   },
   {
-    task: "Pinpointing failed webhooks",
-    withoutStripeProtect: 125,
-    withStripeProtect: 0,
+    task: "Finding failed webhooks",
+    withoutStripeProtect: "$125",
+    withStripeProtect: "$0",
     timeIndication: "2 hours",
-    icon: (
-      <Clock className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    icon: <Clock className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Time spent finding failed webhooks",
   },
   {
-    task: "Bug fixing and maintenance",
-    withoutStripeProtect: "more than you think",
-    withStripeProtect: 0,
-    icon: (
-      <Tool className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    task: "Ongoing bug fixes and maintenance",
+    withoutStripeProtect: "Overwhelming costs",
+    withStripeProtect: "$0",
+    icon: <Wrench className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Ongoing bug fixes and maintenance",
   },
   {
-    task: "Frustrated customers",
-    withoutStripeProtect: "a lot",
-    withStripeProtect: "a little",
-    icon: (
-      <X className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    task: "Customer frustration",
+    withoutStripeProtect: "High",
+    withStripeProtect: "Minimal",
+    icon: <X className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Customer frustration",
   },
   {
-    task: "Retraining new developers",
-    withoutStripeProtect: "expensive and slow",
-    withStripeProtect: "tokens are forever",
+    task: "Training new developers",
+    withoutStripeProtect: "Costly and time-consuming",
+    withStripeProtect: "Effortless",
     timeIndication: "Weeks",
-    icon: (
-      <Repeat className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    icon: <Repeat className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Training new developers",
   },
   {
-    task: "Handling webhook issues stress-free",
-    withoutStripeProtect: "High stress and manual fixes",
-    withStripeProtect: "Automated alerts and customer assurance",
-    icon: (
-      <HeartPulseIcon className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    task: "Handling webhook issues",
+    withoutStripeProtect: "Manual fixes and stress",
+    withStripeProtect: "Automated alerts",
+    icon: <HeartPulseIcon className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Handling webhook issues",
   },
   {
-    task: "Buying tokens to protect webhooks",
-    withoutStripeProtect: 0,
-    withStripeProtect: "a few bucks",
-    icon: (
-      <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-muted-foreground" />
-    ),
+    task: "Protecting webhooks with tokens",
+    withoutStripeProtect: "$0",
+    withStripeProtect: "Affordable",
+    icon: <DollarSign className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Protecting webhooks with tokens",
   },
 ];
 
@@ -95,66 +91,56 @@ const containerVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.8,
-      staggerChildren: 0.2,
-    },
-    viewport: { once: true },
+    transition: { duration: 0.8, staggerChildren: 0.2 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -30 },
+  hidden: { opacity: 0, x: -20 },
   visible: {
     opacity: 1,
     x: 0,
     transition: { duration: 0.5 },
-    viewport: { once: true },
   },
 };
 
 export default function ComparisonSection() {
   return (
-    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-gradient-to-b from-primary/20 via-primary/0 to-primary/0">
+    <section className="py-24">
       <motion.div
-        className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"
+        className="container mx-auto px-4 max-w-7xl"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={containerVariants}
       >
-        <div className="text-center mb-12 sm:mb-16 md:mb-20 lg:mb-24 space-y-4 sm:space-y-6">
-          <motion.span
-            className="text-sm sm:text-base md:text-lg uppercase tracking-wider text-muted-foreground"
-            variants={itemVariants}
-          >
-            Compare & Conquer
-          </motion.span>
+        <div className="text-center mb-16 text-card">
           <motion.h2
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-foreground"
+            className="text-card"
             variants={itemVariants}
           >
-            Stop Bleeding Money—
-            <br className="hidden sm:block" />
-            Start Growing Your Profits
+            The real cost of webhook failures
           </motion.h2>
+          <motion.p
+            className="text-lg text-muted max-w-3xl mx-auto"
+            variants={itemVariants}
+          >
+            See how much you're really losing from unreliable webhook management
+          </motion.p>
         </div>
 
-        <motion.div
-          className="overflow-x-auto mb-12 sm:mb-16 md:mb-20 lg:mb-24"
-          variants={itemVariants}
-        >
-          <table className="w-full text-left border-collapse bg-foreground/5 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg">
-            <thead className="bg-primary/10">
-              <tr>
-                <th className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-foreground">
-                  Task
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-card shadow-xl rounded-xl overflow-hidden">
+            <thead>
+              <tr className="bg-primary/10">
+                <th className="px-6 py-4 text-left text-lg font-semibold">
+                  Metric
                 </th>
-                <th className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-foreground text-center">
-                  Traditional Approach
+                <th className="px-6 py-4 text-center text-lg font-semibold">
+                  Without Protection
                 </th>
-                <th className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-foreground text-center">
-                  With {appName}
+                <th className="px-6 py-4 text-center text-lg font-semibold">
+                  With Our Service
                 </th>
               </tr>
             </thead>
@@ -162,54 +148,51 @@ export default function ComparisonSection() {
               {comparisonData.map((item, index) => (
                 <motion.tr
                   key={index}
-                  className="border-b border-muted-foreground/20 hover:bg-background/10 transition-colors duration-200"
+                  className={`
+                    border-b border-border/50 hover:bg-muted/50 transition-colors
+                    ${item.impact === "critical" ? "bg-destructive/5" : ""}
+                    ${item.impact === "high" ? "bg-warning/5" : ""}
+                  `}
                   variants={itemVariants}
                 >
-                  <td className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 flex items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground">
-                    {item.icon}
-                    {item.task}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`
+                        p-2 rounded-lg
+                        ${item.impact === "critical" ? "bg-destructive/10" : ""}
+                        ${item.impact === "high" ? "bg-warning/10" : ""}
+                        ${item.impact === "medium" ? "bg-primary/10" : ""}
+                      `}
+                      >
+                        {item.icon}
+                      </div>
+                      <div>
+                        <div className="font-medium">{item.task}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {item.tooltip}
+                        </div>
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 font-semibold text-foreground text-center text-xs sm:text-sm md:text-base lg:text-lg">
-                    {typeof item.withoutStripeProtect === "number"
-                      ? `$${item.withoutStripeProtect}`
-                      : item.withoutStripeProtect}
-                    {item.timeIndication && <span className="text-xs text-muted-foreground">
-                      {" "}
-                      ({item.timeIndication})
-                    </span>}
+                  <td className="px-6 py-4 text-center font-semibold text-green-500">
+                    {item.withStripeProtect}
                   </td>
-                  <td className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 font-semibold text-foreground text-center text-xs sm:text-sm md:text-base lg:text-lg">
-                    {typeof item.withStripeProtect === "number"
-                      ? `$${item.withStripeProtect}`
-                      : item.withStripeProtect}
+                  <td className="px-6 py-4 text-center font-semibold text-destructive">
+                    {item.withoutStripeProtect}
                   </td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
-          <motion.p
-            className="w-full text-xs text-start sm:text-xs md:text-sm text-muted-foreground/60 pl-2 mt-2"
-            variants={itemVariants}
-          >
-            Based on industry standards of average senior developer salary in
-            the US
-          </motion.p>
-        </motion.div>
+        </div>
 
         <motion.div
-          className="text-center space-y-6 sm:space-y-8 md:space-y-10"
+          className="mt-0 text-sm text-muted/80 text-start"
           variants={itemVariants}
         >
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight font-semibold text-secondary dark:text-foreground">
-            Secure Your Revenue Now
-          </p>
-          <Button
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 lg:px-12 lg:py-6 text-base sm:text-lg md:text-xl lg:text-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-            asChild
-          >
-            <Link href="/login">Get started</Link>
-          </Button>
+          *Data reflects industry averages for senior developer rates and time
+          savings.
         </motion.div>
       </motion.div>
     </section>

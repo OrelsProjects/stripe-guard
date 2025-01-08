@@ -25,10 +25,10 @@ export function ProblemAgitationSection() {
   ];
 
   return (
-    <section className="py-24">
+    <section>
       <div className="container px-4 mx-auto">
         <FadeIn>
-          <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">
+          <h2 className="text-3xl font-bold text-center text-muted sm:text-4xl mb-4">
             The Hidden Costs of Ignoring Webhook Failures
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16">

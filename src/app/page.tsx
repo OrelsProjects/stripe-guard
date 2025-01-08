@@ -4,18 +4,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HeroSection } from "@/components/sections/hero";
 import { FeaturesSection } from "@/components/sections/features";
-import { HowItWorksSection } from "@/components/sections/how-it-works";
 import { AnalyticsSection } from "@/components/sections/analytics";
 import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
 import SignUpSection from "@/components/sections/sign-up";
-import { ProblemAgitationSection } from "@/components/sections/problem-agitation";
-import { SocialProofSection } from "@/components/sections/social-proof";
-import { AboutUsSection } from "@/components/sections/about-us";
 import { FAQSection } from "@/components/sections/faq";
 import CostComparisonSection from "@/components/sections/cost-comparison";
 import { WebhookAnimation } from "@/components/sections/product-animation/webhook-animation";
-import { WhatIfWebhookFails } from "@/components/sections/what-if-webhook-fails";
 import { WebhookReliability } from "@/components/sections/webhook-reliability";
 import { Pricing } from "@/components/sections/pricing";
 
@@ -46,6 +41,44 @@ export default function Home() {
     };
   }, []);
 
+  const Analytics = () => (
+    <div ref={darkSectionRef}>
+      <AnalyticsSection />
+    </div>
+  );
+
+  const NegativeSection = () => (
+    <motion.div
+      animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+      transition={{ duration: 0.4 }}
+      className=" bg-card-foreground py-16 flex flex-col gap-32"
+    >
+      <WebhookReliability />
+      <CostComparisonSection />
+    </motion.div>
+  );
+
+  const PositiveSection = () => (
+    <motion.div
+      animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      <WebhookAnimation />
+      <FeaturesSection />
+      <Pricing />
+      <FAQSection />
+    </motion.div>
+  );
+
+  const Hero = () => (
+    <motion.div
+      animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      <HeroSection />
+    </motion.div>
+  );
+
   return (
     <motion.main
       className="w-screen min-h-screen flex flex-col overflow-x-clip"
@@ -54,41 +87,10 @@ export default function Home() {
       transition={{ duration: 0.6 }}
     >
       <NavigationBar />
-      <motion.div
-        animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        <HeroSection />
-      </motion.div>
-      {/* <TracingBeam className="w-full" hideOnMobile> */}
-      <motion.div
-        animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        <CostComparisonSection />
-        <WebhookAnimation />
-        <ProblemAgitationSection />
-        <WebhookReliability />
-        <FeaturesSection />
-      </motion.div>
-      <div ref={darkSectionRef} >
-        <AnalyticsSection />
-      </div>
-      <motion.div
-        initial={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-        animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        <WhatIfWebhookFails />
-        <HowItWorksSection />
-        {/* <SocialProofSection />
-        <AboutUsSection /> */}
-        <Pricing />
-        <FAQSection />
-        <SignUpSection />
-      </motion.div>
+      <Hero />
+      <NegativeSection />
+      <PositiveSection />
       <Footer />
-      {/* </TracingBeam> */}
     </motion.main>
   );
 }

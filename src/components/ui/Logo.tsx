@@ -12,6 +12,7 @@ export interface LogoProps {
   height?: number;
   width?: number;
   textClassName?: string;
+  imageClassName?: string;
   animate?: boolean;
   className?: string;
   withText?: boolean;
@@ -23,6 +24,7 @@ export default function Logo({
   animate,
   className,
   textClassName,
+  imageClassName,
   withText = true,
 }: LogoProps) {
   const animation = animate
@@ -42,6 +44,7 @@ export default function Logo({
         alt={APP_NAME}
         width={width || 32}
         height={height || 32}
+        className={cn("w-8 h-8", imageClassName)}
       />
       {withText && (
         <span
