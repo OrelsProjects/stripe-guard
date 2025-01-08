@@ -292,7 +292,7 @@ export function HeroSection() {
           textColor="text-foreground"
           iconBg="bg-background/10"
           iconColor="text-foreground"
-          borderColor="border-border"
+          borderColor="border-border/40"
         />
       </motion.div>
     </section>
