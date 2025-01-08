@@ -48,7 +48,7 @@ const faqs = [
   {
     question: "Why should I care?",
     answer:
-      "Because when the customer doesn't get what they should, due to a failure with your webhooks, they will dispute the payment. And you might lose your account.",
+      "Because when the customer doesn't get what they should, due to a failure with your webhooks, they will dispute the payment. And you might lose your account and your customers.",
   },
   {
     question: "How quickly can I get started?",
@@ -76,8 +76,8 @@ export function FAQSection() {
     <section className="py-24 bg-muted/50">
       <div className="container px-4 mx-auto">
         <FadeIn>
-          <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">
-            Questions? We&apos;ve Got Answers
+          <h2>
+            Questions? we&apos;ve got answers
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16">
             Here are some common questions about our service.

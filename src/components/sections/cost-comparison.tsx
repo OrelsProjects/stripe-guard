@@ -125,7 +125,7 @@ export default function ComparisonSection() {
             className="text-lg text-muted max-w-3xl mx-auto"
             variants={itemVariants}
           >
-            See how much you're really losing from unreliable webhook management
+            See how much you&apos;re really losing from unreliable webhook management
           </motion.p>
         </div>
 
