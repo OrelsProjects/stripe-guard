@@ -4,6 +4,7 @@ title: "Understanding Webhooks: How Stripe Uses Them for Real-time Events"
 excerpt: "Explore the world of webhooks and how Stripe leverages them for efficient, real-time payment processing and event handling."
 publishedAt: "2024-12-02T12:00:00Z"
 readingTime: "8 min read"
+tags: ["webhooks", "stripe", "real-time", "integration", "event-driven", "api", "payments"]
 author:
   name: "Orel Zilberman"
   role: "Founder of StripeProtect"

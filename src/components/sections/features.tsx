@@ -43,7 +43,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-muted">
+    <section id="features" className="py-24">
       <div className="container px-4 mx-auto">
         <FadeIn>
           <h2>Powerful features for payment reliability</h2>
@@ -56,7 +56,7 @@ export function FeaturesSection() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FadeIn key={"the-smart-investment"} delay={0.1}>
             <motion.div
-              className="p-6 bg-background rounded-xl shadow-sm"
+              className="p-6 bg-background rounded-xl shadow-md hover:shadow-lg"
               whileHover={{ y: -5 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
@@ -66,10 +66,10 @@ export function FeaturesSection() {
               >
                 <Logo withText={false} imageClassName="w-8 h-8" />
               </motion.div>
-              <h3 className="mb-2 text-xl font-semibold">
+              <h3 className="mb-2 text-xl font-semibold pointer-events-none">
                 The smart investment
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground pointer-events-none">
                 Invest $0.44 to protect 200 webhooks and secure a $50 customer.
                 <strong>That&apos;s a 113x return on your investment.</strong>
               </p>
@@ -78,7 +78,7 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <FadeIn key={feature.title} delay={index * 0.1}>
               <motion.div
-                className="p-6 bg-background rounded-xl shadow-sm"
+                className="p-6 bg-background rounded-xl shadow-md hover:shadow-lg"
                 whileHover={{ y: -5 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
@@ -88,8 +88,12 @@ export function FeaturesSection() {
                 >
                   <feature.icon className="w-6 h-6 text-primary" />
                 </motion.div>
-                <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="mb-2 text-xl font-semibold pointer-events-none">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground pointer-events-none">
+                  {feature.description}
+                </p>
               </motion.div>
             </FadeIn>
           ))}

@@ -30,7 +30,7 @@ const endorsements = [
 
 export function SocialProofSection() {
   return (
-    <section className="py-24">
+    <section>
       <div className="container px-4 mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-center sm:text-4xl mb-4">

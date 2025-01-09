@@ -105,7 +105,7 @@ const FlowItem = ({
       hidden: { opacity: 0, scale: 0.85 },
       visible: {
         opacity: 1,
-        scale: [0.85, 0.85, 1],
+        scale: [0.85, 0.85, 0.85, 1],
         transition: {
           duration: 0.7,
           delay,
@@ -114,8 +114,7 @@ const FlowItem = ({
       },
     }}
     initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
+    animate="visible"
     className={`relative flex items-center gap-4 px-2 py-2 rounded-2xl w-full max-w-2xl shadow-sm z-20 bg-background/5 backdrop-blur-sm border ${borderColor}`}
   >
     <div className={`shrink-0 mt-1`}>
@@ -140,7 +139,7 @@ const ConnectorLine = ({ delay, color }: { delay: number; color: string }) => (
   <motion.div
     className="h-24 relative z-10"
     initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
+    animate={{ opacity: 1 }}
     viewport={{ once: true }}
     transition={{ delay }}
   >
@@ -268,17 +267,17 @@ export function HeroSection() {
           iconColor="text-destructive"
           borderColor="border-destructive/20"
         />
-        <ConnectorLine delay={1.5} color="stroke-destructive/20" />
+        <ConnectorLine delay={1} color="stroke-destructive/20" />
         <FlowItem
           icon={() => <Logo withText={false} imageClassName="w-12 h-12" />}
           title="Sends alert to your email + warm email to your customer"
-          delay={1.5}
+          delay={1}
           textColor="text-primary"
           iconBg="bg-primary/10"
           iconColor="text-primary"
           borderColor="border-primary/20"
         />
-        <ConnectorLine delay={3} color="stroke-primary/20" />
+        <ConnectorLine delay={2} color="stroke-primary/20" />
         <FlowItem
           icon={() => (
             <img
@@ -287,8 +286,8 @@ export function HeroSection() {
               className="w-11 h-11 object-contain rounded"
             />
           )}
-          title="Churn avoided = Customer saved 🥳"
-          delay={3}
+          title="Churn avoided → customer saved 🥳"
+          delay={2}
           textColor="text-foreground"
           iconBg="bg-background/10"
           iconColor="text-foreground"

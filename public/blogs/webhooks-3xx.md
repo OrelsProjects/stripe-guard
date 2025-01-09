@@ -4,6 +4,7 @@ title: "Webhooks: What to Do When the HTTP Status Code Starts with a Three (3xx)
 excerpt: "Explore why Stripe sees 3xx redirects as delivery failures and how to eliminate unnecessary redirects in your webhook workflows."
 publishedAt: "2025-01-02T12:00:00Z"
 readingTime: "4 min read"
+tags: ["webhooks", "http", "3xx", "redirects", "stripe", "troubleshooting", "configuration"]
 author:
   name: "Orel Zilberman"
   role: "Founder of StripeProtect"

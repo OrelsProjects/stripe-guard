@@ -36,7 +36,7 @@ export default function NavigationBar() {
                     item === "Read more"
                       ? "/blog"
                       : item === "How it Works"
-                        ? "#how-does-it-work"
+                        ? "#how-it-works"
                         : `#${item.toLowerCase().replace(/\s+/g, "-")}`
                   }
                   className="text-sm font-medium transition-colors hover:text-primary"

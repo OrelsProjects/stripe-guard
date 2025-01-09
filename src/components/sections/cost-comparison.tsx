@@ -1,13 +1,11 @@
 "use client";
 
+import Logo from "@/components/ui/Logo";
 import { motion } from "framer-motion";
 import {
   Clock,
   Zap,
-  PenTool,
-  HeartPulse,
   DollarSign,
-  Shield,
   HeartPulseIcon,
   Repeat,
   Hammer,
@@ -16,15 +14,6 @@ import {
 } from "lucide-react";
 
 const comparisonData = [
-  {
-    task: "Building complex webhook workflows",
-    withoutStripeProtect: "$1,500",
-    withStripeProtect: "$0",
-    timeIndication: "3 days",
-    impact: "high",
-    tooltip: "Time spent building webhook workflows",
-    icon: <Hammer className="h-6 w-6" />,
-  },
   {
     task: "Developing additional features (per feature)",
     withoutStripeProtect: "$500",
@@ -35,14 +24,15 @@ const comparisonData = [
     tooltip: "Cost of developing additional features",
   },
   {
-    task: "Finding failed webhooks",
-    withoutStripeProtect: "$125",
+    task: "Building complex webhook workflows",
+    withoutStripeProtect: "$1,500",
     withStripeProtect: "$0",
-    timeIndication: "2 hours",
-    icon: <Clock className="h-6 w-6" />,
+    timeIndication: "3 days",
     impact: "high",
-    tooltip: "Time spent finding failed webhooks",
+    tooltip: "Time spent building webhook workflows",
+    icon: <Hammer className="h-6 w-6" />,
   },
+
   {
     task: "Ongoing bug fixes and maintenance",
     withoutStripeProtect: "Overwhelming costs",
@@ -52,37 +42,22 @@ const comparisonData = [
     tooltip: "Ongoing bug fixes and maintenance",
   },
   {
+    task: "Finding failed webhooks",
+    withoutStripeProtect: "$125",
+    withStripeProtect: "$0",
+    timeIndication: "2 hours",
+    icon: <Clock className="h-6 w-6" />,
+    impact: "high",
+    tooltip: "Time spent finding failed webhooks",
+  },
+
+  {
     task: "Customer frustration",
     withoutStripeProtect: "High",
     withStripeProtect: "Minimal",
     icon: <X className="h-6 w-6" />,
     impact: "high",
     tooltip: "Customer frustration",
-  },
-  {
-    task: "Training new developers",
-    withoutStripeProtect: "Costly and time-consuming",
-    withStripeProtect: "Effortless",
-    timeIndication: "Weeks",
-    icon: <Repeat className="h-6 w-6" />,
-    impact: "high",
-    tooltip: "Training new developers",
-  },
-  {
-    task: "Handling webhook issues",
-    withoutStripeProtect: "Manual fixes and stress",
-    withStripeProtect: "Automated alerts",
-    icon: <HeartPulseIcon className="h-6 w-6" />,
-    impact: "high",
-    tooltip: "Handling webhook issues",
-  },
-  {
-    task: "Protecting webhooks with tokens",
-    withoutStripeProtect: "$0",
-    withStripeProtect: "Affordable",
-    icon: <DollarSign className="h-6 w-6" />,
-    impact: "high",
-    tooltip: "Protecting webhooks with tokens",
   },
 ];
 
@@ -106,7 +81,7 @@ const itemVariants = {
 
 export default function ComparisonSection() {
   return (
-    <section className="py-24">
+    <section>
       <motion.div
         className="container mx-auto px-4 max-w-7xl"
         initial="hidden"
@@ -115,17 +90,15 @@ export default function ComparisonSection() {
         variants={containerVariants}
       >
         <div className="text-center mb-16 text-card">
-          <motion.h2
-            className="text-card"
-            variants={itemVariants}
-          >
+          <motion.h2 className="text-card" variants={itemVariants}>
             The real cost of webhook failures
           </motion.h2>
           <motion.p
             className="text-lg text-muted max-w-3xl mx-auto"
             variants={itemVariants}
           >
-            See how much you&apos;re really losing from unreliable webhook management
+            See how much you&apos;re really losing from unreliable webhook
+            management
           </motion.p>
         </div>
 
@@ -136,11 +109,11 @@ export default function ComparisonSection() {
                 <th className="px-6 py-4 text-left text-lg font-semibold">
                   Metric
                 </th>
-                <th className="px-6 py-4 text-center text-lg font-semibold">
-                  Without Protection
+                <th className="w-fit px-6 py-4 text-center text-lg font-semibold">
+                  <Logo className="inline-flex" />
                 </th>
                 <th className="px-6 py-4 text-center text-lg font-semibold">
-                  With Our Service
+                  Without Protection
                 </th>
               </tr>
             </thead>
@@ -169,9 +142,12 @@ export default function ComparisonSection() {
                       </div>
                       <div>
                         <div className="font-medium">{item.task}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {item.tooltip}
-                        </div>
+                        {item.timeIndication && (
+                          <div className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{item.timeIndication}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>
@@ -188,11 +164,10 @@ export default function ComparisonSection() {
         </div>
 
         <motion.div
-          className="mt-0 text-sm text-muted/80 text-start"
+          className="mt-1 text-sm text-muted/60 text-start"
           variants={itemVariants}
         >
-          *Data reflects industry averages for senior developer rates and time
-          savings.
+          *Data reflects industry averages for senior developer rates.
         </motion.div>
       </motion.div>
     </section>

@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 const LOGO = "/logo.png";
@@ -16,6 +17,7 @@ export interface LogoProps {
   animate?: boolean;
   className?: string;
   withText?: boolean;
+  navigateOnClick?: boolean;
 }
 
 export default function Logo({
@@ -26,7 +28,9 @@ export default function Logo({
   textClassName,
   imageClassName,
   withText = true,
+  navigateOnClick = false,
 }: LogoProps) {
+  const router = useRouter();
   const animation = animate
     ? {
         whileHover: { scale: 1.05 },
@@ -36,8 +40,15 @@ export default function Logo({
 
   return (
     <motion.div
-      className={cn("flex items-center gap-2", className)}
+      className={cn(
+        "flex items-center gap-2",
+        {
+          "cursor-pointer": navigateOnClick,
+        },
+        className,
+      )}
       {...animation}
+      onClick={navigateOnClick ? () => router.push("/") : undefined}
     >
       <Image
         src={LOGO}

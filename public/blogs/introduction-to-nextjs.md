@@ -4,6 +4,7 @@ title: "An Introduction to Next.js: The React Framework for Production"
 excerpt: "Discover the power of Next.js, a popular React framework that simplifies the process of building fast and scalable web applications."
 publishedAt: "2024-12-01T10:00:00Z"
 readingTime: "6 min read"
+tags: ["nextjs", "react", "javascript", "web-development", "framework", "ssr", "static-site"]
 author:
   name: "Orel Zilberman"
   role: "Founder of StripeProtect"

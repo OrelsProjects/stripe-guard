@@ -1,5 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUp, CogIcon, User, UserCog, Webhook } from "lucide-react";
+import {
+  ArrowUp,
+  CogIcon,
+  User,
+  UserCog,
+  Webhook,
+  RotateCcw,
+} from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ServerIcon } from "./server-icon";
 import { NotificationEmail } from "./notification-email";
@@ -8,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/ui/Logo";
 import { EventTracker } from "@/eventTracker";
+import { Logger } from "@/logger";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -54,6 +62,8 @@ export const WebhookAnimation = () => {
   } | null>(null);
 
   const [barIntersected, setBarIntersected] = useState(false);
+  const [restartingAnimation, setRestartingAnimation] = useState(false);
+  const restartingAnimationRef = useRef(false);
 
   useEffect(() => {
     const bar = document.getElementById("webhook-animation-bar");
@@ -93,62 +103,84 @@ export const WebhookAnimation = () => {
     animationOngoingRef.current = true;
   };
 
-  const runAnimation = async (event: string) => {
-    setTimesTried(prev => prev + 1);
-    setSelectedEvent(event);
-    setStage("initial");
-    setStripeProtectServerStage("initial");
-    setUserServerStage("initial");
-    animationOngoingRef.current = true;
-    setShowNotifications(false);
-    setStripeAnimationKey(key => key + 1);
-    setStage("loading");
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setWebhookVisible(true);
-
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setWebhookVisible(false);
-    setStage("processing");
-    setUserServerStage("processing");
-    setStripeProtectServerStage("processing");
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const userServerSuccess = timesTried % 2 === 1;
-
-    if (userServerSuccess) {
-      setStage("success");
-      setUserServerStage("success");
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStripeProtectServerStage("success");
-      animationOngoingRef.current = false;
-      setSelectedEvent(null);
-      setAnimatingEvent(null);
-      EventTracker.track("webhook_demo_success", {
-        event_type: selectedEvent,
-        times_tried: timesTried,
-      });
-    } else {
-      setStage("failure");
-      setUserServerStage("failure");
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setStripeProtectServerStage("triggered");
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setShowNotifications(true);
-      EventTracker.track("webhook_demo_failure", {
-        event_type: selectedEvent,
-        times_tried: timesTried,
-      });
+  const waitForAnimation = async (ms: number) => {
+    if (restartingAnimationRef.current) {
+      setRestartingAnimation(false);
+      restartingAnimationRef.current = false;
+      throw new Error("Animation is restarting");
     }
+    await new Promise(resolve => setTimeout(resolve, ms));
+    if (restartingAnimationRef.current) {
+      setRestartingAnimation(false);
+      restartingAnimationRef.current = false;
+      throw new Error("Animation is restarting");
+    }
+  };
 
-    // Schedule next animation after a delay
-    const delay = timesTried > 0 ? 2500 : 4000;
-    setTimeout(() => {
-      animationOngoingRef.current = false;
-      setSelectedEvent(null);
-      setAnimatingEvent(null);
-      startNewAnimation();
-    }, delay);
+  const runAnimation = async (event: string) => {
+    try {
+      setTimesTried(prev => prev + 1);
+      setSelectedEvent(event);
+      setStage("initial");
+      setStripeProtectServerStage("initial");
+      setUserServerStage("initial");
+      animationOngoingRef.current = true;
+      setShowNotifications(false);
+      setStripeAnimationKey(key => key + 1);
+      setStage("loading");
+      // await new Promise(resolve => setTimeout(resolve, 1000));
+      await waitForAnimation(1000);
+      setWebhookVisible(true);
+
+      await waitForAnimation(1500);
+      setWebhookVisible(false);
+      setStage("processing");
+      setUserServerStage("processing");
+      setStripeProtectServerStage("processing");
+
+      await waitForAnimation(1000);
+
+      const userServerSuccess = timesTried % 2 === 1;
+
+      if (userServerSuccess) {
+        setStage("success");
+        setUserServerStage("success");
+        await waitForAnimation(1000);
+        setStripeProtectServerStage("success");
+        animationOngoingRef.current = false;
+        setSelectedEvent(null);
+        setAnimatingEvent(null);
+        EventTracker.track("webhook_demo_success", {
+          event_type: selectedEvent,
+          times_tried: timesTried,
+        });
+      } else {
+        setStage("failure");
+        setUserServerStage("failure");
+        await waitForAnimation(1200);
+        setStripeProtectServerStage("triggered");
+        await waitForAnimation(1000);
+        setShowNotifications(true);
+        EventTracker.track("webhook_demo_failure", {
+          event_type: selectedEvent,
+          times_tried: timesTried,
+        });
+      }
+
+      // Schedule next animation after a delay
+      const delay = timesTried > 0 ? 2500 : 4000;
+      setTimeout(() => {
+        animationOngoingRef.current = false;
+        setSelectedEvent(null);
+        setAnimatingEvent(null);
+        startNewAnimation();
+      }, delay);
+    } catch (error: any) {
+      if (error.message === "Animation is restarting") {
+        return;
+      }
+      Logger.error(error);
+    }
   };
 
   useEffect(() => {
@@ -181,11 +213,58 @@ export const WebhookAnimation = () => {
     }
   }, []);
 
+  const resetAnimation = () => {
+    if (restartingAnimation || restartingAnimationRef.current) return;
+    // Reset all states
+    // setBarIntersected(true);
+    restartingAnimationRef.current = true;
+    setRestartingAnimation(true);
+    
+    animationOngoingRef.current = false;
+    setSelectedEvent(null);
+    setAnimatingEvent(null);
+    setStage("idle");
+    setStripeProtectServerStage("initial");
+    setUserServerStage("initial");
+    setTimesTried(0);
+    setWebhookVisible(false);
+    setShowNotifications(false);
+    setStripeAnimationKey(prev => prev + 1);
+
+    // Start new animation after a short delay
+    setTimeout(() => {
+      startNewAnimation(3000);
+    }, 100);
+  };
+
   return (
     <motion.section
-      id="how-does-it-work"
+      id="how-it-works"
       className="hidden xl:flex flex-col items-center justify-center min-h-[80vh] p-8 relative px-16 bg-card/30"
     >
+      {/* Reset button */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="absolute bottom-4 right-10 z-50"
+      >
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={resetAnimation}
+          className="hover:bg-background/20 shadow-md w-fit p-4"
+          title="Reset animation"
+          disabled={restartingAnimation}
+        >
+          <RotateCcw
+            className={cn("!h-6 !w-6 rotate-180", {
+              "animate-spin": restartingAnimation,
+            })}
+          />
+          Restart animation
+        </Button>
+      </motion.div>
+
       <div className="w-full flex flex-col items-center mb-8">
         <motion.h2
           initial="hidden"
@@ -295,7 +374,8 @@ export const WebhookAnimation = () => {
               )}
             </AnimatePresence>
             {/* Stripe image */}
-            {animationOngoingRef.current || timesTried > 0 ? (
+            {!restartingAnimation &&
+            (animationOngoingRef.current || timesTried > 0) ? (
               <motion.div
                 key={stripeAnimationKey}
                 whileInView="visible"
@@ -327,7 +407,7 @@ export const WebhookAnimation = () => {
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={eventNameVariants}
-                transition={{ delay: 1.5 }}
+                transition={{ delay: restartingAnimation ? 0 : 1.5 }}
                 className={cn(
                   "w-fit h-fit absolute left-[33%] top-[30%] z-20  rounded-lg shadow-lg overflow-hidden",
                 )}

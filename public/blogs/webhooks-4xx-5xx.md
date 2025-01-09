@@ -4,6 +4,7 @@ title: "Webhooks: What to Do When the HTTP Status Code Starts with a Four (4xx) 
 excerpt: "Understand how 4xx and 5xx HTTP status codes impact Stripe webhooks and explore practical solutions to fix them."
 publishedAt: "2025-01-02T12:00:00Z"
 readingTime: "5 min read"
+tags: ["webhooks", "http", "4xx", "5xx", "stripe", "error-handling", "troubleshooting"]
 author:
   name: "Orel Zilberman"
   role: "Founder of StripeProtect"

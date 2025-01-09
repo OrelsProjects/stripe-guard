@@ -222,15 +222,16 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           showTopBar ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+        <div className="w-full mx-auto px-8 py-3 flex items-center justify-between">
           <Link href="/blog" passHref>
             <Button variant="outline" size="sm" className="flex items-center">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blogs
             </Button>
           </Link>
-          <h2 className="text-sm font-semibold truncate max-w-[50%]">
+          <h2 className="my-0 text-sm font-semibold truncate">
             {blogData.title}
           </h2>
+          <Logo navigateOnClick />
         </div>
       </div>
 

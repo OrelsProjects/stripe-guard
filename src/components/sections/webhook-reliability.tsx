@@ -121,7 +121,7 @@ export function WebhookReliability() {
               </CardTitle>
               <p className="text-card-foreground">
                 According to Shopify&apos;s standards, a 0.5% failure rate, or 1
-                in every 200 webhooks failing, is considered acceptable.
+                in every 200 webhooks failing, is considered good.
               </p>
             </CardHeader>
             <CardContent className="pb-0">

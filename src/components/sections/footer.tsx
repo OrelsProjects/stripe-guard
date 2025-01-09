@@ -42,10 +42,10 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#analytics"
+                href="#how-it-works"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Analytics
+                  How {APP_NAME} protects your customers
                 </a>
               </li>
             </ul>
