@@ -93,8 +93,8 @@ export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
     percentOff: value.percent_off || 0,
     timesRedeemed,
     maxRedemptions,
-    freeTokens: value.metadata?.freeTokens
-      ? parseInt(value.metadata.freeTokens)
+    freeTokens: value.metadata?.free_tokens
+      ? parseInt(value.metadata.free_tokens)
       : null,
     redeemBy,
     emoji: value.metadata?.seasonEmoji || LAUNCH_EMOJI,

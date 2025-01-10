@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Coupon not valid" }, { status: 400 });
     }
 
-    const freeTokens = coupon.metadata?.freeTokens
-      ? parseInt(coupon.metadata.freeTokens)
+    const freeTokens = coupon.metadata?.free_tokens
+      ? parseInt(coupon.metadata.free_tokens)
       : 0;
 
     const userTokens = await prisma.userTokens.findUnique({

@@ -78,8 +78,8 @@ export interface CouponResponse {
 }
 
 export const stripeCouponToCoupon = (coupon: Stripe.Coupon): Coupon => {
-  const freeTokens = coupon.metadata?.freeTokens
-    ? parseInt(coupon.metadata.freeTokens)
+  const freeTokens = coupon.metadata?.free_tokens
+    ? parseInt(coupon.metadata.free_tokens)
     : null;
   return {
     id: coupon.id,
