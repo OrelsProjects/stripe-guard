@@ -14,6 +14,7 @@ export interface AuthState {
   user?: AppUser | null;
   isAdmin: boolean;
   state: AuthStateType;
+  isInit?: boolean;
   loading: boolean;
   error: string | null;
 }
@@ -22,6 +23,7 @@ export const initialState: AuthState = {
   user: null,
   isAdmin: false,
   state: "unauthenticated",
+  isInit: false,
   loading: true,
   error: null,
 };
@@ -40,6 +42,7 @@ const authSlice = createSlice({
       if (!action.payload) {
         state.user = null;
         state.state = "unauthenticated";
+        state.isInit = false;
         return;
       }
       const { state: authState, ...user } = action.payload;
@@ -47,6 +50,7 @@ const authSlice = createSlice({
         state.user = user;
       }
       state.state = action.payload.state ?? "authenticated";
+      state.isInit = true;
     },
     updateUserSettings: (
       state,

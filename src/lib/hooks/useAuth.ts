@@ -11,12 +11,13 @@ import { useAppDispatch } from "@/lib/hooks/redux";
 import { EventTracker } from "@/eventTracker";
 import { Logger } from "@/logger";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { UserSettings } from "@/models/user";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 
 const useAuth = () => {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const router = useCustomRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +31,6 @@ const useAuth = () => {
           redirect.searchParams.append(key, val);
         }
       });
-
       setLoading(true);
       await signIn("google", {
         redirect: true,

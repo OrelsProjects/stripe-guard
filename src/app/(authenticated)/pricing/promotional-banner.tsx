@@ -1,0 +1,204 @@
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Coupon } from "@/models/payment";
+import { motion } from "framer-motion";
+import { CheckCircle, Loader2, Timer, Gift, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+
+interface PromotionalBannerProps {
+  coupon: Coupon;
+  onApply: () => Promise<void>;
+  onApplyFreeCoupons: (couponId: string) => Promise<void>;
+  applied: boolean;
+}
+
+function useCountdown(targetDate: number) {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const difference = targetDate - Date.now();
+    return Math.max(0, difference);
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const difference = targetDate - Date.now();
+      setTimeLeft(Math.max(0, difference));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+  return { hours, minutes, seconds, expired: timeLeft === 0 };
+}
+
+export function PromotionalBanner({
+  coupon,
+  onApply,
+  onApplyFreeCoupons,
+  applied,
+}: PromotionalBannerProps) {
+  const [loading, setLoading] = useState(false);
+  const [loadingFreeCoupons, setLoadingFreeCoupons] = useState(false);
+  const timesRedeemed = coupon.timesRedeemed || 0;
+  const maxRedemptions = coupon.maxRedemptions || 0;
+  const remainingRedemptions = maxRedemptions - timesRedeemed;
+  const redeemBy = coupon.redeemBy ? new Date(coupon.redeemBy).getTime() : null;
+  const freeTokens = coupon.freeTokens || 0;
+  const hasFreeCoupons = freeTokens > 0;
+  const hasPercentOff = coupon.percentOff > 0;
+
+  const countdown = redeemBy ? useCountdown(redeemBy) : null;
+
+  if (maxRedemptions && timesRedeemed && remainingRedemptions <= 0) {
+    return null;
+  }
+
+  if (redeemBy && countdown?.expired) {
+    return null;
+  }
+
+  const urgencyText =
+    remainingRedemptions > 0
+      ? remainingRedemptions === 1
+        ? "Last chance! Only 1 offer remaining"
+        : `Hurry! Only ${remainingRedemptions} offers remaining`
+      : "";
+
+  const getOfferText = () => {
+    if (hasFreeCoupons) {
+      return (
+        <span className="text-primary text-lg font-light">
+          Get <span className="font-bold">{freeTokens.toLocaleString()}</span>{" "}
+          webhook{freeTokens > 1 ? "s" : ""}{" "}
+          <span className="font-bold">for free</span>
+        </span>
+      );
+    }
+    if (hasPercentOff) {
+      return ``;
+    }
+    return "Special offer";
+  };
+
+  const getOfferIcon = () => {
+    if (hasFreeCoupons) {
+      return <Gift className="w-6 h-6 text-primary" />;
+    }
+    return null;
+  };
+
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        scale: 0.9,
+      }}
+      transition={{
+        duration: 0.3,
+      }}
+      whileInView={{
+        opacity: 1,
+        scale: 1,
+      }}
+      viewport={{
+        once: true,
+      }}
+      className="w-full max-w-3xl mx-auto"
+    >
+      <div className="relative overflow-hidden bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-xl border border-primary/10 shadow-lg">
+        <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
+
+        {countdown && !countdown.expired && (
+          <div className="absolute top-0 right-0 bg-primary/10 px-4 py-1 rounded-bl-lg">
+            <div className="flex items-center text-sm font-medium">
+              <Timer className="w-4 h-4 mr-2 animate-pulse" />
+              <span>
+                {String(countdown.hours).padStart(2, "0")}:
+                {String(countdown.minutes).padStart(2, "0")}:
+                {String(countdown.seconds).padStart(2, "0")}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div className="p-6 flex items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            {getOfferIcon() && (
+              <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full">
+                {getOfferIcon()}
+              </div>
+            )}
+
+            <div className="flex flex-col">
+              {!hasFreeCoupons && (
+                <h3 className="text-lg flex items-center gap-2">
+                  {coupon.emoji} Use the code <strong>{coupon.name}</strong> to
+                  save <strong>{coupon.percentOff}%</strong> on your order
+                  <Sparkles className="w-4 h-4 text-yellow-500" />
+                </h3>
+              )}
+
+              <p className="text-muted-foreground flex flex-col items-start">
+                <span className="font-bold text-primary">{getOfferText()}</span>
+                {urgencyText && (
+                  <span className="text-sm text-orange-500 font-medium">
+                    • {urgencyText}
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <Button
+            onClick={() => {
+              if (hasFreeCoupons) {
+                setLoadingFreeCoupons(true);
+                onApplyFreeCoupons(coupon.id).catch(() => {
+                  setLoadingFreeCoupons(false);
+                });
+              } else {
+                setLoading(true);
+                onApply().finally(() => {
+                  setLoading(false);
+                });
+              }
+            }}
+            variant={applied ? "outline" : "default"}
+            disabled={loading || loadingFreeCoupons}
+            className={cn(
+              "min-w-[140px] transition-all",
+              applied && "bg-green-50 border-green-200 text-green-600",
+            )}
+          >
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : applied ? (
+              <div className="flex items-center justify-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                <span>Claimed!</span>
+              </div>
+            ) : (
+              <span className="flex items-center gap-2">
+                {hasFreeCoupons ? (
+                  <>
+                    {loadingFreeCoupons ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Gift className="w-4 h-4" />
+                    )}
+                    <span>Claim Now</span>
+                  </>
+                ) : (
+                  <span>Apply discount</span>
+                )}
+              </span>
+            )}
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

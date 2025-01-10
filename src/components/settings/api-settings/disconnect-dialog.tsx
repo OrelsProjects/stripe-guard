@@ -14,10 +14,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import useWebhooks from "@/lib/hooks/useWebhooks";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 interface DisconnectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -27,7 +26,7 @@ export function DisconnectDialog({
   open,
   onOpenChange,
 }: DisconnectDialogProps) {
-  const router = useRouter();
+  const router = useCustomRouter();
   const { disconnectUser } = useWebhooks();
   const [loading, setLoading] = useState(false);
 

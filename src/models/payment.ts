@@ -60,12 +60,36 @@ export interface Coupon {
   name: string;
   emoji: string;
   percentOff: number;
+  title?: string | null;
   maxRedemptions: number | null;
   timesRedeemed: number | null;
   redeemBy: number | null;
+
+  freeTokens?: number | null;
 }
 
 export interface ProductsResponse {
   products: Product[];
   coupon: Coupon;
 }
+
+export interface CouponResponse {
+  coupon: Stripe.Coupon;
+}
+
+export const stripeCouponToCoupon = (coupon: Stripe.Coupon): Coupon => {
+  const freeTokens = coupon.metadata?.freeTokens
+    ? parseInt(coupon.metadata.freeTokens)
+    : null;
+  return {
+    id: coupon.id,
+    name: coupon.name || "",
+    emoji: coupon.metadata?.emoji || "",
+    percentOff: coupon.percent_off || 0,
+    title: coupon.metadata?.title || null,
+    maxRedemptions: coupon.max_redemptions || null,
+    timesRedeemed: coupon.times_redeemed || null,
+    redeemBy: coupon.redeem_by || null,
+    freeTokens: freeTokens,
+  };
+};

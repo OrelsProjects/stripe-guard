@@ -7,7 +7,7 @@ import {
   setLoadingUserDetails,
   setUser as setUserAction,
 } from "@/lib/features/auth/authSlice";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Loading from "@/components/ui/loading";
 import { setUserEventTracker } from "@/eventTracker";
 import { Logger, setUserLogger } from "@/logger";
@@ -26,13 +26,13 @@ export default function AuthProvider({
   const router = useCustomRouter();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const { user: currentUser } = useSelector(selectAuth);
+  const searchParams = useSearchParams();
+  const { user: currentUser, isInit } = useSelector(selectAuth);
   const { data: session, status } = useSession();
   const [loadingUser, setLoadingUser] = useState(false);
 
   const loading = useRef(false);
 
-  
   const setUser = async (data?: Session) => {
     try {
       if (!data) {
@@ -84,10 +84,30 @@ export default function AuthProvider({
     }
   };
 
+  const applyCoupon = async () => {
+    const couponId = searchParams.get("promo");
+    if (couponId) {
+      try {
+        await axios.post("/api/stripe/user/coupon/apply", {
+          couponId,
+        });
+      } catch (error: any) {
+        Logger.error(error);
+      } finally {
+        router.push(pathname, {
+          preserveQuery: true,
+          paramsToRemove: ["promo"],
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     switch (status) {
       case "authenticated":
-        handleUserAuthentication();
+        applyCoupon().finally(() => {
+          handleUserAuthentication();
+        });
         break;
       case "loading":
         break;

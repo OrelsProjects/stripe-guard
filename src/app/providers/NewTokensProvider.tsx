@@ -2,10 +2,8 @@
 
 import { CheckCircle, X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import {
   Dialog,
   DialogContent,
@@ -15,11 +13,10 @@ import {
 } from "@/components/ui/dialog";
 import LottiePlayer from "@/components/lottiePlayer";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useAppSelector } from "@/lib/hooks/redux";
-import { selectAuth } from "@/lib/features/auth/authSlice";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 
 export default function NewTokensProvider() {
-  const router = useRouter();
+  const router = useCustomRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

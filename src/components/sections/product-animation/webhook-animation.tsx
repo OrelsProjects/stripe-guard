@@ -214,12 +214,13 @@ export const WebhookAnimation = () => {
   }, []);
 
   const resetAnimation = () => {
+    EventTracker.track("webhook_demo_restart");
     if (restartingAnimation || restartingAnimationRef.current) return;
     // Reset all states
     // setBarIntersected(true);
     restartingAnimationRef.current = true;
     setRestartingAnimation(true);
-    
+
     animationOngoingRef.current = false;
     setSelectedEvent(null);
     setAnimatingEvent(null);

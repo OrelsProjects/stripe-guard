@@ -13,7 +13,7 @@ html {
     --card: 210 23% 90%;
     --card-foreground: 235 12% 21%;
     --popover: 214 17% 76%;
-    --popover-foreground: 212 19% 87%;
+    --popover-foreground: 212 19% 27%;
     --primary: 223 100% 63%;
     --primary-foreground: 0 0% 100%;
     --secondary: 221 29% 40%;
@@ -47,40 +47,40 @@ html {
   }
 
   .dark {
-    --background: 0 10% 10%;
-    --foreground: 235 22% 79%;
-    --card: 210 33% 10%;
-    --card-foreground: 235 22% 79%;
-    --popover: 214 30% 79%;
-    --popover-foreground: 212 29% 13%;
-    --primary: 223 100% 37%;
-    --primary-foreground: 0 10% 10%;
-    --secondary: 214 30% 79%;
-    --secondary-foreground: 212 29% 13%;
-    --muted: 0 20% 20%;
-    --muted-foreground: 210 33% 40%;
-    --accent: 0 10% 10%;
-    --accent-foreground: 235 22% 79%;
-    --destructive: 0 100% 29%;
-    --destructive-foreground: 0 100% 86%;
-    --border: 214 30% 79%;
-    --input: 214 30% 79%;
-    --ring: 223 100% 37%;
+    --background: 222 84% 5%;
+    --foreground: 210 40% 98%;
+    --card: 222 84% 5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 84% 5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 59.8%;
+    --primary-foreground: 222 47% 1%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 224 76% 48%;
     --radius: 0.5rem;
-    --chart-1: 223 100% 33%;
-    --chart-2: 214 30% 20%;
-    --chart-3: 307 92% 20%;
-    --chart-4: 307 92% 20%;
-    --chart-5: 223 100% 43%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
 
-    --sidebar-background: 0 10% 2%;
-    --sidebar-foreground: 235 22% 63%;
-    --sidebar-primary: 223 100% 50%;
-    --sidebar-primary-foreground: 0 10% 100%;
-    --sidebar-accent: 0 10% 25%;
-    --sidebar-accent-foreground: 235 22% 79%;
-    --sidebar-border: 214 30% 71%;
-    --sidebar-ring: 223 100% 29%;
+    --sidebar-background: 222 84% 5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 59.8%;
+    --sidebar-primary-foreground: 222 47% 1%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 224 76% 48%;
   }
 }
 
@@ -240,7 +240,10 @@ html {
   animation: shimmer 1.5s infinite;
 }
 
-h2 {
+landing-page {
+}
+
+.landing-page h2 {
   @apply font-bold text-4xl lg:text-6xl tracking-tight my-6 md:my-8 text-center;
 }
 

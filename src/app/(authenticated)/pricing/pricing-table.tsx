@@ -10,19 +10,22 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Logger } from "@/logger";
 import { Product } from "@/models/payment";
-import { PromotionalBanner } from "@/app/(authenticated)/premium/promotionalBanner";
+import { PromotionalBanner } from "@/app/(authenticated)/pricing/promotional-banner";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
+import { LAUNCH_PROMO_PARAM } from "@/app/providers/LaunchPromoProvider";
 
-export interface PremiumTableProps {
+export interface PricingTableProps {
   buyText?: string;
   onCheckout?: (priceId: string, productId: string) => void;
   onDiscountEnabled?: () => void;
 }
 
-export function PremiumTable({
+export function PricingTable({
   onCheckout,
   buyText,
   onDiscountEnabled,
-}: PremiumTableProps) {
+}: PricingTableProps) {
+  const router = useCustomRouter();
   const { getProducts, goToCheckout } = usePayments();
   const { products, coupon } = useAppSelector(state => state.products);
   const [loading, setLoading] = useState(false);
@@ -83,6 +86,12 @@ export function PremiumTable({
     }
   };
 
+  const applyFreeTokens = async (couponId: string) => {
+    router.push(
+      "/login?promo=" + couponId + "&" + LAUNCH_PROMO_PARAM + "=true",
+    );
+  };
+
   const calculateDiscountedPrice = (price: number) => {
     if (!discountApplied || !coupon) return price;
     return price - (price * coupon.percentOff) / 100;
@@ -112,11 +121,12 @@ export function PremiumTable({
   return (
     <div className="rounded-lg">
       {coupon && (
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center mb-4">
           <PromotionalBanner
             coupon={coupon}
             onApply={applyDiscount}
             applied={discountApplied}
+            onApplyFreeCoupons={applyFreeTokens}
           />
         </div>
       )}

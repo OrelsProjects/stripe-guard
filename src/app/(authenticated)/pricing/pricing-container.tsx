@@ -1,14 +1,14 @@
 "use client";
 
-import { PremiumTable } from "@/app/(authenticated)/premium/premiumTable";
+import { PricingTable } from "@/app/(authenticated)/pricing/pricing-table";
 
-export function PremiumContainer() {
+export function PricingContainer() {
   return (
     <div className="mx-auto py-12 px-4 w-[90%] space-y-20">
       <h2 className="text-3xl md:text-5xl font-extrabold  mb-6 text-center text-secondary">
         Don&apos;t lose revenue to failed webhooks
       </h2>
-      <PremiumTable />
+      <PricingTable />
     </div>
   );
 }

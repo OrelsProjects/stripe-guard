@@ -1,6 +1,10 @@
 import axios from "axios";
 import { Logger } from "@/logger";
-import { ProductsResponse } from "@/models/payment";
+import {
+  CouponResponse,
+  ProductsResponse,
+  stripeCouponToCoupon,
+} from "@/models/payment";
 import { loadStripe } from "@stripe/stripe-js";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { setCoupon, setProducts } from "@/lib/features/products/productsSlice";
@@ -33,6 +37,19 @@ export default function usePayments() {
     }
   };
 
+  const getCoupon = async (couponId: string) => {
+    try {
+      const response = await axios.get<CouponResponse>("/api/stripe/coupon", {
+        params: { couponId },
+      });
+      const coupon = stripeCouponToCoupon(response.data.coupon);
+      return coupon;
+    } catch (error: any) {
+      Logger.error("Error getting coupon", { error });
+      throw error;
+    }
+  };
+
   const goToCheckout = async (
     priceId: string,
     productId: string,
@@ -59,6 +76,7 @@ export default function usePayments() {
   };
 
   return {
+    getCoupon,
     getProducts,
     goToCheckout,
   };

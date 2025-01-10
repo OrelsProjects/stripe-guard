@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Lock, Shield, Bell } from "lucide-react";
+import { Lock, Shield, Bell, Smile } from "lucide-react";
 
 const features = [
   {
@@ -11,8 +11,8 @@ const features = [
     text: "Instant alerts",
   },
   {
-    icon: Lock,
-    text: "Encrypted keys",
+    icon: Smile,
+    text: "Happy customers",
   },
 ];
 
@@ -37,7 +37,7 @@ export default function SecurityFeatures() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="flex flex-col sm:flex-row justify-center gap-6 mt-8"
+      className="w-full flex flex-col md:flex-row md:justify-between gap-6"
     >
       {features.map(({ icon: Icon, text }) => (
         <motion.div

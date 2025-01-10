@@ -81,7 +81,7 @@ export default function Home() {
 
   return (
     <motion.main
-      className="w-screen min-h-screen flex flex-col overflow-x-clip"
+      className="w-screen min-h-screen flex flex-col overflow-x-clip landing-page "
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}

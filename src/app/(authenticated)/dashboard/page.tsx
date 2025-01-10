@@ -59,7 +59,9 @@ function Dashboard() {
     );
     if (!removedError || !statistics) return;
 
-    EventTracker.track("webhook_resolve_attempt", { webhookId: userWebhookEvent.id });
+    EventTracker.track("webhook_resolve_attempt", {
+      webhookId: userWebhookEvent.id,
+    });
     try {
       setStatistics({
         ...statistics,
@@ -69,10 +71,14 @@ function Dashboard() {
           ) || [],
       });
       await resolveWebhook(userWebhookEvent.id);
-      EventTracker.track("webhook_resolve_success", { webhookId: userWebhookEvent.id });
+      EventTracker.track("webhook_resolve_success", {
+        webhookId: userWebhookEvent.id,
+      });
     } catch {
       toast.error("Failed to resolve webhook error");
-      EventTracker.track("webhook_resolve_error", { webhookId: userWebhookEvent.id });
+      EventTracker.track("webhook_resolve_error", {
+        webhookId: userWebhookEvent.id,
+      });
       if (statistics) {
         setStatistics({
           ...statistics,
@@ -85,8 +91,8 @@ function Dashboard() {
   return (
     <div className="w-full h-full flex justify-center">
       <div className="container flex flex-col gap-2 bg-background py-8">
-        <h1 className="text-4xl font-bold">Webhook Monitor</h1>
-        <h2 className="text-xl">Today&apos;s Webhook Performance</h2>
+        <h1 className="text-4xl font-bold">Webhook monitor</h1>
+        <h2 className="text-xl">Your webhooks performance today</h2>
         <div className="w-full h-full flex flex-col gap-1 mt-6 relative">
           {/* Cards Mapping */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 z-10">
@@ -142,7 +148,9 @@ function Dashboard() {
               onErrorClick={error => {
                 setSelectedError(error);
                 setIsDialogOpen(true);
-                EventTracker.track("webhook_error_view", { errorId: error.userWebhookEvent.id });
+                EventTracker.track("webhook_error_view", {
+                  errorId: error.userWebhookEvent.id,
+                });
               }}
               onResolve={handleResolveWebhookError}
             />

@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { PremiumTable } from "@/app/(authenticated)/premium/premiumTable";
 import { useState } from "react";
+import { PricingTable } from "@/app/(authenticated)/pricing/pricing-table";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 
 export function Pricing() {
-  const router = useRouter();
+  const router = useCustomRouter();
   const [discountApplied, setDiscountApplied] = useState(false);
   const handleCheckout = (priceId: string, productId: string) => {
     router.push(
@@ -55,7 +55,7 @@ export function Pricing() {
             <span>1-minute setup with your Stripe account</span>
           </div>
         </div>
-        <PremiumTable
+        <PricingTable
           onDiscountEnabled={() => {
             setDiscountApplied(true);
           }}

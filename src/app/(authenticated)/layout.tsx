@@ -3,6 +3,7 @@
 import AnimationProvider from "@/app/providers/AnimationProvider";
 import AuthProvider from "@/app/providers/AuthProvider";
 import InitiatePlanFromLandingProvider from "@/app/providers/InitiatePlanFromLandingProvider";
+import LaunchPromoProvider from "@/app/providers/LaunchPromoProvider";
 import NewTokensProvider from "@/app/providers/NewTokensProvider";
 import PromotionProvider from "@/app/providers/PromotionProvider";
 import { Navbar } from "@/components/navbar";
@@ -18,6 +19,7 @@ export default function AuthenticatedLayout({ children }: RootLayoutProps) {
       <AuthProvider>
         <PromotionProvider />
         <NewTokensProvider />
+        <LaunchPromoProvider />
         <AnimationProvider>
           <InitiatePlanFromLandingProvider>
             {children}

@@ -65,7 +65,7 @@ model UserMetadata {
 
   paidStatus String @map("paid_status") // free / premium / suspended
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_meta_data")
 }
@@ -170,7 +170,9 @@ model UserTokens {
   id     String @id @default(cuid())
   userId String @unique @map("user_id")
 
-  tokensLeft Int @map("tokens_left")
+  tokensLeft Int @default(0) @map("tokens_left")
+
+  couponsUsed String[] @default([]) @map("coupons_used")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

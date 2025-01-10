@@ -4,8 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 const LOGO = "/logo.png";
 
@@ -30,7 +29,7 @@ export default function Logo({
   withText = true,
   navigateOnClick = false,
 }: LogoProps) {
-  const router = useRouter();
+  const router = useCustomRouter();
   const animation = animate
     ? {
         whileHover: { scale: 1.05 },

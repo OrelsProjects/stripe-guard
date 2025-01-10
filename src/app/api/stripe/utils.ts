@@ -71,28 +71,51 @@ async function getOrCreateMonthlyCoupon(stripe: Stripe) {
 
 export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
   const coupons = await stripe.coupons.list();
-  loggerServer.info("Coupons", "system", {
-    coupons,
-  });
   const coupon = coupons.data.find(
     coupon =>
       coupon.name === LAUNCH_COUPON_NAME && coupon.metadata?.app === appName,
   );
   let value = coupon || (await getOrCreateMonthlyCoupon(stripe));
-  const redeemBy = (coupon?.redeem_by || 0) * 1000;
-  if (redeemBy) {
-    const redeemByDate = new Date(redeemBy);
-    if (redeemByDate < new Date()) {
-      value = await getOrCreateMonthlyCoupon(stripe);
-    }
+  let redeemBy: number | null = (coupon?.redeem_by || 0) * 1000;
+  let timesRedeemed = getTimesRedeemed(value);
+  let maxRedemptions = value.max_redemptions;
+
+  if (!isCouponValid(value)) {
+    value = await getOrCreateMonthlyCoupon(stripe);
+    redeemBy = value.redeem_by;
+    timesRedeemed = getTimesRedeemed(value);
+    maxRedemptions = value.max_redemptions;
   }
+
   return {
     id: value.id,
     name: value.name || "",
     percentOff: value.percent_off || 0,
-    timesRedeemed: value.times_redeemed,
-    maxRedemptions: value.max_redemptions,
+    timesRedeemed,
+    maxRedemptions,
+    freeTokens: value.metadata?.freeTokens
+      ? parseInt(value.metadata.freeTokens)
+      : null,
     redeemBy,
     emoji: value.metadata?.seasonEmoji || LAUNCH_EMOJI,
+    title: value.metadata?.title || null,
   };
 }
+
+export const isCouponValid = (coupon: Stripe.Coupon) => {
+  const isRedeemable =
+    !coupon.redeem_by ||
+    (coupon.redeem_by && coupon.redeem_by > new Date().getTime());
+  const timesRedeemed = getTimesRedeemed(coupon);
+
+  const isNotExpired =
+    !coupon.max_redemptions || timesRedeemed < coupon.max_redemptions;
+  return isRedeemable && isNotExpired;
+};
+
+export const getTimesRedeemed = (coupon: Stripe.Coupon) => {
+  const manualTimesRedeemed = coupon.metadata?.manual_times_redeemed
+    ? parseInt(coupon.metadata.manual_times_redeemed)
+    : 0;
+  return manualTimesRedeemed || coupon.times_redeemed || 0;
+};

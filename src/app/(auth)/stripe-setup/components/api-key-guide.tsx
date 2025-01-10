@@ -14,11 +14,16 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import axios, { AxiosError } from "axios";
 import { Loader } from "@/components/ui/loader";
-import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { encrypt } from "@/lib/utils/encryption";
 import { StripePermissionErrorName } from "@/models/errors/StripePermissionError";
 import { Logger } from "@/logger";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
+import { useSearchParams } from "next/navigation";
+import {
+  LAUNCH_PROMO_COMPLETED_PARAM,
+  LAUNCH_PROMO_PARAM,
+} from "@/app/providers/LaunchPromoProvider";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME;
 const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -149,9 +154,13 @@ const steps: Step[] = [
 ];
 
 export default function ApiKeyGuide() {
-  const router = useRouter();
+  const router = useCustomRouter();
+  const searchParams = useSearchParams();
+
   const [apiKey, setApiKey] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const isLaunchPromo = searchParams.get(LAUNCH_PROMO_PARAM) === "true";
 
   const showNoPermissionsError = () => {
     const errorToastId = toast.error(
@@ -192,7 +201,16 @@ export default function ApiKeyGuide() {
         apiKey: encryptedData,
       });
       toast.success("API key saved securely! 🚀");
-      router.push("/dashboard");
+      if (isLaunchPromo) {
+        router.push("/dashboard", {
+          paramsToRemove: [LAUNCH_PROMO_PARAM],
+          paramsToAdd: {
+            [LAUNCH_PROMO_COMPLETED_PARAM]: "true",
+          },
+        });
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       Logger.error(error);
       if (error instanceof AxiosError) {
@@ -217,8 +235,8 @@ export default function ApiKeyGuide() {
         className="w-full"
       >
         <Button variant="outline" className="mb-4" asChild>
-          <Link href="/stripe-setup">
-            <ArrowLeft className="w-4 h-4 mr-2" /> I want a different setup
+          <Link href="/dashboard">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Go back
           </Link>
         </Button>
       </motion.div>

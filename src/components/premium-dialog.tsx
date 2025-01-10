@@ -4,8 +4,8 @@ import {
   DialogContent,
   DialogClose,
 } from "@/components/ui/dialog";
-import { PremiumContainer } from "../app/(authenticated)/premium/premiumContainer";
-import { PremiumFAQ } from "../app/(authenticated)/premium/premiumFAQ";
+import { PricingContainer } from "../app/(authenticated)/pricing/pricing-container";
+import { PremiumFAQ } from "../app/(authenticated)/pricing/faq";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -33,7 +33,7 @@ export function PremiumDialog({
           <X className="h-7 w-7 text-muted-foreground" />
         </DialogClose>
         <div className="space-y-16">
-          <PremiumContainer />
+          <PricingContainer />
           <PremiumFAQ />
         </div>
       </DialogContent>
