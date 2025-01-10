@@ -122,10 +122,10 @@ export function PromotionalBanner({
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
             className="absolute top-0 w-full flex justify-center"
           >
-            <div className="bg-orange-100 px-4 py-1 rounded-b-lg shadow-md">
+            <div className="bg-orange-100 px-4 py-1 rounded-b-lg shadow-sm w-80 flex justify-center items-center">
               <div className="flex items-center text-sm font-medium text-orange-600">
                 <Timer className="w-4 h-4 mr-1 animate-pulse" />
-                <span className="font-bold">
+                <span className="text-sm font-light">
                   {countdown.days > 0 &&
                     `${countdown.days} day${countdown.days > 1 ? "s" : ""}`}
                   {countdown.hours > 0 &&
@@ -134,7 +134,7 @@ export function PromotionalBanner({
                     ` ${countdown.minutes} min${countdown.minutes > 1 ? "s" : ""}`}
                 </span>
                 {countdown.seconds > 0 && (
-                  <span className="ml-2 text-xs text-orange-500">
+                  <span className="ml-2 text-sm font-bold text-orange-500">
                     {countdown.seconds} second{countdown.seconds > 1 ? "s" : ""}{" "}
                     left!
                   </span>

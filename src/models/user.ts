@@ -1,4 +1,5 @@
 export const UserSettingsDefault: UserSettings = {
+  userCriticalEvents: [],
   notificationChannels: {
     email: {
       enabled: false,
@@ -40,6 +41,8 @@ export interface UserSettings {
   notificationChannels: NotificationChannels;
 
   plan?: Plan;
+
+  userCriticalEvents: string[];
 
   isOnboarded: boolean;
 }

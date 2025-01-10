@@ -10,7 +10,7 @@ import {
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ServerIcon } from "./server-icon";
 import { NotificationEmail } from "./notification-email";
-import { sendAlertToUserEvents } from "@/models/payment";
+import { criticalEvents } from "@/models/payment";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/ui/Logo";
@@ -91,9 +91,9 @@ export const WebhookAnimation = () => {
 
     await new Promise(resolve => setTimeout(resolve, delay));
     const randomIndex = Math.floor(
-      Math.random() * sendAlertToUserEvents.length,
+      Math.random() * criticalEvents.length,
     );
-    const randomEvent = sendAlertToUserEvents[randomIndex];
+    const randomEvent = criticalEvents[randomIndex];
 
     setSelectedEvent(randomEvent);
     setAnimatingEvent({
@@ -298,7 +298,7 @@ export const WebhookAnimation = () => {
         <div className="relative container max- h-fit w-full flex justify-start">
           <div className="h-60 container relative">
             <div className="w-fit relative py-4 flex flex-col items-center space-y-4 overflow-visible">
-              {sendAlertToUserEvents.map((ev, index) => (
+              {criticalEvents.map((ev, index) => (
                 <motion.div
                   key={ev}
                   initial="hidden"

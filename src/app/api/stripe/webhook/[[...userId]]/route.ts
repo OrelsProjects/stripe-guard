@@ -14,7 +14,7 @@ import {
 } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
 import loggerServer from "@/loggerServer";
-import { Event, sendAlertToUserEvents } from "@/models/payment";
+import { EnabledEvent, Event, criticalEvents } from "@/models/payment";
 import { UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import moment from "moment";
@@ -137,9 +137,23 @@ async function retryPendingWebhooks(
  */
 async function shouldSendEmailToCustomer(
   event: Event,
+  userId: string,
   existingWebhookEvents: UserWebhookEvent[],
 ) {
-  const isRightEvent = sendAlertToUserEvents.includes(event.type);
+  const userCriticalEvents = await prisma.userSettings.findUnique({
+    where: {
+      userId,
+    },
+    select: {
+      userCriticalEvents: true,
+    },
+  });
+
+  const allCriticalEvents = criticalEvents.concat(
+    (userCriticalEvents?.userCriticalEvents || []) as EnabledEvent[],
+  );
+
+  const isRightEvent = allCriticalEvents.includes(event.type);
   const hasFailedBefore = existingWebhookEvents.some(event => !event.succeeded);
 
   return isRightEvent && !hasFailedBefore;
@@ -165,13 +179,14 @@ async function didSucceed(existingWebhookEvents: UserWebhookEvent[]) {
 }
 
 async function handleWebhookResolution(
-  event: Event,
+  userId: string,
   userStripeCredentials: UserStripeCredentialsWithUser,
+  event: Event,
   succeeded: boolean,
 ) {
   const webhooksPending = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
 
-  const { id: userId, email } = userStripeCredentials.user;
+  const { email } = userStripeCredentials.user;
 
   const existingWebhookEvents = await prisma.userWebhookEvent.findMany({
     where: {
@@ -184,6 +199,7 @@ async function handleWebhookResolution(
   const takeToken = await shouldTakeToken(existingWebhookEvents, succeeded);
   const sendEmailToCustomer = await shouldSendEmailToCustomer(
     event,
+    userStripeCredentials.userId,
     existingWebhookEvents,
   );
 
@@ -295,7 +311,7 @@ async function handleWebhookFailure(
     });
   }
 
-  if (!sendAlertToUserEvents.includes(eventType)) {
+  if (!criticalEvents.includes(eventType)) {
     return;
   }
 
@@ -322,6 +338,7 @@ async function handleWebhookFailure(
 }
 
 async function processStripeEvent(
+  userId: string,
   userStripeCredentials: UserStripeCredentialsWithUser,
   event: Event,
 ) {
@@ -341,8 +358,9 @@ async function processStripeEvent(
     : await retryPendingWebhooks(stripe, newEvent.id);
 
   await handleWebhookResolution(
-    newEvent,
+    userId,
     userStripeCredentials,
+    newEvent,
     webhookSucceeded,
   );
 }
@@ -410,7 +428,9 @@ export async function POST(
       );
     }
 
-    processStripeEvent(userStripeCredentials, event);
+    const userIdNonNull = userId || userStripeCredentials.userId;
+
+    processStripeEvent(userIdNonNull, userStripeCredentials, event);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {

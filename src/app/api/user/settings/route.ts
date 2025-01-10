@@ -2,6 +2,7 @@ import prisma from "@/app/api/_db/db";
 import { authOptions } from "@/auth/authOptions";
 import { encrypt } from "@/lib/utils/encryption";
 import loggerServer from "@/loggerServer";
+import { criticalEvents } from "@/models/payment";
 import { BillingHistory, UserSettings } from "@/models/user";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
         settings: {
           select: {
             emailWebhookNotifications: true,
+            userCriticalEvents: true,
           },
         },
         stripeCredentials: {
@@ -38,6 +40,8 @@ export async function GET(req: NextRequest) {
     }
 
     const userSettings: UserSettings = {
+      userCriticalEvents:
+        userData.settings?.userCriticalEvents || criticalEvents,
       stripeApiKey: "",
       webhookUrl: userData.stripeCredentials?.webhookUrl || "",
       connected: userData.stripeCredentials?.connected || false,
@@ -127,6 +131,7 @@ export async function PATCH(req: NextRequest) {
       },
       create: {
         emailWebhookNotifications: settings.notificationChannels.email.enabled,
+        userCriticalEvents: settings.userCriticalEvents,
         emailToNotify: settings.notificationChannels.email.value,
         appUser: {
           connect: { id: session.user.userId }, // Assuming `session.user.userId` matches the related User ID
@@ -134,6 +139,7 @@ export async function PATCH(req: NextRequest) {
       },
       update: {
         emailWebhookNotifications: settings.notificationChannels.email.enabled,
+        userCriticalEvents: settings.userCriticalEvents,
         emailToNotify: settings.notificationChannels.email.value,
       },
     });

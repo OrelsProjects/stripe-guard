@@ -14,11 +14,13 @@ import { Loader } from "@/components/ui/loader";
 import _ from "lodash";
 import { AnimatePresence, motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from 'lucide-react';
+import { User } from "lucide-react";
 import { selectAuth } from "@/lib/features/auth/authSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logger } from "@/logger";
 import { EventTracker } from "@/eventTracker";
+import { CriticalEventsSettings } from "@/components/settings/critical-events-settings";
+import { criticalEvents } from "@/models/payment";
 
 export default function SettingsPage() {
   const { user, loading } = useAppSelector(selectAuth);
@@ -77,12 +79,19 @@ export default function SettingsPage() {
         ) : (
           <div className="flex items-center space-x-3">
             <Avatar>
-              <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
-              <AvatarFallback>{user?.name?.[0] || <User className="h-4 w-4" />}</AvatarFallback>
+              <AvatarImage
+                src={user?.image || undefined}
+                alt={user?.name || "User"}
+              />
+              <AvatarFallback>
+                {user?.name?.[0] || <User className="h-4 w-4" />}
+              </AvatarFallback>
             </Avatar>
             <div>
               <p className="text-sm font-medium">{user?.name || "User"}</p>
-              <p className="text-xs text-muted-foreground">{user?.email || "No email"}</p>
+              <p className="text-xs text-muted-foreground">
+                {user?.email || "No email"}
+              </p>
             </div>
           </div>
         )}
@@ -118,7 +127,15 @@ export default function SettingsPage() {
             loading={loading}
           />
         </div>
-        {/* <RetrySettings /> */}
+        <div className="md:col-span-2 lg:col-span-3">
+          <CriticalEventsSettings
+            userCriticalEvents={userSettings.userCriticalEvents || []}
+            onChange={(events: string[]) => {
+              setUserSettings({ ...userSettings, userCriticalEvents: events });
+            }}
+            loading={loading}
+          />
+        </div>
       </div>
 
       <AnimatePresence>

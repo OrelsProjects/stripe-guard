@@ -25,7 +25,8 @@ export const invoiceEvents: EnabledEvent[] = [
   "invoice.payment_succeeded",
 ];
 
-export const sendAlertToUserEvents: EnabledEvent[] = [
+// These are the events that are critical to the user's business, and an email will be sent to the customer on failure.
+export const criticalEvents: EnabledEvent[] = [
   "charge.succeeded",
   "charge.failed",
   "customer.subscription.created",

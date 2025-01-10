@@ -1,8 +1,8 @@
-import { Event, sendAlertToUserEvents } from "@/models/payment";
+import { Event, criticalEvents } from "@/models/payment";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
-export type SendAlertsToUserEvents = (typeof sendAlertToUserEvents)[number];
+export type SendAlertsToUserEvents = (typeof criticalEvents)[number];
 
 export function generateUserAlertEmail(type: SendAlertsToUserEvents): string {
   switch (type) {

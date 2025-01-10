@@ -87,6 +87,8 @@ model UserSettings {
   emailToNotify             String? @map("email_to_notify")
   frequency                 String? @map("frequency") // daily, weekly, monthly
 
+  userCriticalEvents String[] @default([]) @map("user_critical_events")
+
   appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_settings")
