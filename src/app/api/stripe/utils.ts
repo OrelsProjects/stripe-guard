@@ -105,7 +105,7 @@ export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
 export const isCouponValid = (coupon: Stripe.Coupon) => {
   const isRedeemable =
     !coupon.redeem_by ||
-    (coupon.redeem_by && coupon.redeem_by > new Date().getTime());
+    (coupon.redeem_by && coupon.redeem_by * 1000 > new Date().getTime());
   const timesRedeemed = getTimesRedeemed(coupon);
 
   const isNotExpired =

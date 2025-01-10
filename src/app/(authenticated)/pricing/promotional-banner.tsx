@@ -112,16 +112,38 @@ export function PromotionalBanner({
         <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
 
         {countdown && !countdown.expired && (
-          <div className="absolute top-0 right-0 bg-primary/10 px-4 py-1 rounded-bl-lg">
-            <div className="flex items-center text-sm font-medium">
-              <Timer className="w-4 h-4 mr-2 animate-pulse" />
-              <span>
-                {String(countdown.hours).padStart(2, "0")}:
-                {String(countdown.minutes).padStart(2, "0")}:
-                {String(countdown.seconds).padStart(2, "0")}
-              </span>
+          <motion.div
+            // pull from top when visible
+            initial={{
+              y: -30,
+              opacity: 0,
+            }}
+            whileInView={{
+              y: 0,
+              opacity: 1,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              duration: 0.6,
+              ease: "easeOut",
+              delay: 1,
+            }}
+            className="absolute top-0 w-full flex justify-center"
+          >
+            <div className="bg-primary/10 px-4 py-1 rounded-b-lg">
+              <div className="flex items-center text-base font-medium text-orange-500">
+                Time left:
+                <Timer className="w-4 h-4 mr-1 mb-0.5 animate-pulse" />
+                <span>
+                  {String(countdown.hours).padStart(2, "0")}:
+                  {String(countdown.minutes).padStart(2, "0")}:
+                  {String(countdown.seconds).padStart(2, "0")}
+                </span>
+              </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         <div className="p-6 flex items-center justify-between gap-6">
@@ -135,8 +157,8 @@ export function PromotionalBanner({
             <div className="flex flex-col">
               {!hasFreeCoupons && (
                 <h3 className="text-lg flex items-center gap-2">
-                  {coupon.emoji} Use the code <strong>{coupon.name}</strong> to
-                  save <strong>{coupon.percentOff}%</strong> on your order
+                  {coupon.emoji}Use the code <strong>{coupon.name}</strong>to
+                  save<strong>{coupon.percentOff}%</strong>on your order
                   <Sparkles className="w-4 h-4 text-yellow-500" />
                 </h3>
               )}
