@@ -27,11 +27,14 @@ function useCountdown(targetDate: number) {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+  );
   const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-  return { hours, minutes, seconds, expired: timeLeft === 0 };
+  return { days, hours, minutes, seconds, expired: timeLeft === 0 };
 }
 
 export function PromotionalBanner({
@@ -113,34 +116,29 @@ export function PromotionalBanner({
 
         {countdown && !countdown.expired && (
           <motion.div
-            // pull from top when visible
-            initial={{
-              y: -30,
-              opacity: 0,
-            }}
-            whileInView={{
-              y: 0,
-              opacity: 1,
-            }}
-            viewport={{
-              once: true,
-            }}
-            transition={{
-              duration: 0.6,
-              ease: "easeOut",
-              delay: 1,
-            }}
+            initial={{ y: -20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
             className="absolute top-0 w-full flex justify-center"
           >
-            <div className="bg-primary/10 px-4 py-1 rounded-b-lg">
-              <div className="flex items-center text-base font-medium text-orange-500">
-                Time left:
-                <Timer className="w-4 h-4 mr-1 mb-0.5 animate-pulse" />
-                <span>
-                  {String(countdown.hours).padStart(2, "0")}:
-                  {String(countdown.minutes).padStart(2, "0")}:
-                  {String(countdown.seconds).padStart(2, "0")}
+            <div className="bg-orange-100 px-4 py-1 rounded-b-lg shadow-md">
+              <div className="flex items-center text-base font-medium text-orange-600">
+                <Timer className="w-4 h-4 mr-1 animate-pulse" />
+                <span className="font-bold">
+                  {countdown.days > 0 &&
+                    `${countdown.days} day${countdown.days > 1 ? "s" : ""}`}
+                  {countdown.hours > 0 &&
+                    ` ${countdown.hours} hour${countdown.hours > 1 ? "s" : ""}`}
+                  {countdown.minutes > 0 &&
+                    ` ${countdown.minutes} min${countdown.minutes > 1 ? "s" : ""}`}
                 </span>
+                {countdown.seconds > 0 && (
+                  <span className="ml-2 text-xs text-orange-500">
+                    {countdown.seconds} second{countdown.seconds > 1 ? "s" : ""}{" "}
+                    left!
+                  </span>
+                )}
               </div>
             </div>
           </motion.div>
