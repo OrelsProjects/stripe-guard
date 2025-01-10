@@ -123,7 +123,7 @@ export function PromotionalBanner({
             className="absolute top-0 w-full flex justify-center"
           >
             <div className="bg-orange-100 px-4 py-1 rounded-b-lg shadow-md">
-              <div className="flex items-center text-base font-medium text-orange-600">
+              <div className="flex items-center text-sm font-medium text-orange-600">
                 <Timer className="w-4 h-4 mr-1 animate-pulse" />
                 <span className="font-bold">
                   {countdown.days > 0 &&
