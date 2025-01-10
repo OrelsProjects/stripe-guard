@@ -9,6 +9,7 @@ interface PromotionalBannerProps {
   coupon: Coupon;
   onApply: () => Promise<void>;
   onApplyFreeCoupons: (couponId: string) => Promise<void>;
+  showPromotionLaunch?: boolean;
   applied: boolean;
 }
 
@@ -41,6 +42,7 @@ export function PromotionalBanner({
   coupon,
   onApply,
   onApplyFreeCoupons,
+  showPromotionLaunch,
   applied,
 }: PromotionalBannerProps) {
   const [loading, setLoading] = useState(false);
@@ -50,7 +52,7 @@ export function PromotionalBanner({
   const remainingRedemptions = maxRedemptions - timesRedeemed;
   const redeemBy = coupon.redeemBy ? new Date(coupon.redeemBy).getTime() : null;
   const freeTokens = coupon.freeTokens || 0;
-  const hasFreeCoupons = freeTokens > 0;
+  const hasFreeTokens = freeTokens > 0;
   const hasPercentOff = coupon.percentOff > 0;
 
   const countdown = redeemBy ? useCountdown(redeemBy) : null;
@@ -71,7 +73,7 @@ export function PromotionalBanner({
       : "";
 
   const getOfferText = () => {
-    if (hasFreeCoupons) {
+    if (hasFreeTokens) {
       return (
         <span className="text-primary text-lg font-light">
           Get <span className="font-bold">{freeTokens.toLocaleString()}</span>{" "}
@@ -87,7 +89,7 @@ export function PromotionalBanner({
   };
 
   const getOfferIcon = () => {
-    if (hasFreeCoupons) {
+    if (hasFreeTokens) {
       return <Gift className="w-6 h-6 text-primary" />;
     }
     return null;
@@ -114,7 +116,7 @@ export function PromotionalBanner({
       <div className="relative overflow-hidden bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-xl border border-primary/10 shadow-lg">
         <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
 
-        {countdown && !countdown.expired && (
+        {countdown && !countdown.expired && showPromotionLaunch && (
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -153,10 +155,11 @@ export function PromotionalBanner({
             )}
 
             <div className="flex flex-col">
-              {!hasFreeCoupons && (
+              {!hasFreeTokens && (
                 <h3 className="text-lg flex items-center gap-2">
-                  {coupon.emoji}Use the code <strong>{coupon.name}</strong>to
-                  save<strong>{coupon.percentOff}%</strong>on your order
+                  <span className="text-3xl">{coupon.emoji}</span>Use the code{" "}
+                  <strong>{coupon.name}</strong>to save
+                  <strong>{coupon.percentOff}%</strong>on your order
                   <Sparkles className="w-4 h-4 text-yellow-500" />
                 </h3>
               )}
@@ -174,7 +177,7 @@ export function PromotionalBanner({
 
           <Button
             onClick={() => {
-              if (hasFreeCoupons) {
+              if (hasFreeTokens) {
                 setLoadingFreeCoupons(true);
                 onApplyFreeCoupons(coupon.id).catch(() => {
                   setLoadingFreeCoupons(false);
@@ -202,7 +205,7 @@ export function PromotionalBanner({
               </div>
             ) : (
               <span className="flex items-center gap-2">
-                {hasFreeCoupons ? (
+                {hasFreeTokens ? (
                   <>
                     {loadingFreeCoupons ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

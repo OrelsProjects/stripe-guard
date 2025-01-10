@@ -69,13 +69,19 @@ async function getOrCreateMonthlyCoupon(stripe: Stripe) {
   return coupon;
 }
 
-export async function getCoupon(stripe: Stripe): Promise<Coupon | null> {
+export async function getCoupon(
+  stripe: Stripe,
+  shouldGetLaunch: boolean = true,
+): Promise<Coupon | null> {
   const coupons = await stripe.coupons.list();
   const coupon = coupons.data.find(
     coupon =>
       coupon.name === LAUNCH_COUPON_NAME && coupon.metadata?.app === appName,
   );
-  let value = coupon || (await getOrCreateMonthlyCoupon(stripe));
+  let value = coupon;
+  if (!value || !shouldGetLaunch) {
+    value = await getOrCreateMonthlyCoupon(stripe);
+  }
   let redeemBy: number | null = (coupon?.redeem_by || 0) * 1000;
   let timesRedeemed = getTimesRedeemed(value);
   let maxRedemptions = value.max_redemptions;

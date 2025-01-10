@@ -17,14 +17,16 @@ export default function usePayments() {
   const dispatch = useAppDispatch();
   const loadingProducts = useRef(false);
 
-  const getProducts = async (): Promise<ProductsResponse | null> => {
+  const getProducts = async (
+    shouldGetLaunch?: boolean,
+  ): Promise<ProductsResponse | null> => {
     try {
       if (loadingProducts.current) {
         return null;
       }
       loadingProducts.current = true;
       const response = await axios.get<ProductsResponse>(
-        "/api/stripe/products",
+        `/api/stripe/products?shouldGetLaunch=${shouldGetLaunch}`,
       );
       dispatch(setProducts(response.data.products));
       dispatch(setCoupon(response.data.coupon));

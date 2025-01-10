@@ -60,6 +60,7 @@ export function Pricing() {
             setDiscountApplied(true);
           }}
           onCheckout={handleCheckout}
+          showPromotionLaunch
           buyText="Protect now"
         />
       </div>

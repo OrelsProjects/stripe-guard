@@ -7,7 +7,6 @@ import { FeaturesSection } from "@/components/sections/features";
 import { AnalyticsSection } from "@/components/sections/analytics";
 import NavigationBar from "@/components/sections/navigationBar";
 import Footer from "@/components/sections/footer";
-import SignUpSection from "@/components/sections/sign-up";
 import { FAQSection } from "@/components/sections/faq";
 import CostComparisonSection from "@/components/sections/cost-comparison";
 import { WebhookAnimation } from "@/components/sections/product-animation/webhook-animation";

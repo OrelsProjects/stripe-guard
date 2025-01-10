@@ -17,6 +17,7 @@ import { LAUNCH_PROMO_PARAM } from "@/app/providers/LaunchPromoProvider";
 export interface PricingTableProps {
   buyText?: string;
   onCheckout?: (priceId: string, productId: string) => void;
+  showPromotionLaunch?: boolean;
   onDiscountEnabled?: () => void;
 }
 
@@ -24,6 +25,7 @@ export function PricingTable({
   onCheckout,
   buyText,
   onDiscountEnabled,
+  showPromotionLaunch,
 }: PricingTableProps) {
   const router = useCustomRouter();
   const { getProducts, goToCheckout } = usePayments();
@@ -42,7 +44,7 @@ export function PricingTable({
       loadingRef.current = true;
       setLoading(true);
       try {
-        if (products.length === 0) await getProducts();
+        if (products.length === 0) await getProducts(showPromotionLaunch);
       } catch (error: any) {
         Logger.error("Error fetching products:", error);
       } finally {
@@ -126,6 +128,7 @@ export function PricingTable({
             coupon={coupon}
             onApply={applyDiscount}
             applied={discountApplied}
+            showPromotionLaunch={showPromotionLaunch}
             onApplyFreeCoupons={applyFreeTokens}
           />
         </div>

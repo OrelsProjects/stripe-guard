@@ -11,6 +11,7 @@ const appName = process.env.NEXT_PUBLIC_APP_NAME as string;
 
 export async function GET(req: NextRequest) {
   try {
+    const shouldGetLaunch = req.nextUrl.searchParams.get("shouldGetLaunch");
     const stripe = getStripeInstance();
     const { data: stripeProducts } = await stripe.products.list();
 
@@ -55,7 +56,7 @@ export async function GET(req: NextRequest) {
       (a, b) => b.priceStructure.price - a.priceStructure.price,
     );
 
-    const coupon = await getCoupon(stripe);
+    const coupon = await getCoupon(stripe, shouldGetLaunch === "true");
 
     return NextResponse.json(
       { products: productsSortedByPrice, coupon },
