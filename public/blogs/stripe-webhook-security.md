@@ -11,10 +11,7 @@ author:
   avatar: "/founder-image.jpg"
 ---
 
-<!-- Make it size 1500x500 -->
-
-<img src="https://apps-og-images.s3.us-east-1.amazonaws.com/blogs/StripeProtect/protect-stripe-webhooks.png" alt="Protecting Stripe Webhooks" width="1500" height="300" />
-
+![Protecting Stripe Webhooks](https://apps-og-images.s3.us-east-1.amazonaws.com/blogs/stripe-webhook-security.png)
 
 Stripe webhooks are essential for modern payment systems, enabling real-time updates about key events like payment success or subscription changes. However, with great functionality comes the need for robust security. Failing to protect your Stripe webhooks can lead to revenue loss, customer churn, and a compromised business reputation. In this guide, we explore what webhooks are, why protecting them is crucial, and actionable steps to secure them effectively.
 
