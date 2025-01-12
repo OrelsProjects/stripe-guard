@@ -1,0 +1,22 @@
+# https://stripeprotect.com robots.txt
+
+User-agent: *
+Allow: /
+Allow: /blog/
+Allow: /privacy/
+Allow: /tos/
+
+# Disallow admin and auth pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /login/
+Disallow: /register/
+
+# Sitemap
+Sitemap: https://stripeprotect.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 10
+

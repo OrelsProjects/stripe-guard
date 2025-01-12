@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main pages -->
+  <url>
+    <loc>https://stripeprotect.com</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- /blog -->
+  <url>
+    <loc>https://stripeprotect.com/blog</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog posts -->
+   <url>
+    <loc>https://stripeprotect.com/blog/boost-your-smb-with-stripe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/evolution-of-payment-processing</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/from-implementation-to-impact</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/introduction-to-nextjs-with-stripe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/mitigating-stripe-webhook-failures</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/nextjs-seo-blog-structure</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/stripe-webhook-security</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/understanding-webhooks-stripe</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/webhook-failure-rate</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/webhooks-3xx</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/webhooks-4xx-5xx</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://stripeprotect.com/blog/webhooks-stripe-security</loc>
+    <priority>0.9</priority>
+  </url>
+
+</urlset> 
