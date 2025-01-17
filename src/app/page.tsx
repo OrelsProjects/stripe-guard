@@ -32,15 +32,18 @@ import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import Image from "next/image";
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import CostComparison from "@/components/sections/cost-comparison";
+import FeatureSection from "@/components/ui/feature-section";
 
 const pricingTiers = [
   {
     name: "Totally free",
     price: "$0",
     priceYearly: "$0",
-    description: "Perfect for casual Stripe users",
+    description: "Just starting to Stripe? No cost, no frills, no judgment.",
+
     features: [
-      "Monitor up to 50 webhooks/month",
+      "Monitor up to 1,000 webhooks/month",
       "Real-time alerts",
       "Webhook event history (1 year)",
       "Basic dashboard access",
@@ -48,10 +51,10 @@ const pricingTiers = [
     popular: true,
   },
   {
-    name: "I'm a casual Striper",
+    name: "Casual Striper",
     price: "$13",
     priceYearly: "$9",
-    description: "For those who make a few bucks a month",
+    description: "You Stripe on the side, but still need solid support.",
     features: [
       "Monitor 30,000 webhooks/month",
       "Real-time failure alerts",
@@ -61,10 +64,10 @@ const pricingTiers = [
     ],
   },
   {
-    name: "I make my living from Stripe",
+    name: "Professional Striper",
     price: "$27",
     priceYearly: "$19",
-    description: "For folks who cannot live without Stripe",
+    description: "Striping pays the bills, and you can’t afford mistakes.",
     features: [
       "Monitor unlimited webhooks",
       "Real-time failure alerts",
@@ -153,6 +156,19 @@ const containerVariants = {
   },
 };
 
+// width 0 to 100%
+const transparentTextVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -161,6 +177,7 @@ const itemVariants = {
     transition: {
       duration: 0.6,
       ease: "easeOut",
+      delay: 0.4,
     },
   },
 };
@@ -431,7 +448,46 @@ function App() {
         </motion.div>
       </motion.section>
 
-      <section className="w-full max-h-screen flex flex-col justify-start items-center gap-16 bg-foreground/15 pt-16">
+      <motion.section
+        className="w-full min-h-screen flex flex-col justify-start items-center gap-12 bg-background py-12 relative"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <h3 className="text-pink-400 absolute top-4 text-lg font-semibold">
+          The right way to go...
+        </h3>
+        <motion.h2
+          className="text-5xl font-bold mb-4 bg-gradient-to-r flex items-center gap-2"
+          variants={itemVariants}
+          initial="hidden"
+          whileInView="visible"
+        >
+          A peak into your dashboard
+        </motion.h2>
+        <motion.div className="container flex flex-col">
+          <FeatureSection
+            src="/landing/graphs/graph-average-time-to-complete.png"
+            title="Webhook Completion Time Insights"
+            description="Gain insights into the average time it takes for your webhooks to complete. Identify slow-performing webhooks and optimize processing to improve overall efficiency."
+            direction="ltr"
+          />
+          <FeatureSection
+            src="/landing/graphs/graph-webhooks-sent-over-time.png"
+            title="Webhook Activity Trends"
+            description="Visualize the volume of webhooks sent over time to detect peak activity periods and usage patterns. Use this data to better plan resource allocation and ensure system stability during high-traffic times."
+            direction="rtl"
+          />
+          <FeatureSection
+            src="/landing/graphs/graph-fails-and-successes.png"
+            title="Webhook Success vs. Failure"
+            description="Track the success and failure rates of your webhooks to quickly identify issues and improve reliability. Stay informed and proactive in resolving problems to ensure seamless user experiences."
+            direction="ltr"
+          />
+        </motion.div>
+      </motion.section>
+
+      <section className="relative w-full max-h-screen flex flex-col justify-start items-center gap-16 bg-foreground/15 pt-16">
         <h2 className="w-full text-5xl font-bold tracking-tight text-center">
           <span className="text-primary">Detailed notifications</span> for every
           webhook failure
@@ -453,61 +509,24 @@ function App() {
         />
       </section>
 
-      {/* Benefits Section */}
-      <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Why Choose StripeWebhook.com?
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Everything you need to manage your Stripe webhooks effectively.
-          </p>
-        </div>
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {benefits.map(benefit => (
-            <Card key={benefit.title} className="p-6">
-              <benefit.icon className="h-12 w-12 text-primary" />
-              <h3 className="mt-4 text-xl font-semibold">{benefit.title}</h3>
-              <p className="mt-2 text-muted-foreground">
-                {benefit.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Powerful Features
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Everything you need to manage your webhooks effectively.
-          </p>
-        </div>
-        <div className="mt-16 grid gap-8 sm:grid-cols-2">
-          {features.map(feature => (
-            <Card key={feature.title} className="p-6">
-              <feature.icon className="h-12 w-12 text-primary" />
-              <h3 className="mt-4 text-xl font-semibold">{feature.title}</h3>
-              <p className="mt-2 text-muted-foreground">
-                {feature.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
       {/* Pricing Section */}
       <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Simple, Transparent Pricing
+          <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
+            Simple,{" "}
+            <span className="relative text-background overflow-clip">
+              <motion.span
+                variants={transparentTextVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="absolute inset-0 bg-foreground/10 z-10 rounded-lg overflow-clip"
+              />
+              <span className="relative z-20">transparent</span>
+            </span>{" "}
+            pricing
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Choose the plan that best fits your needs.
-          </p>
+
           <div className="mt-8 flex justify-center gap-4">
             <Button
               variant={selectedPlan === "monthly" ? "default" : "outline"}
@@ -538,7 +557,7 @@ function App() {
               )}
             >
               {tier.popular && (
-                <Badge className="absolute -top-6 right-4 flex flex-col bg-background border-2 border-primary py-1 px-2">
+                <Badge className="absolute -top-6 right-4 flex flex-col bg-background border-2 border-primary py-1 px-2 pointer-events-none">
                   <p className="text-primary font-bold text-sm">
                     Just pick this one!
                   </p>
@@ -548,7 +567,10 @@ function App() {
                 </Badge>
               )}
               <div className="flex flex-col items-start">
-                <h4 className="text-2xl font-bold">{tier.name}</h4>
+                <h4
+                  className="text-2xl font-bold"
+                  dangerouslySetInnerHTML={{ __html: tier.name }}
+                />
                 <p className="text-muted-foreground">{tier.description}</p>
               </div>
               <div className="mt-6">
@@ -572,29 +594,6 @@ function App() {
               ) : (
                 <Button className="mt-8 w-full overflow-clip">
                   <motion.p key="get-started">Get started</motion.p>
-                  {/* <AnimatePresence mode="wait">
-                    {hoverPaidPlanButton ? (
-                      <motion.p
-                        key="yearly-plan-is-cheaper"
-                        initial={{ opacity: 0, x: -100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -100 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        The yearly plan is cheaper
-                      </motion.p>
-                    ) : (
-                      <motion.p
-                        key="get-started"
-                        initial={{ opacity: 0, x: 100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 100 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        Get started
-                      </motion.p>
-                    )}
-                  </AnimatePresence> */}
                 </Button>
               )}
             </Card>
