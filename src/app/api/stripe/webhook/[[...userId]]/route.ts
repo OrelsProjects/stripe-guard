@@ -118,11 +118,11 @@ async function retryPendingWebhooks(
   stripe: Stripe,
   eventId: string,
 ): Promise<boolean> {
-  let delay = INITIAL_RETRY_DELAY;
+  const delay = INITIAL_RETRY_DELAY;
 
   for (let i = 0; i < MAX_RETRIES; i++) {
     await new Promise(resolve => setTimeout(resolve, delay));
-    delay = Math.min(delay * 2, MAX_RETRY_DELAY); // Exponential backoff with cap
+    // delay = Math.min(delay * 2, MAX_RETRY_DELAY); // Exponential backoff with cap
     const updatedEvent = await stripe.events.retrieve(eventId);
     if (!areTherePendingWebhooks(updatedEvent.pending_webhooks)) {
       return true; // Webhook succeeded
@@ -183,6 +183,7 @@ async function handleWebhookResolution(
   userStripeCredentials: UserStripeCredentialsWithUser,
   event: Event,
   succeeded: boolean,
+  timeToComplete: number,
 ) {
   const webhooksPending = event.pending_webhooks - REGISTERED_CONNECTED_HOOKS;
 
@@ -211,6 +212,7 @@ async function handleWebhookResolution(
       type: event.type,
       created: event.created,
       pendingWebhooks: webhooksPending,
+      timeToComplete,
       requestId: event.request?.id,
       requestIdempotencyKey: event.request?.idempotency_key,
       succeeded,
@@ -287,54 +289,55 @@ async function handleWebhookFailure(
       ],
     },
     select: {
-      sentToUser: true,
+      sentToCustomer: true,
     },
   });
 
-  const emailsNotSentToUser = emailsSentForEvent.filter(
-    email => !email.sentToUser,
+  const emailsNotSentToCustomer = emailsSentForEvent.filter(
+    email => !email.sentToCustomer,
   );
-  const emailsSentToUser = emailsSentForEvent.filter(email => email.sentToUser);
+  const emailsSentToCustomer = emailsSentForEvent.filter(
+    email => email.sentToCustomer,
+  );
 
-  if (emailsNotSentToUser.length === 0) {
-    await sendMail(
-      userEmail,
-      process.env.NEXT_PUBLIC_APP_NAME as string,
-      "Webhook Failed",
-      generateWebhookFailureEmail(event, new Date(), failedWebhooks),
-    );
-    await prisma.emailSent.create({
-      data: {
-        email: userEmail,
-        webhookEventId: userWebhookEventId,
-      },
-    });
-  }
+  await sendMail(
+    userEmail,
+    process.env.NEXT_PUBLIC_APP_NAME as string,
+    "Webhook Failed",
+    generateWebhookFailureEmail(event, new Date(), failedWebhooks),
+  );
+  await prisma.emailSent.create({
+    data: {
+      email: userEmail,
+      webhookEventId: userWebhookEventId,
+      sentToCustomer: false,
+    },
+  });
 
   if (!criticalEvents.includes(eventType)) {
     return;
   }
 
   // Possible feature. Send email to customer if webhook failed.
-  if (customerEmail && emailsSentToUser.length === 0) {
-    const emailContent = generateUserAlertEmail(eventType);
-    if (!emailContent) {
-      return;
-    }
-    sendMail(
-      customerEmail,
-      process.env.NEXT_PUBLIC_APP_NAME as string,
-      "Problem processing your payment",
-      emailContent,
-    );
-    await prisma.emailSent.create({
-      data: {
-        email: customerEmail,
-        webhookEventId: userWebhookEventId,
-        sentToUser: true,
-      },
-    });
-  }
+  // if (customerEmail && emailsSentToUser.length === 0) {
+  //   const emailContent = generateUserAlertEmail(eventType);
+  //   if (!emailContent) {
+  //     return;
+  //   }
+  //   sendMail(
+  //     customerEmail,
+  //     process.env.NEXT_PUBLIC_APP_NAME as string,
+  //     "Problem processing your payment",
+  //     emailContent,
+  //   );
+  //   await prisma.emailSent.create({
+  //     data: {
+  //       email: customerEmail,
+  //       webhookEventId: userWebhookEventId,
+  //       sentToCustomer: true,
+  //     },
+  //   });
+  // }
 }
 
 async function processStripeEvent(
@@ -347,21 +350,21 @@ async function processStripeEvent(
     throw new Error("Stripe not initialized");
   }
 
-  // await 3000 ms, give the response to stripe time to reach their servers, so we don't have extra pending webhooks
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
   const newEvent = await stripe.events.retrieve(event.id);
   let pendingHooks = newEvent.pending_webhooks;
-
+  const now = new Date().getTime();
   const webhookSucceeded = !areTherePendingWebhooks(pendingHooks)
     ? true
     : await retryPendingWebhooks(stripe, newEvent.id);
+
+  const timeToComplete = new Date().getTime() - now;
 
   await handleWebhookResolution(
     userId,
     userStripeCredentials,
     newEvent,
     webhookSucceeded,
+    timeToComplete,
   );
 }
 

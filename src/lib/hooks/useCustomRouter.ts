@@ -15,8 +15,8 @@ export function useCustomRouter() {
 
   const push = (
     href: string,
-    routerOptions: CustomRouterOptions = { preserveQuery: true },
-    options?: NavigateOptions
+    routerOptions?: CustomRouterOptions,
+    options?: NavigateOptions,
   ) => {
     // If relative URL, prepend the current origin
     const baseUrl = href.startsWith("http")
@@ -33,7 +33,7 @@ export function useCustomRouter() {
     }
 
     if (routerOptions?.paramsToRemove) {
-      routerOptions.paramsToRemove.forEach((key) => {
+      routerOptions.paramsToRemove.forEach(key => {
         url.searchParams.delete(key);
       });
     }
@@ -52,7 +52,6 @@ export function useCustomRouter() {
     if (!href.startsWith("http")) {
       urlString = url.pathname + url.search;
     }
-
     router.push(urlString, options);
   };
 

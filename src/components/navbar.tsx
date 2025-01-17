@@ -103,8 +103,8 @@ export function Navbar() {
               pathname === item.href ? "text-primary" : "text-muted-foreground",
             )}
           >
-            <Icon className="h-4 w-4" />
-            <span>{item.name}</span>
+            <Icon className="h-5 w-5" />
+            <span className="text-lg">{item.name}</span>
           </Link>
         );
       })}

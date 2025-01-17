@@ -16,11 +16,17 @@ export type EventVolumeData = {
   webhooks: number;
 };
 
+export type EventTimeToComplete = {
+  timestamp: string;
+  timeToComplete: number;
+};
+
 export type WebhookError = {
   eventId: string;
   type: string;
   created: number;
   failedWebhooks: number;
+  timeToComplete: number;
   userWebhookEvent: UserWebhookEvent;
 };
 
@@ -30,9 +36,10 @@ export type FailureReason = {
 };
 
 export type WebhookCardStatsTitles =
-  | "Total Webhooks"
-  | "Failed Webhooks"
-  | "Success Rate";
+  | "Total webhooks"
+  | "Failed webhooks"
+  | "Success rate"
+  | "Average time to complete";
 
 // element (Icon) with className as props
 type Icon = React.FC<React.SVGProps<SVGSVGElement>>;
@@ -49,8 +56,9 @@ export type Statistics = {
   cardsData: WebhookCardStats[];
   errors: WebhookError[];
   failureReasonsData: FailureReason[];
-  eventVolumeData: EventVolumeData[];
   graphData: GraphData[];
+  eventVolumeData: EventVolumeData[];
+  eventTimeToComplete: EventTimeToComplete[];
   totalSuccess: string | number;
 };
 

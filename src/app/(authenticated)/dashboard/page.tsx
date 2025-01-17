@@ -15,6 +15,7 @@ import WebhookGraph from "@/app/(authenticated)/dashboard/components/graphs.tsx/
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { EventTracker } from "@/eventTracker";
+import CompletionTimeOverTimeGraph from "@/app/(authenticated)/dashboard/components/graphs.tsx/completionTimeOverTimeGraph";
 
 function Dashboard() {
   const [selectedError, setSelectedError] = useState<WebhookError | null>(null);
@@ -23,14 +24,14 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
 
   const loadingWebhooks = useRef(false);
-  const { getUserWebhookEvents, resolveWebhook } = useWebhooks();
+  const { getStatistics, resolveWebhook } = useWebhooks();
 
   useEffect(() => {
     if (loadingWebhooks.current) return;
     loadingWebhooks.current = true;
     setLoading(true);
     EventTracker.track("dashboard_data_fetch_attempt");
-    getUserWebhookEvents() // This function should now fetch the statistics
+    getStatistics()
       .then(stats => {
         setStatistics(stats);
         EventTracker.track("dashboard_data_fetch_success");
@@ -49,6 +50,7 @@ function Dashboard() {
   const errors = statistics?.errors ?? [];
   const cardsData = statistics?.cardsData ?? [];
   const eventVolumeData = statistics?.eventVolumeData ?? [];
+  const eventTimeToComplete = statistics?.eventTimeToComplete ?? [];
   const graphData = statistics?.graphData ?? [];
   const totalSuccess = statistics?.totalSuccess ?? 0;
 
@@ -95,9 +97,9 @@ function Dashboard() {
         <h2 className="text-xl">Your webhooks performance today</h2>
         <div className="w-full h-full flex flex-col gap-1 mt-6 relative">
           {/* Cards Mapping */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 z-10">
+          <div className="grid gap-4 md:grid-cols-2 z-10">
             {loading
-              ? Array.from({ length: 3 }).map((_, i) => (
+              ? Array.from({ length: 4 }).map((_, i) => (
                   <Skeleton className="h-32 w-full" key={i} />
                 ))
               : cardsData.map(stat => (
@@ -154,20 +156,11 @@ function Dashboard() {
               }}
               onResolve={handleResolveWebhookError}
             />
-            <div className="space-y-8">
-              <WebhookGraph
-                data={graphData}
-                totalSuccess={totalSuccess}
-                loading={loading}
-              />
-
-              <ErrorDialog
-                error={selectedError}
-                open={isDialogOpen}
-                onOpenChange={setIsDialogOpen}
-                onResolve={handleResolveWebhookError}
-              />
-            </div>
+            <WebhookGraph
+              data={graphData}
+              totalSuccess={totalSuccess}
+              loading={loading}
+            />
 
             <TopEventTypeDistributionGraph
               loading={loading}
@@ -178,7 +171,17 @@ function Dashboard() {
               loading={loading}
               eventVolumeData={eventVolumeData}
             />
+            <CompletionTimeOverTimeGraph
+              loading={loading}
+              eventVolumeData={eventTimeToComplete}
+            />
           </div>
+          <ErrorDialog
+            error={selectedError}
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            onResolve={handleResolveWebhookError}
+          />
         </div>
       </div>
     </div>

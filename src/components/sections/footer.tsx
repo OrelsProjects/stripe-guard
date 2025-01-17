@@ -22,7 +22,7 @@ const Footer = () => {
           {/* Logo and Description */}
           <div>
             <div className="flex items-center gap-1">
-              <Image src="/logo.png" alt={APP_NAME} width={32} height={32} />
+              <Image src="/favicon.ico" alt={APP_NAME} width={32} height={32} />
               <h3 className="text-xl font-bold">{APP_NAME}</h3>
             </div>
             <p className="mt-4 text-muted-foreground">{APP_DESCRIPTION}</p>

@@ -1,95 +1,422 @@
 "use client";
-// DO: Show in a section how much time you save by showing what needs to be done to set it up and how much money you save them
-import React, { useRef, useState, useEffect } from "react";
+
+import { useState } from "react";
+import {
+  ArrowRight,
+  Bell,
+  Clock,
+  Code2,
+  Database,
+  LineChart,
+  Shield,
+  Zap,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { HeroSection } from "@/components/sections/hero";
-import { FeaturesSection } from "@/components/sections/features";
-import { AnalyticsSection } from "@/components/sections/analytics";
-import NavigationBar from "@/components/sections/navigationBar";
-import Footer from "@/components/sections/footer";
-import { FAQSection } from "@/components/sections/faq";
-import CostComparisonSection from "@/components/sections/cost-comparison";
-import { WebhookAnimation } from "@/components/sections/product-animation/webhook-animation";
-import { WebhookReliability } from "@/components/sections/webhook-reliability";
-import { Pricing } from "@/components/sections/pricing";
+import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
+import Image from "next/image";
+import { HeroParallax } from "@/components/ui/hero-parallax";
 
-export default function Home() {
-  const darkSectionRef = useRef<HTMLDivElement>(null);
-  const [isDarkSectionVisible, setIsDarkSectionVisible] = useState(false);
+const pricingTiers = [
+  {
+    name: "Totally free",
+    price: "$0",
+    priceYearly: "$0",
+    description: "Perfect for casual Stripe users",
+    features: [
+      "Monitor up to 50 webhooks/month",
+      "Real-time alerts",
+      "Webhook event history (1 year)",
+      "Basic dashboard access",
+    ],
+    popular: true,
+  },
+  {
+    name: "I'm a casual Striper",
+    price: "$13",
+    priceYearly: "$9",
+    description: "For those who make a few bucks a month",
+    features: [
+      "Monitor 30,000 webhooks/month",
+      "Real-time failure alerts",
+      "Webhook event history (7 years)",
+      "Priority support",
+      "Custom alert rules (coming soon)",
+    ],
+  },
+  {
+    name: "I make my living from Stripe",
+    price: "$27",
+    priceYearly: "$19",
+    description: "For folks who cannot live without Stripe",
+    features: [
+      "Monitor unlimited webhooks",
+      "Real-time failure alerts",
+      "Webhook event history (forever)",
+      "Priority support",
+      "Custom alert rules (coming soon)",
+    ],
+  },
+];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsDarkSectionVisible(
-          entry.intersectionRatio > 0.5 && entry.intersectionRatio < 0.8,
-        );
-      },
-      {
-        threshold: [0.5, 0.8],
-      },
-    );
+const features = [
+  {
+    icon: Clock,
+    title: "Webhook Event History",
+    description:
+      "Access a complete history of webhook events for deeper insights.",
+  },
+  {
+    icon: Bell,
+    title: "Custom Alerts",
+    description:
+      "Set up personalized notifications for critical webhook events.",
+  },
+  {
+    icon: Code2,
+    title: "Seamless Integration",
+    description: "Works out of the box with Stripe's ecosystem.",
+  },
+  {
+    icon: LineChart,
+    title: "Intuitive Dashboard",
+    description:
+      "Designed to give you a full view of your webhooks without complexity.",
+  },
+];
 
-    if (darkSectionRef.current) {
-      observer.observe(darkSectionRef.current);
-    }
+const benefits = [
+  {
+    icon: Zap,
+    title: "Real-Time Monitoring",
+    description:
+      "Never miss a failed webhook. Get instant alerts to minimize downtime.",
+  },
+  {
+    icon: Database,
+    title: "Detailed Insights",
+    description:
+      "See every webhook event at a glance with clear, actionable data.",
+  },
+  {
+    icon: Shield,
+    title: "Simplified Debugging",
+    description:
+      "Troubleshoot webhook errors effortlessly with rich error logs.",
+  },
+];
 
-    return () => {
-      if (darkSectionRef.current) {
-        observer.unobserve(darkSectionRef.current);
-      }
-    };
-  }, []);
+const graphs = [
+  {
+    title: "Webhook errors history",
+    description:
+      "A short description of each error, including how many webhooks failed and when.",
+    src: "/landing/webhook-errors-error.png",
+  },
+  {
+    title: "Details of the error",
+    description:
+      "A detailed description of the error, including a direct link to the webhook that failed on Stripe's dashboard.",
+    src: "/landing/webhook-errors-dialog.png",
+  },
+  {
+    title: "Webhook on Stripe's dashboard",
+    description:
+      "By clicking the link, you'll be redirected to Stripe's dashboard where you can see the webhook and the error details.",
+    src: "/landing/webhook-errors-stripe.png",
+  },
+];
 
-  const Analytics = () => (
-    <div ref={darkSectionRef}>
-      <AnalyticsSection />
-    </div>
-  );
-
-  const NegativeSection = () => (
-    <motion.div
-      animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-      transition={{ duration: 0.4 }}
-      className=" bg-card-foreground py-16 flex flex-col gap-32"
-    >
-      <WebhookReliability />
-      <CostComparisonSection />
-    </motion.div>
-  );
-
-  const PositiveSection = () => (
-    <motion.div
-      animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-      transition={{ duration: 0.4 }}
-    >
-      <WebhookAnimation />
-      <FeaturesSection />
-      <Pricing />
-      <FAQSection />
-    </motion.div>
-  );
-
-  const Hero = () => (
-    <motion.div
-      animate={{ opacity: isDarkSectionVisible ? 0 : 1 }}
-      transition={{ duration: 0.4 }}
-    >
-      <HeroSection />
-    </motion.div>
-  );
+function App() {
+  const [selectedPlan, setSelectedPlan] = useState<string>("monthly");
 
   return (
-    <motion.main
-      className="w-screen min-h-screen flex flex-col overflow-x-clip landing-page "
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      <NavigationBar />
-      <Hero />
-      <NegativeSection />
-      <PositiveSection />
-      <Footer />
-    </motion.main>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden px-6 pt-16 md:px-8 md:pt-24">
+        <HeroParallax
+          products={[
+            {
+              title: "Average time to complete",
+              link: "",
+              thumbnail:
+                "/landing/graphs/graph-average-time-to-complete-big.png",
+            },
+            {
+              title: "Top failed event types",
+              link: "/landing/graphs/graph-top-failures.png",
+              thumbnail: "/landing/graphs/graph-top-failures.png",
+            },
+            {
+              title: "Webhooks sent over time",
+              link: "",
+              thumbnail: "/landing/graphs/graph-webhooks-sent-over-time.png",
+            },
+            {
+              title: "Webhook fails and successes",
+              link: "",
+              thumbnail: "/landing/graphs/graph-fails-and-successes.png",
+            },
+            {
+              title: "Average time to complete",
+              link: "",
+              thumbnail: "/landing/graphs/graph-average-time-to-complete.png",
+            },
+            {
+              title: "Webhook monitoring",
+              link: "",
+              thumbnail: "/landing/graphs/cards-monitor.png",
+            },
+            {
+              title: "Webhook monitoring",
+              link: "",
+              thumbnail: "/landing/graphs/cards-monitor.png",
+            },
+            {
+              title: "Webhook success rate",
+              link: "",
+              thumbnail: "/landing/graphs/cards-success-rate.png",
+            },
+            {
+              title: "Average time to complete",
+              link: "",
+              thumbnail: "/landing/graphs/graph-average-time-to-complete.png",
+            },
+          ]}
+        />
+      </section>
+
+      {/* Why it sucks not having a webhook monitor */}
+      {/* 1. Having a critical webhook failure can lead to customers churning */}
+      {/* 2. Webhooks errors are harder to notice, since they are not part of the main flow */}
+      {/* 3. You need to look through a huge loads of logs to find the culprit */}
+      {/* How StripeWebhook.com helps */}
+      {/* 1. Detailed notifications for every webhook failure */}
+      {/* 2. Webhook event history */}
+      {/* 3. Custom alert rules */}
+      {/* 4. Seamless integration with Stripe's ecosystem */}
+
+      <section className="w-full max-h-screen flex flex-col justify-center items-center gap-16 bg-foreground/15 pt-16">
+        <h2 className="w-full text-5xl font-bold tracking-tight text-center">
+          <span className="text-primary">Detailed notifications</span> for every
+          webhook failure
+        </h2>
+
+        <StickyScroll
+          content={graphs.map(graph => ({
+            title: graph.title,
+            description: graph.description,
+            content: (
+              <Image
+                src={graph.src}
+                alt={graph.title}
+                fill
+                className="!relative !h-[26rem] !w-[40rem]"
+              />
+            ),
+          }))}
+        />
+      </section>
+
+      {/* Benefits Section */}
+      <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Why Choose StripeWebhook.com?
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Everything you need to manage your Stripe webhooks effectively.
+          </p>
+        </div>
+        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {benefits.map(benefit => (
+            <Card key={benefit.title} className="p-6">
+              <benefit.icon className="h-12 w-12 text-primary" />
+              <h3 className="mt-4 text-xl font-semibold">{benefit.title}</h3>
+              <p className="mt-2 text-muted-foreground">
+                {benefit.description}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Powerful Features
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Everything you need to manage your webhooks effectively.
+          </p>
+        </div>
+        <div className="mt-16 grid gap-8 sm:grid-cols-2">
+          {features.map(feature => (
+            <Card key={feature.title} className="p-6">
+              <feature.icon className="h-12 w-12 text-primary" />
+              <h3 className="mt-4 text-xl font-semibold">{feature.title}</h3>
+              <p className="mt-2 text-muted-foreground">
+                {feature.description}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Choose the plan that best fits your needs.
+          </p>
+          <div className="mt-8 flex justify-center gap-4">
+            <Button
+              variant={selectedPlan === "monthly" ? "default" : "outline"}
+              onClick={() => setSelectedPlan("monthly")}
+            >
+              Monthly billing
+            </Button>
+            <Button
+              variant={selectedPlan === "yearly" ? "default" : "outline"}
+              onClick={() => setSelectedPlan("yearly")}
+            >
+              Yearly billing
+              <Badge variant="secondary" className="ml-2">
+                Save 30%
+              </Badge>
+            </Button>
+          </div>
+        </div>
+        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Center the card */}
+          {pricingTiers.map(tier => (
+            <Card
+              key={tier.name}
+              // make it span over 2 columns
+              className={cn(
+                "relative p-8",
+                tier.popular ? "border-primary border-2" : "",
+              )}
+            >
+              {tier.popular && (
+                <Badge className="absolute -top-6 right-4 flex flex-col bg-background border-2 border-primary py-1 px-2">
+                  <p className="text-primary font-bold text-sm">
+                    Just pick this one!
+                  </p>
+                  <span className="text-xs font-normal">
+                    You can upgrade later.
+                  </span>
+                </Badge>
+              )}
+              <div className="flex flex-col items-start">
+                <h4 className="text-2xl font-bold">{tier.name}</h4>
+                <p className="text-muted-foreground">{tier.description}</p>
+              </div>
+              <div className="mt-6">
+                <span className="text-4xl font-bold">
+                  {selectedPlan === "monthly" ? tier.price : tier.priceYearly}
+                </span>
+                <span className="text-muted-foreground">
+                  {selectedPlan === "monthly" ? "/month" : "/year"}
+                </span>
+              </div>
+              <ul className="mt-8 space-y-4">
+                {tier.features.map(feature => (
+                  <li key={feature} className="flex items-center">
+                    <ArrowRight className="mr-2 h-4 w-4 text-primary" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              {tier.name.includes("free") ? (
+                <Button className="mt-8 w-full">Get started - free</Button>
+              ) : (
+                <Button className="mt-8 w-full overflow-clip">
+                  <motion.p key="get-started">Get started</motion.p>
+                  {/* <AnimatePresence mode="wait">
+                    {hoverPaidPlanButton ? (
+                      <motion.p
+                        key="yearly-plan-is-cheaper"
+                        initial={{ opacity: 0, x: -100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        The yearly plan is cheaper
+                      </motion.p>
+                    ) : (
+                      <motion.p
+                        key="get-started"
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 100 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        Get started
+                      </motion.p>
+                    )}
+                  </AnimatePresence> */}
+                </Button>
+              )}
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="mx-auto mt-32 max-w-3xl px-6 pb-32 md:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Frequently Asked Questions
+          </h2>
+        </div>
+        <Accordion type="single" collapsible className="mt-16">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              How does it integrate with my Stripe account?
+            </AccordionTrigger>
+            <AccordionContent>
+              Integration is simple and secure. Just connect your Stripe account
+              through our dashboard, and we&apos;ll automatically start
+              monitoring your webhooks. No code changes required.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>
+              What happens if a webhook fails?
+            </AccordionTrigger>
+            <AccordionContent>
+              You&apos;ll receive instant notifications through your preferred
+              channels (email, Slack, etc.). Our dashboard provides detailed
+              error logs and debugging tools to help you quickly resolve any
+              issues.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger>Is my data secure?</AccordionTrigger>
+            <AccordionContent>
+              Absolutely. We use industry-standard encryption and security
+              practices. We never store sensitive payment data, and all webhook
+              data is encrypted at rest and in transit.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+    </div>
   );
 }
+
+export default App;

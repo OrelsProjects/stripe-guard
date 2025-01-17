@@ -25,8 +25,9 @@ export function ErrorDialog({
   if (!error) return null;
 
   const navigateToStripeEvent = () => {
-    // Replace 'YOUR_STRIPE_DASHBOARD_URL' with the actual base URL for your Stripe dashboard
-    const stripeEventUrl = `https://dashboard.stripe.com/events/${error.eventId}`;
+    let baseUrl = "https://dashboard.stripe.com";
+    baseUrl += process.env.NODE_ENV === "development" ? "/test" : "";
+    const stripeEventUrl = `${baseUrl}/events/${error.eventId}`;
     window.open(stripeEventUrl, "_blank");
   };
 
@@ -39,7 +40,7 @@ export function ErrorDialog({
               <AlertCircle className="w-6 h-6 text-destructive" />
             </div>
             <DialogTitle className="text-xl font-bold">
-              Webhook Error Details
+              Webhook error dtails
             </DialogTitle>
           </div>
         </DialogHeader>

@@ -21,16 +21,13 @@ interface WebhookGraphProps {
   loading?: boolean;
 }
 
-export default function WebhookGraph({
-  data,
-  loading,
-}: WebhookGraphProps) {
+export default function WebhookGraph({ data, loading }: WebhookGraphProps) {
   return (
     <motion.div className="w-full flex flex-col items-start gap-4">
       <Card className="w-full h-[430px]">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl font-semibold">
-            Webhook Performance
+            Webhook performance
           </CardTitle>
         </CardHeader>
         <CardContent className="h-[400px] flex items-center justify-center">
@@ -63,7 +60,7 @@ export default function WebhookGraph({
                   stroke="hsl(var(--success))"
                   strokeWidth={2}
                   dot={false}
-                ></Line>
+                />
                 <Line
                   type="monotone"
                   dataKey="failed"

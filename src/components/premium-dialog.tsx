@@ -20,7 +20,7 @@ export function PremiumDialog({
     <Dialog>
       <DialogTrigger asChild className="h-fit">
         {children || (
-          <Button className="text-lg font-semibold tracking-wide px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90">
+          <Button className="text-lg font-semibold tracking-wide px-4 py-2 bg-primary rounded-lg hover:bg-primary/90">
             {text}
           </Button>
         )}

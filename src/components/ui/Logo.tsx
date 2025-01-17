@@ -6,7 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
-const LOGO = "/logo.png";
+const LOGO = "/favicon.ico";
 
 export interface LogoProps {
   height?: number;
@@ -52,9 +52,9 @@ export default function Logo({
       <Image
         src={LOGO}
         alt={APP_NAME}
-        width={width || 32}
-        height={height || 32}
-        className={cn("w-8 h-8", imageClassName)}
+        width={width || 26}
+        height={height || 26}
+        className={cn("w-6 h-6", imageClassName)}
       />
       {withText && (
         <span

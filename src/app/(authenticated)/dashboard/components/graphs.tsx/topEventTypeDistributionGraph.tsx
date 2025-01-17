@@ -24,7 +24,7 @@ function TopEventTypeDistributionGraph({
   return (
     <Card className="h-[430px] flex flex-col justify-between p-6">
       <CardTitle className="text-xl font-semibold mb-6">
-        Top 5 Event Type Distribution
+        Top failed event types
       </CardTitle>
       <CardContent className="h-full w-full flex items-center justify-center">
         {loading ? (

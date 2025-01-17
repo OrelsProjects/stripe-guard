@@ -118,17 +118,19 @@ model UserStripeCredentials {
 }
 
 model UserWebhookEvent {
-  id              String  @id @default(cuid()) @map("id")
-  userId          String  @map("user_id")
-  eventId         String  @map("event_id")
-  livemode        Boolean @map("livemode")
-  type            String  @map("type") // checkout.session.completed, payment_intent.succeeded, etc
-  created         Int     @map("created")
-  pendingWebhooks Int     @map("pending_web_hooks")
+  id       String  @id @default(cuid()) @map("id")
+  userId   String  @map("user_id")
+  eventId  String  @map("event_id")
+  livemode Boolean @map("livemode")
+  type     String  @map("type") // checkout.session.completed, payment_intent.succeeded, etc
+  created  Int     @map("created")
 
-  connected Boolean @default(true) @map("connected")
+  pendingWebhooks Int @map("pending_web_hooks")
+  timeToComplete  Int @map("time_to_complete")
 
   succeeded Boolean @map("succeeded")
+
+  connected Boolean @default(true) @map("connected")
 
   requestId             String? @map("request_id")
   requestIdempotencyKey String? @map("request_idempotency_key")
@@ -196,12 +198,11 @@ model EmailSent {
   id    String @id @default(cuid())
   email String
 
-  sentToUser Boolean @default(false) @map("sent_to_user")
+  sentToCustomer Boolean @default(false) @map("sent_to_customer")
+  webhookEventId String? @map("webhook_event_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  webhookEventId String? @map("webhook_event_id")
 
   webhookEvent UserWebhookEvent? @relation(fields: [webhookEventId], references: [id])
 

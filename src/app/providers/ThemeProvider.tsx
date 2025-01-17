@@ -11,10 +11,10 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="light"
+      defaultTheme="dark"
       forcedTheme={
         pathname === "/" || pathname === "/login" || pathname.includes("/blog")
-          ? "light"
+          ? "dark"
           : undefined
       }
       {...props}
