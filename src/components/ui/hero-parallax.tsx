@@ -93,12 +93,12 @@ export const HeroParallax = ({
 
 export const Header = () => {
   return (
-    <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0 z-50">
-      <h1 className="text-4xl font-bold tracking-tight sm:text-6xl text-white/95">
+    <div className="max-w-7xl relative mx-auto py-20 px-4 w-full left-0 top-0 z-50">
+      <h1 className="text-4xl font-bold tracking-tight sm:text-7xl text-white/95">
         Your <span className="text-primary">all-in-one</span> <br />
         Stripe webhooks dashboard
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 text-foreground/90">
+      <p className="max-w-2xl text-base md:text-2xl text-foreground/90 md:pt-20">
         Monitor and get failure alerts for your Stripe webhooks, in real-time.
       </p>
     </div>
@@ -133,9 +133,8 @@ export const ProductCard = ({
       >
         <Image
           src={product.thumbnail}
-          height="600"
-          width="600"
-          className="object-cover object-left-top absolute h-full w-full inset-0"
+          fill
+          className="!relative !w-[700px] h-[600px] object-fit inset-0"
           alt={product.title}
         />
       </Link>

@@ -2,13 +2,19 @@
 
 import { useState } from "react";
 import {
+  AlertTriangle,
   ArrowRight,
   Bell,
   Clock,
   Code2,
   Database,
+  History,
   LineChart,
+  Search,
+  Settings,
   Shield,
+  Webhook,
+  XCircle,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +31,7 @@ import { motion } from "framer-motion";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import Image from "next/image";
 import { HeroParallax } from "@/components/ui/hero-parallax";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const pricingTiers = [
   {
@@ -136,6 +143,40 @@ const graphs = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
+const imageVariants = {
+  hidden: { scale: 0.95, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  },
+};
+
 function App() {
   const [selectedPlan, setSelectedPlan] = useState<string>("monthly");
 
@@ -148,8 +189,7 @@ function App() {
             {
               title: "Average time to complete",
               link: "",
-              thumbnail:
-                "/landing/graphs/graph-average-time-to-complete-big.png",
+              thumbnail: "/landing/graphs/graph-average-time-to-complete.png",
             },
             {
               title: "Top failed event types",
@@ -205,7 +245,193 @@ function App() {
       {/* 3. Custom alert rules */}
       {/* 4. Seamless integration with Stripe's ecosystem */}
 
-      <section className="w-full max-h-screen flex flex-col justify-center items-center gap-16 bg-foreground/15 pt-16">
+      <motion.section
+        className="w-full min-h-screen flex flex-col justify-start items-center gap-12 bg-black py-12"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h2
+          className="text-6xl font-bold tracking-tight text-center text-foreground"
+          variants={itemVariants}
+          initial="hidden"
+          whileInView="visible"
+        >
+          The cost of not having a webhook monitor
+        </motion.h2>
+
+        {/* Log Investigation Nightmare */}
+        <motion.div className="max-w-5xl mx-auto px-4" variants={itemVariants}>
+          <motion.h2
+            className="text-3xl font-bold mb-4 bg-gradient-to-r from-red-500 to-red-300 bg-clip-text text-transparent flex items-center gap-2"
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+          >
+            <motion.div
+              className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <MagnifyingGlassIcon className="w-8 h-8 text-red-500" />
+            </motion.div>
+            Logs investigation nightmare
+          </motion.h2>
+          <motion.p
+            className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-12"
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+          >
+            Every minute spent searching through logs for failed webhooks is
+            time you don&apos;t ship new features.
+          </motion.p>
+
+          <motion.div
+            className="relative w-full group"
+            variants={imageVariants}
+            initial="hidden"
+            whileInView="visible"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur-md opacity-75 group-hover:opacity-100 transition-opacity" />
+            <div className="relative overflow-clip">
+              <img
+                src="/landing/datadog.png"
+                alt="Complex log analysis"
+                className="relative rounded-lg border border-zinc-800 w-full shadow-xl"
+              />
+              <motion.img
+                initial={{ opacity: 0, y: 100, x: 60 }}
+                variants={{
+                  visible: {
+                    opacity: 1,
+                    y: 40,
+                    x: 60,
+                  },
+                }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                whileInView="visible"
+                viewport={{ once: true }}
+                src="/landing/stripe-errors.png"
+                alt="Complex log analysis"
+                className="absolute bottom-0 right-0 rounded-lg border border-zinc-800 h-36 md:h-64 shadow-xl"
+              />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="text-base text-muted-foreground italic">
+                  "Finding that one failed webhook shouldn't take hours."
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Customer Churn Risk */}
+        <motion.div className="max-w-5xl mx-auto px-4" variants={itemVariants}>
+          <motion.h2
+            className="text-3xl font-bold mb-4 bg-gradient-to-r from-red-500 to-red-300 bg-clip-text text-transparent flex items-center gap-2"
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+          >
+            <motion.div
+              className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <XCircle className="w-8 h-8 text-red-500" />
+            </motion.div>
+            Customer churn risk
+          </motion.h2>
+          <motion.p
+            className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-12"
+            variants={itemVariants}
+          >
+            Every failed webhook is a ticking time bomb for your business. When
+            payments fail to process or services don&apos;t activate, customers
+            don&apos;t just get frustrated—they leave.
+          </motion.p>
+
+          <motion.div
+            className="relative w-full group"
+            variants={imageVariants}
+            initial="hidden"
+            whileInView="visible"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 rounded-lg blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <img
+              src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+              alt="Frustrated customer experience"
+              className="relative rounded-lg border border-zinc-800 w-full shadow-xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="text-base text-muted-foreground italic">
+                  "In today's competitive market, a single critical webhook
+                  failure can cost you thousands."
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Silent Failures */}
+        <motion.div className="max-w-5xl mx-auto px-4" variants={itemVariants}>
+          <motion.h2
+            className="text-3xl font-bold mb-4 bg-gradient-to-r from-yellow-500 to-yellow-300 bg-clip-text text-transparent flex items-center gap-2"
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+          >
+            <motion.div
+              className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center flex-shrink-0"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <AlertTriangle className="w-8 h-8 text-yellow-500" />
+            </motion.div>
+            Silent failures
+          </motion.h2>
+          <motion.p
+            className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-12"
+            variants={itemVariants}
+          >
+            The most dangerous failures are the ones you don&apos;t see coming.
+            Webhook errors lurk in the shadows of your system, silently
+            corrupting your data and breaking critical business flows.
+          </motion.p>
+
+          <motion.div
+            className="relative w-full group"
+            variants={imageVariants}
+            initial="hidden"
+            whileInView="visible"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <img
+              src="https://images.unsplash.com/photo-1525785967371-87ba44b3e6cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1473&q=80"
+              alt="System error visualization"
+              className="relative rounded-lg border border-zinc-800 w-full shadow-xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="text-base text-muted-foreground italic">
+                  "By the time you notice, the damage is already done."
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      <section className="w-full max-h-screen flex flex-col justify-start items-center gap-16 bg-foreground/15 pt-16">
         <h2 className="w-full text-5xl font-bold tracking-tight text-center">
           <span className="text-primary">Detailed notifications</span> for every
           webhook failure

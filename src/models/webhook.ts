@@ -31,7 +31,7 @@ export type WebhookError = {
 };
 
 export type FailureReason = {
-  reason: string;
+  eventName: string;
   count: number;
 };
 

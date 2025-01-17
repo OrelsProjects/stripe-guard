@@ -35,7 +35,23 @@ function TopEventTypeDistributionGraph({
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={failureReasonsData} barSize={40}>
               <XAxis
-                dataKey="reason"
+                dataKey="eventName"
+                tickFormatter={value => {
+                  const length = value.split(".").length;
+                  if (length === 1) {
+                    return value.slice(0, 2);
+                  }
+                  if (length === 2) {
+                    // split first by _ and then by .
+                    const first = value.split("_")[0];
+                    const second = value.split("_")[1].split(".")[0];
+                    return first.slice(0, 2) + "." + second;
+                  } else {
+                    const first = value.split(".")[0];
+                    const second = value.split(".")[1];
+                    return first + "." + second 
+                  }
+                }}
                 axisLine={false}
                 tickLine={false}
                 dy={10}

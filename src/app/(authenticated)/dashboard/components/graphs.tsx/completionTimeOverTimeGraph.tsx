@@ -87,7 +87,7 @@ function CompletionTimeOverTimeGraph({
   }, [averageTimeToComplete]);
 
   return (
-    <Card className="p-4 aspect-square flex flex-col gap-6 relative">
+    <Card className="p-4 h-[430px] flex flex-col gap-6 relative">
       <CardTitle className="text-xl font-semibold flex justify-between">
         <span>Average time to complete</span>
         <div className="flex items-center gap-2" style={{ color: graphColor }}>
@@ -122,7 +122,14 @@ function CompletionTimeOverTimeGraph({
                 dy={10}
               />
               <YAxis axisLine={false} tickLine={false} dx={-10} />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip
+                content={
+                  <CustomTooltip
+                    customEntryValueLabel="Average time to complete"
+                    entryFormat={entry => `${entry}ms`}
+                  />
+                }
+              />
               <Area
                 type="monotone"
                 dataKey="timeToComplete"
