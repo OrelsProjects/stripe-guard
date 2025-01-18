@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
 
       const product: Product = {
         id: stripeProduct.id,
-        name: stripeProduct.description || stripeProduct.name,
+        name: stripeProduct.name,
         description: stripeProduct.description || stripeProduct.name,
         priceStructure,
         noCreditCard: stripeProduct.metadata.noCreditCard === "true",

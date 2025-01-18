@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import useMediaQuery from "@/lib/hooks/useMediaQuery";
 
 export const StickyScroll = ({
   content,
@@ -16,6 +17,7 @@ export const StickyScroll = ({
   contentClassName?: string;
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
+  const isMobile = useMediaQuery("(max-width: 768px)"); // tailwind: md
   const ref = useRef<any>(null);
   const { scrollYProgress } = useScroll({
     // uncomment line 22 and comment line 23 if you DONT want the overflow container and want to have it change on the entire page scroll
@@ -26,8 +28,9 @@ export const StickyScroll = ({
   const cardLength = content.length;
 
   useMotionValueEvent(scrollYProgress, "change", latest => {
+    const extraHeight = isMobile ? 0 : 2;
     const cardsBreakpoints = content.map(
-      (_, index) => index / (cardLength + 2),
+      (_, index) => index / (cardLength + extraHeight),
     );
     const closestBreakpointIndex = cardsBreakpoints.reduce(
       (acc, breakpoint, index) => {
@@ -74,14 +77,14 @@ export const StickyScroll = ({
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
       className={cn(
-        "w-full h-[40rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-12 transition-colors duration-300",
+        "w-full h-[30rem] md:h-[40rem] overflow-y-auto flex justify-start md:justify-center relative space-x-10 rounded-md p-12 pt-0 md:pt-12 transition-colors duration-300",
       )}
       ref={ref}
     >
-      <div className="div relative flex items-start px-4">
+      <div className="relative flex items-start px-4">
         <div className="max-w-2xl">
           {content.map((item, index) => (
-            <div key={item.title + index} className="my-32">
+            <div key={item.title + index} className="mt-12 md:my-32">
               <motion.h2
                 initial={{
                   opacity: 0,
@@ -89,7 +92,7 @@ export const StickyScroll = ({
                 animate={{
                   opacity: activeCard === index ? 1 : 0.3,
                 }}
-                className="text-5xl font-bold text-slate-100"
+                className="text-2xl md:text-5xl  font-bold text-slate-100"
               >
                 {item.title}
               </motion.h2>
@@ -100,10 +103,17 @@ export const StickyScroll = ({
                 animate={{
                   opacity: activeCard === index ? 1 : 0.3,
                 }}
-                className="text-xl text-slate-300 max-w-sm mt-4"
+                className="text-sm md:text-xl text-slate-300 max-w-sm mt-4"
               >
                 {item.description}
               </motion.p>
+              <div
+                className={cn("h-60 mt-12 block md:hidden", {
+                  "opacity-30": activeCard !== index,
+                })}
+              >
+                {item.content}
+              </div>
             </div>
           ))}
           <div className="h-60" />

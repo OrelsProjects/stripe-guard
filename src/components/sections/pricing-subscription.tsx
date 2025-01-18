@@ -141,7 +141,7 @@ export default function PricingSubscription() {
                 key={tier.name}
                 // make it span over 2 columns
                 className={cn(
-                  "relative p-8",
+                  "relative h-full p-8 flex flex-col",
                   tier.recommended ? "border-primary border-2" : "",
                 )}
               >
@@ -173,7 +173,7 @@ export default function PricingSubscription() {
                     {selectedPlan === "monthly" ? "/month" : "/month"}
                   </span>
                 </div>
-                <ul className="mt-8 space-y-4">
+                <ul className="my-8 space-y-4">
                   {tier.features.map(feature => (
                     <li key={feature} className="flex items-center">
                       <ArrowRight className="mr-2 h-4 w-4 text-primary" />
@@ -182,9 +182,9 @@ export default function PricingSubscription() {
                   ))}
                 </ul>
                 {tier.name.includes("free") ? (
-                  <Button className="mt-8 w-full">Get started - free</Button>
+                  <Button className="mt-auto w-full">Get started - free</Button>
                 ) : (
-                  <Button className="mt-8 w-full overflow-clip">
+                  <Button className="mt-auto w-full overflow-clip">
                     <motion.p key="get-started">Get started</motion.p>
                   </Button>
                 )}

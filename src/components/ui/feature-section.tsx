@@ -14,6 +14,11 @@ const itemVariants = {
   visible: { opacity: 1, y: 10 },
 };
 
+const itemVariantsMobile = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 10 },
+};
+
 export default function FeatureSection({
   src,
   title,
@@ -29,20 +34,24 @@ export default function FeatureSection({
           "rounded-br-lg": direction === "rtl",
         },
       )}
-      //   style={{
-      //     backgroundImage: `url(/landing/feature-background.png)`,
-      //     backgroundSize: "cover",
-      //     backgroundPosition: "center",
-      //   }}
     >
       <img
-        src={direction === "rtl" ? "/landing/feature-background-flip.png" : "/landing/feature-background.png"}
+        src={
+          direction === "rtl"
+            ? "/landing/feature-background-flip.png"
+            : "/landing/feature-background.png"
+        }
         alt="feature background"
         className={cn(
           "absolute inset-0 w-full h-full object-cover z-50 opacity-50",
         )}
       />
-      <div className={cn("space-y-4 mb-16", direction === "rtl" && "lg:order-last")}>
+      <div
+        className={cn(
+          "space-y-4 mb-16",
+          direction === "rtl" && "lg:order-last",
+        )}
+      >
         <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
           {title}
         </h2>
@@ -59,7 +68,21 @@ export default function FeatureSection({
           transition={{ duration: 0.5, delay: 0.3 }}
           initial="hidden"
           whileInView="visible"
-          className="bg-card"
+          className="hidden sm:block bg-card"
+        >
+          <Image
+            src={src || "/placeholder.svg"}
+            alt={title}
+            width={700}
+            height={600}
+          />
+        </motion.div>
+        <motion.div
+          variants={itemVariantsMobile}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          initial="hidden"
+          whileInView="visible"
+          className="block sm:hidden bg-card"
         >
           <Image
             src={src || "/placeholder.svg"}
