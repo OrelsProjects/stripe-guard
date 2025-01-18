@@ -74,7 +74,6 @@ export async function GET(req: NextRequest) {
           status: true,
           productName: true,
           createdAt: true,
-          tokensAdded: true,
         },
         orderBy: {
           createdAt: "desc",

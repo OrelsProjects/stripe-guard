@@ -37,7 +37,7 @@ export default function PromotionProvider() {
   if (settings && (!settings.plan || settings.plan.tokensLeft <= 0)) {
     return (
       <AnimatePresence mode="popLayout">
-        {shouldShowPromotion && (
+        {/* {shouldShowPromotion && (
           <motion.div
             key="promotion"
             initial={{ y: "-100%", opacity: 0 }}
@@ -66,7 +66,7 @@ export default function PromotionProvider() {
               <X className="h-7 w-7 text-secondary-foreground" />
             </Button>
           </motion.div>
-        )}
+        )} */}
       </AnimatePresence>
     );
   }

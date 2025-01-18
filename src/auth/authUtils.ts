@@ -1,3 +1,5 @@
+import prisma from "@/app/api/_db/db";
+import { MIN_TOKENS } from "@/models/payment";
 import { Session } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 

@@ -1,8 +1,19 @@
 import Stripe from "stripe";
 
+export const MIN_TOKENS = 500;
+
 export type Event = Stripe.Event;
 export type WebhookCreationResponse = Stripe.Response<Stripe.WebhookEndpoint>;
 export type EnabledEvent = Stripe.WebhookEndpointCreateParams.EnabledEvent;
+
+export const eventsForSubscriptionWebhook: EnabledEvent[] = [
+  "customer.subscription.created",
+  "customer.subscription.updated",
+  "customer.subscription.deleted",
+  "customer.subscription.trial_will_end",
+  "invoice.payment_failed",
+  "checkout.session.expired",
+];
 
 const paymentIntentEvents: EnabledEvent[] = [
   "payment_intent.succeeded",
@@ -40,7 +51,7 @@ export const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   ...invoiceEvents,
 ];
 
-export type Pricing = Record<"yearly" | "monthly", PriceStructure>;
+export type Pricing = "yearly" | "monthly";
 
 export interface PriceStructure {
   id: string;
@@ -54,7 +65,7 @@ export interface Product {
   name: string;
   description: string;
   noCreditCard?: boolean;
-  priceStructure: Pricing;
+  priceStructure: Record<"yearly" | "monthly", PriceStructure>;
   features: string[];
   recommended?: boolean;
 }

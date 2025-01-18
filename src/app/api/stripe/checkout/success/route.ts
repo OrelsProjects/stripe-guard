@@ -43,28 +43,11 @@ export async function GET(req: NextRequest) {
         productId,
         priceId,
         productName: product.name,
-        tokensAdded: tokens,
         status: session.payment_status,
         amountReceived,
         currency: price.currency as string,
         appUser: {
           connect: { id: userId },
-        },
-      },
-    });
-
-    // increase users tokens by the amount of tokens in the product
-    await prisma.userTokens.upsert({
-      where: {
-        userId,
-      },
-      create: {
-        userId,
-        tokensLeft: tokens,
-      },
-      update: {
-        tokensLeft: {
-          increment: tokens,
         },
       },
     });
@@ -79,17 +62,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const newUserTokens = await prisma.userTokens.findUnique({
-      where: {
-        userId,
-      },
-      select: {
-        tokensLeft: true,
-      },
-    });
-
-    const shouldOnboard =
-      !user?.connected && !user?.apiKey && (newUserTokens?.tokensLeft || 0) > 0;
+    const shouldOnboard = !user?.connected && !user?.apiKey;
 
     await sendMail(
       session.customer_email || "",
@@ -100,7 +73,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect(
       req.nextUrl.origin +
-        `/dashboard?success=true&tokens=${tokens}&total=${newUserTokens?.tokensLeft || tokens}${shouldOnboard ? "&onboard" : ""}`,
+        `/dashboard?success=true&tokens=${tokens}${shouldOnboard ? "&onboard" : ""}`,
     );
   } catch (error: any) {
     loggerServer.error(
@@ -111,5 +84,3 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(req.nextUrl.origin + "/dashboard?error=true");
   }
 }
-
-//"\nInvalid `prisma.payment.create()` invocation:\n\n{\n  data: {\n    sessionId: \"cs_test_a1WiUx1g22blDdhM3bGDaTwRSmcQhlw3SpXsmY9aXyexTjcK7BNwduvk7p\",\n    productId: \"prod_RL2PfOjEtczQ8F\",\n    priceId: \"price_1QSMKmRxhYQDfRYG5MBZo00I\",\n    status: \"paid\",\n    invoiceId: null,\n    amountReceived: 219,\n    currency: \"usd\",\n    appUser: {\n      connect: {\n        id: \"cm3y7oujq0000k85c1h4yoog5\"\n      }\n    },\n+   customerId: String\n  }\n}\n\nArgument `customerId` must not be null."

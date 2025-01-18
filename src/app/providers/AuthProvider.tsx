@@ -6,6 +6,7 @@ import {
   selectAuth,
   setLoadingUserDetails,
   setUser as setUserAction,
+  updateUserSettings,
 } from "@/lib/features/auth/authSlice";
 import { usePathname, useSearchParams } from "next/navigation";
 import Loading from "@/components/ui/loading";
@@ -40,20 +41,31 @@ export default function AuthProvider({
         return;
       }
       dispatch(setLoadingUserDetails(true));
-      const settings = await axios.get<UserSettings>("/api/user/settings");
-
       const { user } = data;
       const appUser: AppUser = {
         id: user.userId,
         name: user.name,
         email: user.email,
         image: user.image,
-        settings: settings.data,
+        settings: {
+          connected: false,
+          notificationChannels: {
+            email: {
+              enabled: false,
+              value: "",
+            },
+          },
+          userCriticalEvents: [],
+          isOnboarded: false,
+        },
       };
       dispatch(setUserAction(appUser));
+
+      const settings = await axios.get<UserSettings>("/api/user/settings");
+      dispatch(updateUserSettings(settings.data));
     } catch (error: any) {
       Logger.error(error);
-      dispatch(setUserAction(null));
+      // dispatch(setUserAction(null));
       dispatch(setLoadingUserDetails(false));
     }
   };

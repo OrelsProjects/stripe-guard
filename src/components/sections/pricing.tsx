@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PricingTable } from "@/app/(authenticated)/pricing/pricing-table";
+import { PricingTable } from "@/app/(authenticated)/pricing1/pricing-table";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 
 export function Pricing() {

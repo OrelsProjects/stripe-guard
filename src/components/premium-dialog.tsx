@@ -4,8 +4,8 @@ import {
   DialogContent,
   DialogClose,
 } from "@/components/ui/dialog";
-import { PricingContainer } from "../app/(authenticated)/pricing/pricing-container";
-import { PremiumFAQ } from "../app/(authenticated)/pricing/faq";
+import { PricingContainer } from "../app/(authenticated)/pricing1/pricing-container";
+import { PremiumFAQ } from "../app/(authenticated)/pricing1/faq";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 

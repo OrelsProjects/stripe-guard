@@ -190,14 +190,14 @@ function App() {
                 src={graph.src}
                 alt={graph.title}
                 fill
-                className="!relative !h-[12rem] !w-[16rem]!h-[26rem] !w-[40rem]"
+                className="!relative !h-[12rem] !w-[16rem] md:!h-[26rem] md:!w-[40rem]"
               />
             ),
           }))}
         />
       </section>
 
-      <PricingSubscription />
+      <PricingSubscription className="mx-auto max-w-7xl" />
 
       {/* FAQ Section */}
       <section className="mx-auto mt-32 max-w-3xl px-6 pb-32 md:px-8">

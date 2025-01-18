@@ -55,6 +55,8 @@ model User {
   meta              UserMetadata?
   userWebhookEvents UserWebhookEvent[]
   payments          Payment[]
+  Subscription      Subscription[]
+  TokensPool        TokensPool?
 
   @@map("user")
 }
@@ -149,13 +151,13 @@ model UserWebhookEvent {
 }
 
 model Payment {
-  id        String @id @default(cuid()) @map("id")
-  userId    String @map("user_id")
-  priceId   String @map("price_id")
-  sessionId String @map("session_id")
-  productId String @map("product_id")
+  id             String  @id @default(cuid()) @map("id")
+  userId         String  @map("user_id")
+  priceId        String  @map("price_id")
+  sessionId      String  @map("session_id")
+  productId      String  @map("product_id")
+  subscriptionId String? @unique @map("subscription_id")
 
-  tokensAdded     Int     @map("tokens_added")
   productName     String  @map("product_name")
   amountReceived  Int     @map("amount_received")
   currency        String  @map("currency")
@@ -167,21 +169,42 @@ model Payment {
 
   appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("payments")
+  @@map("payment")
 }
 
-model UserTokens {
-  id     String @id @default(cuid())
-  userId String @unique @map("user_id")
+model Subscription {
+  id             String @id @default(cuid()) @map("id")
+  userId         String @map("user_id")
+  subscriptionId String @unique @map("subscription_id")
+  productId      String @map("product_id")
 
-  tokensLeft Int @default(0) @map("tokens_left")
-
-  couponsUsed String[] @default([]) @map("coupons_used")
+  tokens Int    @map("tokens")
+  status String @map("status")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("user_tokens")
+  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscription")
+}
+
+model TokensPool {
+  id     String @id @default(cuid())
+  userId String @unique @map("user_id")
+  tokens Int    @map("tokens")
+
+  tokensUsed      Int @map("tokens_used")
+  tokensRemaining Int @map("tokens_remaining")
+
+  lastRefillAt DateTime @map("last_refill_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appUser User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tokens_pool")
 }
 
 model InterestedUser {

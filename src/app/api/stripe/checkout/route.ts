@@ -2,8 +2,29 @@ import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { getCoupon } from "@/app/api/stripe/utils";
 import { authOptions } from "@/auth/authOptions";
 import loggerServer from "@/loggerServer";
+import { eventsForSubscriptionWebhook } from "@/models/payment";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
+
+const appName = process.env.NEXT_PUBLIC_APP_NAME;
+
+async function validateWebhookExists(stripe: Stripe) {
+  const webhooks = await stripe.webhookEndpoints.list();
+  const appWebhook = webhooks.data.find(
+    webhook => webhook.metadata.app === appName,
+  );
+  if (!appWebhook) {
+    // create
+    const webhookUrl = `${process.env.NEXT_PUBLIC_WEBHOOK_BASE}/api/stripe/webhook/subscription`;
+    const webhook = await stripe.webhookEndpoints.create({
+      url: webhookUrl,
+      enabled_events: eventsForSubscriptionWebhook,
+      metadata: { app: appName || "" },
+    });
+    console.log("webhook", webhook);
+  }
+}
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -12,10 +33,9 @@ export async function POST(req: NextRequest) {
   }
   try {
     const nextUrl = req.nextUrl;
-    const { priceId, productId, discountApplied } = await req.json();
+    const { priceId, productId } = await req.json();
     const stripe = getStripeInstance();
-
-    const coupon = await getCoupon(stripe);
+    await validateWebhookExists(stripe);
 
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -25,10 +45,7 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      mode: "payment",
-      ...(coupon && {
-        discounts: [{ coupon: coupon.id }],
-      }),
+      mode: "subscription",
       success_url: `${nextUrl.origin}/api/stripe/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${nextUrl.origin}/cancel`,
       client_reference_id: session.user.userId,
@@ -37,10 +54,9 @@ export async function POST(req: NextRequest) {
         clientName: session.user.name || "",
         productId,
         priceId,
-        ...(coupon && { appliedCoupon: coupon.id }),
+        userId: session.user.userId,
       },
     });
-
     return NextResponse.json({ sessionId: stripeSession.id }, { status: 200 });
   } catch (error: any) {
     loggerServer.error(

@@ -1,6 +1,6 @@
 "use client";
 
-import { PricingTable } from "@/app/(authenticated)/pricing/pricing-table";
+import { PricingTable } from "@/app/(authenticated)/pricing1/pricing-table";
 
 export function PricingContainer() {
   return (

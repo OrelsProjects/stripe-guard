@@ -2,14 +2,10 @@ import prisma from "@/app/api/_db/db";
 import Stripe from "stripe";
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { sendMail } from "@/app/api/_utils/mail/mail";
-import {
-  generateUserAlertEmail,
-  generateWebhookFailureEmail,
-} from "@/app/api/_utils/mail/templates";
+import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
 import {
   REGISTERED_CONNECTED_HOOKS,
   INITIAL_RETRY_DELAY,
-  MAX_RETRY_DELAY,
   MAX_RETRIES,
 } from "@/app/api/stripe/webhook/[[...userId]]/_utils";
 
@@ -18,10 +14,11 @@ import { EnabledEvent, Event, criticalEvents } from "@/models/payment";
 import { UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import moment from "moment";
+import { verifyUserTokens } from "@/lib/tokens";
 
 // TODO: Send the user an email when a webhook fails and add a button to contact support.
 
-export const maxDuration = 60; // 1 minute
+export const maxDuration = 10; // 1 minute
 
 type LeanUser = {
   id: string;
@@ -66,19 +63,6 @@ function initializeStripe(
 
   return null;
 }
-
-// function verifyWebhook(
-//   body: Event,
-//   signature: string,
-// ): Stripe.Event {
-//   const webhookSecret = process.env.STRIPE_CONNECT_WEBHOOK_SECRET as string;
-//   const stripe = initializeStripe(body.account);
-//   return stripe.webhooks.constructEvent(
-//     JSON.stringify(body),
-//     signature,
-//     webhookSecret,
-//   );
-// }
 
 async function getUserStripeCredentials(
   userDetails:
@@ -196,8 +180,8 @@ async function handleWebhookResolution(
     },
   });
 
-  const didSucceedBefore = await didSucceed(existingWebhookEvents);
-  const takeToken = await shouldTakeToken(existingWebhookEvents, succeeded);
+  // const didSucceedBefore = await didSucceed(existingWebhookEvents);
+  // const takeToken = await shouldTakeToken(existingWebhookEvents, succeeded);
   const sendEmailToCustomer = await shouldSendEmailToCustomer(
     event,
     userStripeCredentials.userId,
@@ -223,25 +207,21 @@ async function handleWebhookResolution(
     },
   });
 
-  if (!takeToken || didSucceedBefore) {
-    // No need to update tokens or client about webhook resolution. Webhook already handled for that case.
-    return;
-  }
+  await prisma.tokensPool.update({
+    where: {
+      userId: userId,
+    },
+    data: {
+      tokensRemaining: {
+        decrement: 1,
+      },
+    },
+  });
 
-  try {
-    await prisma.userTokens.update({
-      where: {
-        userId,
-      },
-      data: {
-        tokensLeft: {
-          decrement: 1,
-        },
-      },
-    });
-  } catch (error: any) {
-    loggerServer.error("Error decrementing tokens", userId, error);
-  }
+  // if (!takeToken || didSucceedBefore) {
+  //   // No need to update tokens or client about webhook resolution. Webhook already handled for that case.
+  //   return;
+  // }
 
   const customerEmail = sendEmailToCustomer
     ? (event.data.object as any).billing_details?.email
@@ -432,6 +412,15 @@ export async function POST(
     }
 
     const userIdNonNull = userId || userStripeCredentials.userId;
+
+    const canProcessEvent = await verifyUserTokens(userIdNonNull);
+
+    if (!canProcessEvent) {
+      return NextResponse.json(
+        { error: "You don't have enough tokens to process this event" },
+        { status: 429 },
+      );
+    }
 
     processStripeEvent(userIdNonNull, userStripeCredentials, event);
 

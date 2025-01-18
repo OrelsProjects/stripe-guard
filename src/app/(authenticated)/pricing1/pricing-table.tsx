@@ -10,7 +10,7 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Logger } from "@/logger";
 import { Product } from "@/models/payment";
-import { PromotionalBanner } from "@/app/(authenticated)/pricing/promotional-banner";
+import { PromotionalBanner } from "@/app/(authenticated)/pricing1/promotional-banner";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 import { LAUNCH_PROMO_PARAM } from "@/app/providers/LaunchPromoProvider";
 
