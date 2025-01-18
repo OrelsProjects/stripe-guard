@@ -1,7 +1,7 @@
 import { getStripeInstance } from "@/app/api/_payment/stripe";
 import { getCoupon } from "@/app/api/stripe/utils";
 import loggerServer from "@/loggerServer";
-import { Product } from "@/models/payment";
+import { PriceStructure, Pricing, Product } from "@/models/payment";
 import { NextRequest, NextResponse } from "next/server";
 
 // revalidate always
@@ -26,34 +26,55 @@ export async function GET(req: NextRequest) {
       );
 
     for (const stripeProduct of appProducts) {
-      const { data: stripePrices } = await stripe.prices.list({
+      const { data: priceData } = await stripe.prices.list({
         product: stripeProduct.id,
       });
-      stripePrices
-        .filter(stripePrice => stripePrice.active && stripePrice.unit_amount)
-        // only those that have StripeProtect
-        .map(stripePrice => {
-          const product: Product = {
-            id: stripeProduct.id,
-            name: stripeProduct.description || stripeProduct.name,
-            priceStructure: {
-              id: stripePrice.id,
-              currency: stripePrice.currency,
-              price: stripePrice.unit_amount! / 100,
-              tokens: parseInt(stripeProduct.metadata.tokens),
-            },
-            noCreditCard: stripeProduct.metadata.noCreditCard === "true",
-            features: stripeProduct.marketing_features.map(
-              feature => feature.name || "",
-            ),
-            recommended: stripeProduct.metadata.recommended === "true",
-          };
-          products.push(product);
-        });
+      const stripePrices = priceData.filter(
+        stripePrice => stripePrice.active && stripePrice.unit_amount,
+      );
+
+      const priceMonthly = stripePrices.find(
+        price => price.recurring?.interval === "month",
+      );
+      const priceYearly = stripePrices.find(
+        price => price.recurring?.interval === "year",
+      );
+
+      if (!priceMonthly || !priceYearly) {
+        return;
+      }
+
+      const priceStructure: Pricing = {
+        monthly: {
+          id: priceMonthly.id,
+          currency: priceMonthly.currency,
+          price: priceMonthly.unit_amount! / 100,
+          tokens: parseInt(stripeProduct.metadata.tokens),
+        },
+        yearly: {
+          id: priceYearly.id,
+          currency: priceYearly.currency,
+          price: priceYearly.unit_amount! / 100,
+          tokens: parseInt(stripeProduct.metadata.tokens),
+        },
+      };
+
+      const product: Product = {
+        id: stripeProduct.id,
+        name: stripeProduct.description || stripeProduct.name,
+        description: stripeProduct.description || stripeProduct.name,
+        priceStructure,
+        noCreditCard: stripeProduct.metadata.noCreditCard === "true",
+        features: stripeProduct.marketing_features.map(
+          feature => feature.name || "",
+        ),
+        recommended: stripeProduct.metadata.recommended === "true",
+      };
+      products.push(product);
     }
 
     const productsSortedByPrice = products.sort(
-      (a, b) => b.priceStructure.price - a.priceStructure.price,
+      (a, b) => a.priceStructure.monthly.price - b.priceStructure.monthly.price,
     );
 
     const coupon = await getCoupon(stripe, shouldGetLaunch === "true");

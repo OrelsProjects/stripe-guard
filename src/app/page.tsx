@@ -1,129 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Bell,
-  Clock,
-  Code2,
-  Database,
-  History,
-  LineChart,
-  Search,
-  Settings,
-  Shield,
-  Webhook,
-  XCircle,
-  Zap,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { AlertTriangle, XCircle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import Image from "next/image";
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import CostComparison from "@/components/sections/cost-comparison";
 import FeatureSection from "@/components/ui/feature-section";
-
-const pricingTiers = [
-  {
-    name: "Totally free",
-    price: "$0",
-    priceYearly: "$0",
-    description: "Just starting to Stripe? No cost, no frills, no judgment.",
-
-    features: [
-      "Monitor up to 1,000 webhooks/month",
-      "Real-time alerts",
-      "Webhook event history (1 year)",
-      "Basic dashboard access",
-    ],
-    popular: true,
-  },
-  {
-    name: "Casual Striper",
-    price: "$13",
-    priceYearly: "$9",
-    description: "You Stripe on the side, but still need solid support.",
-    features: [
-      "Monitor 30,000 webhooks/month",
-      "Real-time failure alerts",
-      "Webhook event history (7 years)",
-      "Priority support",
-      "Custom alert rules (coming soon)",
-    ],
-  },
-  {
-    name: "Professional Striper",
-    price: "$27",
-    priceYearly: "$19",
-    description: "Striping pays the bills, and you can’t afford mistakes.",
-    features: [
-      "Monitor unlimited webhooks",
-      "Real-time failure alerts",
-      "Webhook event history (forever)",
-      "Priority support",
-      "Custom alert rules (coming soon)",
-    ],
-  },
-];
-
-const features = [
-  {
-    icon: Clock,
-    title: "Webhook Event History",
-    description:
-      "Access a complete history of webhook events for deeper insights.",
-  },
-  {
-    icon: Bell,
-    title: "Custom Alerts",
-    description:
-      "Set up personalized notifications for critical webhook events.",
-  },
-  {
-    icon: Code2,
-    title: "Seamless Integration",
-    description: "Works out of the box with Stripe's ecosystem.",
-  },
-  {
-    icon: LineChart,
-    title: "Intuitive Dashboard",
-    description:
-      "Designed to give you a full view of your webhooks without complexity.",
-  },
-];
-
-const benefits = [
-  {
-    icon: Zap,
-    title: "Real-Time Monitoring",
-    description:
-      "Never miss a failed webhook. Get instant alerts to minimize downtime.",
-  },
-  {
-    icon: Database,
-    title: "Detailed Insights",
-    description:
-      "See every webhook event at a glance with clear, actionable data.",
-  },
-  {
-    icon: Shield,
-    title: "Simplified Debugging",
-    description:
-      "Troubleshoot webhook errors effortlessly with rich error logs.",
-  },
-];
+import PricingSubscription from "@/components/sections/pricing-subscription";
 
 const graphs = [
   {
@@ -157,17 +48,6 @@ const containerVariants = {
 };
 
 // width 0 to 100%
-const transparentTextVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  },
-};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -339,7 +219,8 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="text-base text-muted-foreground italic">
-                  "Finding that one failed webhook shouldn't take hours."
+                  &quot;Finding that one failed webhook shouldn&apos;t take
+                  hours.&quot;
                 </p>
               </div>
             </div>
@@ -389,8 +270,8 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="text-base text-muted-foreground italic">
-                  "In today's competitive market, a single critical webhook
-                  failure can cost you thousands."
+                  &quot;In today&apos;s competitive market, a single critical
+                  webhook failure can cost you thousands.&quot;
                 </p>
               </div>
             </div>
@@ -440,7 +321,8 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="text-base text-muted-foreground italic">
-                  "By the time you notice, the damage is already done."
+                  &quot;By the time you notice, the damage is already
+                  done.&quot;
                 </p>
               </div>
             </div>
@@ -509,97 +391,7 @@ function App() {
         />
       </section>
 
-      {/* Pricing Section */}
-      <section className="mx-auto mt-32 max-w-7xl px-6 md:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
-            Simple,{" "}
-            <span className="relative text-background overflow-clip">
-              <motion.span
-                variants={transparentTextVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="absolute inset-0 bg-foreground/10 z-10 rounded-lg overflow-clip"
-              />
-              <span className="relative z-20">transparent</span>
-            </span>{" "}
-            pricing
-          </h2>
-
-          <div className="mt-8 flex justify-center gap-4">
-            <Button
-              variant={selectedPlan === "monthly" ? "default" : "outline"}
-              onClick={() => setSelectedPlan("monthly")}
-            >
-              Monthly billing
-            </Button>
-            <Button
-              variant={selectedPlan === "yearly" ? "default" : "outline"}
-              onClick={() => setSelectedPlan("yearly")}
-            >
-              Yearly billing
-              <Badge variant="secondary" className="ml-2">
-                Save 30%
-              </Badge>
-            </Button>
-          </div>
-        </div>
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Center the card */}
-          {pricingTiers.map(tier => (
-            <Card
-              key={tier.name}
-              // make it span over 2 columns
-              className={cn(
-                "relative p-8",
-                tier.popular ? "border-primary border-2" : "",
-              )}
-            >
-              {tier.popular && (
-                <Badge className="absolute -top-6 right-4 flex flex-col bg-background border-2 border-primary py-1 px-2 pointer-events-none">
-                  <p className="text-primary font-bold text-sm">
-                    Just pick this one!
-                  </p>
-                  <span className="text-xs font-normal">
-                    You can upgrade later.
-                  </span>
-                </Badge>
-              )}
-              <div className="flex flex-col items-start">
-                <h4
-                  className="text-2xl font-bold"
-                  dangerouslySetInnerHTML={{ __html: tier.name }}
-                />
-                <p className="text-muted-foreground">{tier.description}</p>
-              </div>
-              <div className="mt-6">
-                <span className="text-4xl font-bold">
-                  {selectedPlan === "monthly" ? tier.price : tier.priceYearly}
-                </span>
-                <span className="text-muted-foreground">
-                  {selectedPlan === "monthly" ? "/month" : "/year"}
-                </span>
-              </div>
-              <ul className="mt-8 space-y-4">
-                {tier.features.map(feature => (
-                  <li key={feature} className="flex items-center">
-                    <ArrowRight className="mr-2 h-4 w-4 text-primary" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              {tier.name.includes("free") ? (
-                <Button className="mt-8 w-full">Get started - free</Button>
-              ) : (
-                <Button className="mt-8 w-full overflow-clip">
-                  <motion.p key="get-started">Get started</motion.p>
-                </Button>
-              )}
-            </Card>
-          ))}
-        </div>
-      </section>
+      <PricingSubscription />
 
       {/* FAQ Section */}
       <section className="mx-auto mt-32 max-w-3xl px-6 pb-32 md:px-8">
