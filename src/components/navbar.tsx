@@ -13,6 +13,7 @@ import {
   Menu,
   User,
   Coins,
+  Rocket,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "Settings", href: "/settings", icon: Settings },
-  { name: "Pricing", href: "/pricing", icon: Coins },
+  { name: "Pricing", href: "/pricing", icon: Rocket },
 ];
 
 const setDidCloseUserNeedsSetup = () => {

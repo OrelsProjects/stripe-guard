@@ -215,7 +215,7 @@ export function SubscriptionSettings({
                 Are you sure you want to cancel?
               </AlertDialogTitle>
               <AlertDialogDescription className="space-y-3 text-foreground/95">
-                <p>By cancelling your subscription, you'll lose access to:</p>
+                <p>By cancelling your subscription, you&apos;ll lose access to:</p>
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Higher monthly token limits</li>
                   <li>Priority support</li>
