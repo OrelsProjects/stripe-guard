@@ -116,78 +116,18 @@ export function generateWebhookFailureEmail(
 ) {
   const envPath = process.env.NODE_ENV === "production" ? "" : "test/";
 
-  return `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Webhook Failure Notification</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-          }
-          .mail-container {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 0 !important;
-            background: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          }
-          .header {
-            text-align: center;
-            padding: 20px 0;
-          }
-          .header h1 {
-            margin: 0;
-            color: #4a00e0;
-            font-size: 24px;
-          }
-          .content {
-            padding: 20px;
-          }
-          .content p {
-            margin: 10px 0;
-          }
-          .button-container {
-            text-align: center;
-            margin: 20px 0;
-          }
-          .button {
-            display: inline-block;
-            text-decoration: none;
-            background-color: #635bff;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
-          }
-          .button:hover {
-            background-color: #5144d3;
-          }
-          .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="mail-container">
-          <div class="header">
-            <h1>🚨 Webhook Failure Alert</h1>
-          </div>
+  const content = `
           <div class="content">
-            <p><strong>Event:</strong> ${event.id}</p>
+            <p><strong>Event:</strong> 
+              <a 
+                href="https://dashboard.stripe.com/${envPath}workbench/events/${event.id}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style="color: #fa6c40; text-decoration: none;"
+              >
+                ${event.id}
+              </a>
+            </p>
             <p><strong>Occurred At:</strong> ${eventTime}</p>
             <p><strong>Failed Webhooks:</strong> ${failedWebhooks}</p>
             <p><strong>Type:</strong> ${event.type}</p>
@@ -195,7 +135,7 @@ export function generateWebhookFailureEmail(
               The webhook for this event failed to process successfully. Please review the event details in your Stripe dashboard.
             </p>
           </div>
-          <div class="button-container">
+          <div class="button-container" style="text-align: right;">
             <a
               href="https://dashboard.stripe.com/${envPath}workbench/events/${event.id}"
               class="button"
@@ -205,34 +145,30 @@ export function generateWebhookFailureEmail(
               View Event in Stripe
             </a>
           </div>
-          <div class="footer">
-            <p>This is an automated notification from ${APP_NAME}.</p>
-          </div>
-        </div>
-      </body>
-      </html>
     `;
+
+  return baseEmailTemplate(content, "🚨 Webhook Failure Alert");
 }
 
-export function baseEmailTemplate(content: string) {
+export function baseEmailTemplate(content: string, header?: string) {
   return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>StripeProtect Notification</title>
+      <title>${APP_NAME} Notification</title>
       <style>
         body {
           font-family: Arial, sans-serif;
           line-height: 1.6;
-          color: hsl(0, 0%, 3.9%);
-          background-color: hsl(0, 0%, 98%);
+          color: #090909; /* hsl(0, 0%, 3.9%) */
+          background-color: #fafafa; /* hsl(0, 0%, 98%) */
           margin: 0;
           padding: 0;
         }
         h2 {
-          color: hsl(0, 0%, 13.3%);
+          color: #222222; /* hsl(0, 0%, 13.3%) */
           font-size: 24px;
           margin-top: 0;
           font-weight: 600;
@@ -243,14 +179,14 @@ export function baseEmailTemplate(content: string) {
         .mail-container {
           max-width: 600px;
           margin: 20px auto;
-          background-color: hsl(0, 0%, 100%);
-          border: 1px solid hsl(0, 0%, 89.8%);
+          background-color: #ffffff; /* hsl(0, 0%, 100%) */
+          border: 1px solid #e4e4e4; /* hsl(0, 0%, 89.8%) */
           border-radius: 0.5rem;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .header {
-          background-color: hsl(221.2, 83.2%, 53.3%);
-          color: hsl(210, 40%, 98%);
+          background-color: #fa6c40; /* hsl(13.8, 72.9%, 56.7%) */
+          color: #ffffff; /* hsl(338.2, 0%, 100%) */
           padding: 20px;
           text-align: center;
           border-top-left-radius: 0.5rem;
@@ -261,8 +197,8 @@ export function baseEmailTemplate(content: string) {
         }
         .button {
           display: inline-block;
-          background-color: hsl(221.2, 83.2%, 53.3%);
-          color: hsl(210, 40%, 98%);
+          background-color: #fa6c40; /* hsl(13.8, 72.9%, 56.7%) */
+          color: #ffffff !important; /* hsl(338.2, 0%, 100%) */
           padding: 10px 20px;
           text-decoration: none;
           border-radius: 0.25rem;
@@ -271,7 +207,7 @@ export function baseEmailTemplate(content: string) {
         .footer {
           text-align: center;
           padding: 20px;
-          color: hsl(0, 0%, 45.1%);
+          color: #737373; /* hsl(0, 0%, 45.1%) */
           font-size: 12px;
         }
       </style>
@@ -279,13 +215,13 @@ export function baseEmailTemplate(content: string) {
     <body>
       <div class="mail-container">
         <div class="header">
-          <h1>StripeProtect</h1>
+          <h1>${header || "${APP_NAME}"}</h1>
         </div>
         <div class="content">
           ${content}
         </div>
         <div class="footer">
-          <p>This is an automated message from StripeProtect. Please do not reply to this email.</p>
+          <p>This is an automated message from ${APP_NAME}. Please do not reply to this email.</p>
         </div>
       </div>
     </body>

@@ -1,10 +1,7 @@
 "use client";
 
-import { PremiumDialog } from "@/components/premium-dialog";
-import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/lib/hooks/redux";
-import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
 const setDidShowPromotion = () => {

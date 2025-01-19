@@ -16,6 +16,7 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import FeatureSection from "@/components/ui/feature-section";
 import PricingSubscription from "@/components/sections/pricing-subscription";
 import { CostSection } from "@/components/sections/cost-section";
+import FailedWebhookAlertsSection from "@/components/sections/failed-webhook-alerts-section";
 
 const graphs = [
   {
@@ -168,14 +169,14 @@ function App() {
           />
           <FeatureSection
             src="/landing/graphs/graph-fails-and-successes.png"
-            title="Webhook Success vs. Failure"
+            title="Webhook success vs. failure"
             description="Track the success and failure rates of your webhooks to quickly identify issues and improve reliability. Stay informed and proactive in resolving problems to ensure seamless user experiences."
             direction="ltr"
           />
         </motion.div>
       </motion.section>
 
-      <section className="relative w-full max-h-screen flex flex-col justify-start items-center gap-4 md:gap-16 bg-foreground/15 pt-16">
+      <section className="relative w-full max-h-screen flex flex-col justify-start items-center gap-4 md:gap-16 bg-foreground/15 pt-16 px-6 md:px-8">
         <h2 className="w-full text-3xl sm:text-6xl font-bold tracking-tight text-center">
           <span className="text-primary">Detailed notifications</span> for every
           webhook failure
@@ -196,11 +197,11 @@ function App() {
           }))}
         />
       </section>
-
+      <FailedWebhookAlertsSection />
       <PricingSubscription className="mx-auto max-w-7xl" />
 
       {/* FAQ Section */}
-      <section className="mx-auto mt-32 max-w-3xl px-6 pb-32 md:px-8">
+      <section className="mx-auto mt-32 max-w-3xl px-6 md:px-8 pb-32">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Frequently Asked Questions

@@ -6,6 +6,8 @@ import { randomInt } from "crypto";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth/authOptions";
 import cuid from "cuid";
+import { sendMail } from "@/app/api/_utils/mail/mail";
+import { generateWebhookFailureEmail } from "@/app/api/_utils/mail/templates";
 type Events =
   | "charge.succeeded"
   | "charge.updated"
@@ -85,45 +87,57 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // const session = await getServerSession(authOptions);
+  // if (!session) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
   try {
-    const FortyEvents = Array.from({ length: 300 }, () =>
-      generateStripeEvent(),
+
+    sendMail(
+      "orelsmail@gmail.com",
+      "test@test.com",
+      "test",
+      generateWebhookFailureEmail(
+        { id: "evt_3Qh7iORxhYQDfRYG1XccA7tv", type: "charge.succeeded" },
+        new Date(),
+        1,
+      ),
     );
 
-    await prisma.userWebhookEvent.deleteMany({
-      where: {
-        userId: session.user.userId,
-      },
-    });
+    // const FortyEvents = Array.from({ length: 300 }, () =>
+    //   generateStripeEvent(),
+    // );
 
-    await prisma.userWebhookEvent.createMany({
-      data: FortyEvents,
-    });
+    // await prisma.userWebhookEvent.deleteMany({
+    //   where: {
+    //     userId: session.user.userId,
+    //   },
+    // });
 
-    const failedWebhooks = FortyEvents.filter(event => !event.succeeded);
-    const emailsSent: Omit<EmailSent, "id" | "createdAt" | "updatedAt">[] =
-      failedWebhooks
-        .map(event => ({
-          email: "test@test.com",
-          sentToCustomer: false,
-          webhookEventId: event.eventId,
-        }))
-        .filter((event, index, self) => {
-          return (
-            self.findIndex(e => e.webhookEventId === event.webhookEventId) ===
-            index
-          );
-        });
+    // await prisma.userWebhookEvent.createMany({
+    //   data: FortyEvents,
+    // });
 
-    await prisma.emailSent.deleteMany();
+    // const failedWebhooks = FortyEvents.filter(event => !event.succeeded);
+    // const emailsSent: Omit<EmailSent, "id" | "createdAt" | "updatedAt">[] =
+    //   failedWebhooks
+    //     .map(event => ({
+    //       email: "test@test.com",
+    //       sentToCustomer: false,
+    //       webhookEventId: event.eventId,
+    //     }))
+    //     .filter((event, index, self) => {
+    //       return (
+    //         self.findIndex(e => e.webhookEventId === event.webhookEventId) ===
+    //         index
+    //       );
+    //     });
 
-    await prisma.emailSent.createMany({
-      data: emailsSent,
-    });
+    // await prisma.emailSent.deleteMany();
+
+    // await prisma.emailSent.createMany({
+    //   data: emailsSent,
+    // });
 
     return NextResponse.json({ message: "Events generated" }, { status: 200 });
   } catch (error) {

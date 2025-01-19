@@ -2,11 +2,9 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Coins } from 'lucide-react';
 import { Plan } from "@/models/user";
-import { PremiumDialog } from "@/components/premium-dialog";
 import {
   Accordion,
   AccordionItem,
@@ -66,7 +64,7 @@ export function BillingSettings({ plan, loading = false }: BillingSettingsProps)
             )}
           </div>
         </div>
-        {!loading && <PremiumDialog text="+ Tokens" />}
+        {/* {!loading && <PremiumDialog text="+ Tokens" />} */}
       </div>
       {!loading && plan && plan.billingHistory && plan.billingHistory.length > 0 && (
         <Accordion type="single" collapsible className="border-t border-muted-foreground/20 mt-6">

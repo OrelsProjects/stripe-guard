@@ -27,15 +27,13 @@ function CostItem({
   return (
     <motion.div className="max-w-5xl mx-auto px-4" variants={itemVariants}>
       <motion.h2
-        className={`text-xl sm:text-3xl font-bold mb-4 bg-gradient-to-r from-${gradientFrom} to-${gradientTo} bg-clip-text text-transparent flex items-center gap-2`}
+        className={`text-xl sm:text-3xl font-bold mb-4 bg-gradient-to-r flex items-center gap-2`}
         variants={itemVariants}
         initial="hidden"
         whileInView="visible"
       >
         <motion.div
-          className={`w-6 h-6 sm:w-12 sm:h-12 bg-${gradientFrom}/20 rounded-md sm:rounded-xl flex items-center justify-center flex-shrink-0`}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+          className={`w-6 h-6 sm:w-12 sm:h-12 bg-${gradientFrom} bg-opacity-20 rounded-md sm:rounded-xl flex items-center justify-center flex-shrink-0`}
         >
           <Icon className={`w-4 h-4 sm:w-8 sm:h-8 text-${gradientFrom}`} />
         </motion.div>
@@ -59,13 +57,13 @@ function CostItem({
         transition={{ duration: 0.3 }}
       >
         <div
-          className={`absolute inset-0 bg-gradient-to-r from-${gradientFrom}/30 to-${gradientTo}/30 rounded-lg blur-md opacity-75 group-hover:opacity-100 transition-opacity`}
+          className={`absolute inset-0 rounded-lg blur-md opacity-75 group-hover:opacity-100 transition-opacity`}
         />
         <div className="relative overflow-clip">
           <img
             src={mainImage}
             alt={title}
-            className="relative rounded-lg border border-zinc-800 w-full shadow-xl"
+            className="relative rounded-lg border border-border w-full shadow-xl"
           />
           {overlayImage && (
             <motion.img
@@ -82,13 +80,13 @@ function CostItem({
               viewport={{ once: true }}
               src={overlayImage}
               alt={`${title} overlay`}
-              className="absolute bottom-0 right-0 rounded-lg border border-zinc-800 h-36 md:h-64 shadow-xl"
+              className="absolute bottom-0 right-0 rounded-lg border border-border h-36 md:h-64 shadow-xl"
             />
           )}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent rounded-lg">
           <div className="absolute bottom-6 left-6 right-6">
-            <p className="text-base text-muted-foreground italic">
+            <p className="text-base text-foreground/95 italic">
               &quot;{quote}&quot;
             </p>
           </div>
@@ -106,7 +104,6 @@ const itemVariants = {
     transition: {
       duration: 0.6,
       ease: "easeOut",
-      delay: 0.4,
     },
   },
 };
@@ -147,37 +144,40 @@ export function CostSection() {
       >
         The cost of not having a webhook monitor
       </motion.h2>
+      <div className="flex flex-col gap-12 md:gap-32">
+        <CostItem
+          icon={Search}
+          title="Logs investigation nightmare"
+          description="Every minute spent searching through logs for failed webhooks is time you don't ship new features."
+          quote="Finding that one failed webhook shouldn't take hours."
+          mainImage="/landing/datadog.png"
+          overlayImage="/landing/stripe-errors.png"
+          gradientFrom="red-500"
+          gradientTo="red-300"
+        />
 
-      <CostItem
-        icon={Search}
-        title="Logs investigation nightmare"
-        description="Every minute spent searching through logs for failed webhooks is time you don't ship new features."
-        quote="Finding that one failed webhook shouldn't take hours."
-        mainImage="/landing/datadog.png"
-        overlayImage="/landing/stripe-errors.png"
-        gradientFrom="red-500"
-        gradientTo="red-300"
-      />
+        <CostItem
+          icon={XCircle}
+          title="Customer churn risk"
+          description="Every failed webhook is a ticking time bomb for your business. When payments fail to process or services don't activate, customers don't just get frustrated—they leave."
+          quote="In today's competitive market, a single critical webhook failure can cost you thousands."
+          mainImage="/landing/churn.png"
+          gradientFrom="red-500"
+          gradientTo="red-300"
+        />
 
-      <CostItem
-        icon={XCircle}
-        title="Customer churn risk"
-        description="Every failed webhook is a ticking time bomb for your business. When payments fail to process or services don't activate, customers don't just get frustrated—they leave."
-        quote="In today's competitive market, a single critical webhook failure can cost you thousands."
-        mainImage="/landing/churn.png"
-        gradientFrom="red-500"
-        gradientTo="red-300"
-      />
-
-      <CostItem
-        icon={AlertTriangle}
-        title="Silent failures"
-        description="The most dangerous failures are the ones you don't see coming. Webhook errors lurk in the shadows of your system, silently corrupting your data and breaking critical business flows."
-        quote="By the time you notice, the damage is already done."
-        mainImage="https://images.unsplash.com/photo-1525785967371-87ba44b3e6cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1473&q=80"
-        gradientFrom="yellow-500"
-        gradientTo="yellow-300"
-      />
+        <CostItem
+          icon={AlertTriangle}
+          title="Silent failures"
+          description="The most dangerous failures are the ones you don't see coming. Webhook errors lurk in the shadows of your system, silently corrupting your data and breaking critical business flows."
+          quote="By the time you notice, the damage is already done."
+          mainImage="https://images.unsplash.com/photo-1525785967371-87ba44b3e6cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1473&q=80"
+          // gradientFrom="yellow-500"
+          // gradientTo="yellow-300"
+          gradientFrom="red-500"
+          gradientTo="red-300"
+        />
+      </div>
     </motion.section>
   );
 }
