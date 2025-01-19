@@ -52,9 +52,9 @@ export default function Logo({
       <Image
         src={LOGO}
         alt={APP_NAME}
-        width={width || 26}
-        height={height || 26}
-        className={cn("w-6 h-6", imageClassName)}
+        width={width || 32}
+        height={height || 32}
+        className={cn("w-8 h-8", imageClassName)}
       />
       {withText && (
         <span
