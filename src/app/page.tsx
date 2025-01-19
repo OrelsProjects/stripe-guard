@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { AlertTriangle, XCircle } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -12,11 +10,13 @@ import { motion } from "framer-motion";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import Image from "next/image";
 import { HeroParallax } from "@/components/ui/hero-parallax";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import FeatureSection from "@/components/ui/feature-section";
 import PricingSubscription from "@/components/sections/pricing-subscription";
 import { CostSection } from "@/components/sections/cost-section";
 import FailedWebhookAlertsSection from "@/components/sections/failed-webhook-alerts-section";
+import NavigationBar from "@/components/sections/navigationBar";
+import Footer from "@/components/sections/footer";
+import { FAQSection } from "@/components/sections/faq";
 
 const graphs = [
   {
@@ -64,23 +64,11 @@ const itemVariants = {
   },
 };
 
-const imageVariants = {
-  hidden: { scale: 0.95, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      duration: 0.8,
-      ease: "easeOut",
-    },
-  },
-};
-
 function App() {
-  const [selectedPlan, setSelectedPlan] = useState<string>("monthly");
-
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
+      <NavigationBar />
+
       {/* Hero Section */}
       <section className="relative overflow-hidden px-6 pt-16 md:px-8 md:pt-24">
         <HeroParallax
@@ -138,7 +126,7 @@ function App() {
       <CostSection />
 
       <motion.section
-        className="w-full min-h-screen flex flex-col justify-start items-center gap-12 bg-background py-12 relative"
+        className="w-full min-h-screen flex flex-col justify-start items-center gap-12 bg-background py-12 relative px-6 md:px-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -147,12 +135,14 @@ function App() {
           The right way to go...
         </h3>
         <motion.h2
-          className="text-3xl sm:text-6xl font-bold mb-4 bg-gradient-to-r flex items-center gap-2"
+          className="text-3xl sm:text-6xl text-center md:text-start font-bold mb-4 bg-gradient-to-r flex items-center gap-2"
           variants={itemVariants}
           initial="hidden"
           whileInView="visible"
         >
-          A peak into your dashboard
+          <span>
+            A peak into your <span className="text-primary">dashboard</span>
+          </span>
         </motion.h2>
         <motion.div className="container flex flex-col">
           <FeatureSection
@@ -176,8 +166,8 @@ function App() {
         </motion.div>
       </motion.section>
 
-      <section className="relative w-full max-h-screen flex flex-col justify-start items-center gap-4 md:gap-16 bg-foreground/15 pt-16 px-6 md:px-8">
-        <h2 className="w-full text-3xl sm:text-6xl font-bold tracking-tight text-center">
+      <section className="relative w-full max-h-screen flex flex-col justify-start items-center gap-4 md:gap-16 bg-foreground/15 pt-16">
+        <h2 className="w-full text-3xl sm:text-6xl font-bold tracking-tight text-center px-6 md:px-8">
           <span className="text-primary">Detailed notifications</span> for every
           webhook failure
         </h2>
@@ -201,7 +191,8 @@ function App() {
       <PricingSubscription className="mx-auto max-w-7xl" />
 
       {/* FAQ Section */}
-      <section className="mx-auto mt-32 max-w-3xl px-6 md:px-8 pb-32">
+      <FAQSection />
+      {/* <section className="mx-auto mt-32 max-w-3xl px-6 md:px-8 pb-32">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Frequently Asked Questions
@@ -238,8 +229,9 @@ function App() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      </section>
-    </div>
+      </section> */}
+      {/* <Footer /> */}
+    </main>
   );
 }
 

@@ -9,6 +9,8 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const HeroParallax = ({
   products,
@@ -77,7 +79,7 @@ export const HeroParallax = ({
             />
           ))}
         </motion.div>
-        <motion.div className="flex flex-row  mb-20 space-x-20 ">
+        <motion.div className="flex flex-row  mb-20 space-x-20">
           {secondRow.map(product => (
             <ProductCard
               product={product}
@@ -101,6 +103,12 @@ export const Header = () => {
       <p className="max-w-2xl text-base md:text-2xl text-foreground/90 md:pt-20">
         Monitor and get failure alerts for your Stripe webhooks, in real-time.
       </p>
+      <Button className="md:px-16 md:py-5 mt-6" size={"lg"} asChild>
+        <Link href="#pricing">
+          Monitor your webhooks
+          <ArrowRight />
+        </Link>
+      </Button>
     </div>
   );
 };
@@ -129,7 +137,7 @@ export const ProductCard = ({
     >
       <Link
         href={product.link}
-        className="block group-hover/product:shadow-2xl "
+        className="block group-hover/product:shadow-xl "
       >
         <Image
           src={product.thumbnail}

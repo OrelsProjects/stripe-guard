@@ -8,7 +8,7 @@ const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION as string;
 
 const Footer = () => {
   return (
-    <footer className="bg-background text-foreground relative flex flex-col">
+    <footer className="bg-muted-foreground/20 text-foreground relative flex flex-col">
       <div className="!text-xs absolute w-full flex justify-center items-center text-foreground/80 gap-1">
         Theme generated with:{" "}
         <Button variant="link" asChild className="!p-0 !text-xs">
@@ -40,14 +40,6 @@ const Footer = () => {
                   Pricing
                 </a>
               </li>
-              <li>
-                <a
-                href="#how-it-works"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  How {APP_NAME} protects your customers
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -67,6 +59,7 @@ const Footer = () => {
           </div>
         </div>
         {/* Footer Bottom */}
+
         <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
           <p>
             &copy; {new Date().getFullYear()} {APP_NAME}. All rights reserved.

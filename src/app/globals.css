@@ -287,3 +287,13 @@ landing-page {
 .notification-email li {
   margin-bottom: 0.5rem; /* Optional spacing between list items */
 }
+
+ul {
+  list-style: disc;
+  margin-left: 1.5rem; /* Adjust as needed for indentation */
+  margin-top: 0.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem; /* Add spacing between list items */
+}

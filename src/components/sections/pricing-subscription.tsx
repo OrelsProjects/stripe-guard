@@ -8,7 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import usePayments from "@/lib/hooks/usePayments";
-import { Pricing, Product, ProductsResponse } from "@/models/payment";
+import {
+  Pricing,
+  PricingType,
+  Product,
+  ProductsResponse,
+} from "@/models/payment";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logger } from "@/logger";
 import Link from "next/link";
@@ -55,7 +60,6 @@ const freePlan: Product = {
   recommended: true,
 };
 
-// width 0 to 100%
 const transparentTextVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
@@ -76,7 +80,7 @@ export default function PricingSubscription({
   const { state } = useAppSelector(state => state.auth);
   const { getProducts, goToCheckout } = usePayments();
   const router = useCustomRouter();
-  const [selectedPlan, setSelectedPlan] = useState<Pricing>("monthly");
+  const [selectedPlan, setSelectedPlan] = useState<PricingType>("monthly");
   const [loading, setLoading] = useState(true);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [products, setProducts] = useState<Product[]>([freePlan]);
@@ -113,9 +117,12 @@ export default function PricingSubscription({
   };
 
   return (
-    <section className={cn("mt-32 container px-6 md:px-8", className)}>
+    <section
+      id="pricing"
+      className={cn("min-h-screen mt-32 container px-6 md:px-8", className)}
+    >
       <div className="text-center">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
+        <h2 className="text-3xl sm:text-6xl font-bold tracking-tight">
           Simple,{" "}
           <span className="relative text-background overflow-clip">
             <motion.span

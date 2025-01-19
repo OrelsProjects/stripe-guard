@@ -28,7 +28,7 @@ export default function FeatureSection({
   return (
     <div
       className={cn(
-        "relative grid items-end gap-6 lg:grid-cols-2 lg:gap-12 px-6 rounded-t-lg bg-card overflow-clip pt-24",
+        "relative grid items-end gap-6 lg:grid-cols-2 lg:gap-12 px-6 rounded-t-lg bg-card overflow-clip pt-12 md:pt-24",
         {
           "rounded-bl-lg": direction === "ltr",
           "rounded-br-lg": direction === "rtl",

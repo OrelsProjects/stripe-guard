@@ -51,10 +51,10 @@ export const StickyScroll = ({
     "var(--neutral-900)",
   ];
 
-  const shadows = [
-    "shadow-md shadow-background",
-    "shadow-md shadow-primary",
-    "shadow-md shadow-purple-500",
+  const borders = [
+    "border border-background",
+    "border border-primary",
+    "border border-purple-500",
   ];
 
   const linearGradients = [
@@ -77,7 +77,7 @@ export const StickyScroll = ({
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
       className={cn(
-        "w-full h-[30rem] md:h-[40rem] overflow-y-auto flex flex-col justify-start md:justify-center md:items-center relative md:space-x-10 rounded-md p-12 pt-0 px-8 md:py-12 md:pt-12 transition-colors duration-300",
+        "w-full h-[30rem] md:h-[40rem] overflow-y-auto flex flex-col md:flex-row justify-start md:justify-center relative md:space-x-10 rounded-md p-12 pt-0 md:pb-12 md:pt-12 transition-colors duration-300",
       )}
       ref={ref}
     >
@@ -122,7 +122,7 @@ export const StickyScroll = ({
         // style={{ background: backgroundGradient }}
         className={cn(
           "hidden lg:block h-fit w-fit rounded-2xl sticky top-16 overflow-hidden",
-          shadows[activeCard % shadows.length],
+          borders[activeCard % borders.length],
 
           contentClassName,
         )}

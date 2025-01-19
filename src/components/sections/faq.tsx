@@ -6,6 +6,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const appName = process.env.NEXT_PUBLIC_APP_NAME;
+
 const eventsTrackedAnswer = () =>
   `   <ul>
     <li>
@@ -39,26 +41,48 @@ const eventsTrackedAnswer = () =>
     </li>
   </ul>`;
 
+const upcomingFeatures = () => {
+  return `
+    <p>We work on features based on feedback. Our current lineup is:</p>
+    <ul class="list-disc ml-6 flex flex-col gap-3">
+      <li>
+        Customizable emails to send the customer based on the event.
+        <br />
+        <p class="text-muted-foreground">
+          <strong>Example:</strong> Send an email to the customer who left a cart and didn't complete the purchase, encouraging them to return and finalize their order.
+        </p>
+      </li>
+      <li>
+        Customizable alerts - choose which events to alert on.
+        <br />
+        <p class="text-muted-foreground">
+          <strong>Example:</strong> Choose specific events to alert on, such as failed charges or subscription cancellations.
+        </p>
+      </li>
+      <li>
+        Choose which events to track.
+        <br />
+        <p class="text-muted-foreground">
+          <strong>Example:</strong> Track only the events that are critical to your business.
+        </p>
+      </li>
+    </ul>`;
+};
+
 const faqs = [
-  {
-    question: "How will this service benefit my business?",
-    answer:
-      "Imagine you are a customer who just found out about the product.<br/><br/>You are excited, you want to buy it. You put your credit card in, payment proccessed.<br/>You expect to see a confirmation page, but instead, you see an error.<br/><br/>You try again, same thing. You are frustrated and don't know what to do.<br/><br/>This is what we prevent. We monitor your payment webhooks and alert you in real-time and send a nice email to the cutsomer, so they know you are on top of it.",
-  },
   {
     question: "Why should I care?",
     answer:
-      "Because when the customer doesn't get what they should, due to a failure with your webhooks, they will dispute the payment. And you might lose your account and your customers.",
+      "Tracking your webhooks can be difficult. We make it easy. We alert you in real-time when something goes wrong, so you can fix it before it becomes a problem.",
   },
   {
     question: "How quickly can I get started?",
-    answer:
-      "You can be up and running in less than 5 minutes. Our simple setup process involves either logging in with your payment gateway or generating an API key using our step-by-step guide.",
+    answer: "You can be up and running in less than 2 minutes. All",
   },
   {
     question: "What's considered a failed webhook?",
     answer:
-      "Stripe defines a failed webhook as any event that returns a 4xx or 5xx HTTP status code or that takes longer than 10 seconds to respond. Our service monitors these events and alerts you in real-time. We wait 8.4 seconds, assuming 99.99% of the cases will not resolve in the 10th second, and to make sure our request doesn't timeout.",
+      "Stripe defines a failed webhook as any event that returns a 4xx or 5xx HTTP status code or that takes longer than 10 seconds to respond. Our service monitors these events and alerts you in real-time.",
   },
   {
     question: "Do you collect any data?",
@@ -66,22 +90,40 @@ const faqs = [
       "We only collect the data necessary to provide our service. We do not store any sensitive information regarding your customers or transactions.",
   },
   {
+    question: "Do you need my Stripe API Key?",
+    answer:
+      "You can create a Restricted API key with limited permissions for specific resources only.",
+  },
+  {
+    question: "Do I need coding skills?",
+    answer: `Nope. ${appName} is a no-code tool.`,
+  },
+  {
     question: "Which events do you track?",
-    answer: eventsTrackedAnswer(),
+    answer:
+      "Right now we track all events. We are working on a feature to allow you to choose which events you want to track.",
+  },
+  {
+    question: "Which features are upcoming next?",
+    answer: upcomingFeatures(),
+  },
+  {
+    question: "I have another question",
+    answer: `<p>Fantastic, contact me at my <a href="mailto:orelsmail@gmail.com" 
+    style="text-decoration: underline; color: hsl(var(--primary));"
+    >personal email</a></p> `,
   },
 ];
 
 export function FAQSection() {
   return (
     <section className="py-24 bg-muted/50">
-      <div className="container px-4 mx-auto">
-        <FadeIn>
-          <h2>
-            Questions? we&apos;ve got answers
+      <div className="container px-4 mx-auto space-y-8">
+        <FadeIn className="flex flex-col items-center justify-center">
+          <h2 className="text-3xl sm:text-6xl font-bold tracking-tight">
+            <span className="text-primary">Questions?</span> we&apos;ve got
+            answers
           </h2>
-          <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16">
-            Here are some common questions about our service.
-          </p>
         </FadeIn>
 
         <FadeIn delay={0.2}>
