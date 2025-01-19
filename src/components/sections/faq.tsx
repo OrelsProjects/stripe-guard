@@ -13,30 +13,30 @@ const eventsTrackedAnswer = () =>
     <li>
       <strong style="font-size: 20px; display: block; margin-top: 16px;">Payment Intent Events:</strong>
       <ul>
-        <li><strong>payment_intent.succeeded:</strong> Triggered when a payment is successfully completed.</li>
-        <li><strong>payment_intent.payment_failed:</strong> Triggered when a payment attempt fails.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">payment_intent.succeeded:</strong> Triggered when a payment is successfully completed.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">payment_intent.payment_failed:</strong> Triggered when a payment attempt fails.</li>
       </ul>
     </li>
     <li>
       <strong style="font-size: 20px; display: block; margin-top: 16px;">Charge Events:</strong>
       <ul>
-        <li><strong>charge.succeeded:</strong> Triggered when a charge is successfully processed.</li>
-        <li><strong>charge.failed:</strong> Triggered when a charge attempt fails.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">charge.succeeded:</strong> Triggered when a charge is successfully processed.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">charge.failed:</strong> Triggered when a charge attempt fails.</li>
       </ul>
     </li>
     <li>
       <strong style="font-size: 20px; display: block; margin-top: 16px;">Subscription Events:</strong>
       <ul>
-        <li><strong>customer.subscription.created:</strong> Triggered when a new subscription is created.</li>
-        <li><strong>customer.subscription.updated:</strong> Triggered when an existing subscription is updated.</li>
-        <li><strong>customer.subscription.deleted:</strong> Triggered when a subscription is canceled or deleted.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">customer.subscription.created:</strong> Triggered when a new subscription is created.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">customer.subscription.updated:</strong> Triggered when an existing subscription is updated.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">customer.subscription.deleted:</strong> Triggered when a subscription is canceled or deleted.</li>
       </ul>
     </li>
     <li>
       <strong style="font-size: 20px; display: block; margin-top: 16px;">Invoice Events:</strong>
       <ul>
-        <li><strong>invoice.payment_failed:</strong> Triggered when an invoice payment attempt fails.</li>
-        <li><strong>invoice.payment_succeeded:</strong> Triggered when an invoice payment is successfully processed.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">invoice.payment_failed:</strong> Triggered when an invoice payment attempt fails.</li>
+        <li style="color: hsl(var(--foreground) / 0.7);"><strong style="color: hsl(var(--foreground) / 0.8);">invoice.payment_succeeded:</strong> Triggered when an invoice payment is successfully processed.</li>
       </ul>
     </li>
   </ul>`;
@@ -100,8 +100,11 @@ const faqs = [
   },
   {
     question: "Which events do you track?",
-    answer:
-      "Right now we track all events. We are working on a feature to allow you to choose which events you want to track.",
+    answer: `Right now we track the most critical events (listed below). If you need more, please let us know at <a href="mailto:orelsmail@gmail.com" 
+    style="text-decoration: underline; color: hsl(var(--primary));"
+    >personal email</a>
+ ${eventsTrackedAnswer()}
+      `,
   },
   {
     question: "Which features are upcoming next?",
@@ -111,7 +114,7 @@ const faqs = [
     question: "I have another question",
     answer: `<p>Fantastic, contact me at my <a href="mailto:orelsmail@gmail.com" 
     style="text-decoration: underline; color: hsl(var(--primary));"
-    >personal email</a></p> `,
+    >personal email</a></p>`,
   },
 ];
 
