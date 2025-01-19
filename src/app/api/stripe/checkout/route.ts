@@ -17,12 +17,11 @@ async function validateWebhookExists(stripe: Stripe) {
   if (!appWebhook) {
     // create
     const webhookUrl = `${process.env.NEXT_PUBLIC_WEBHOOK_BASE}/api/stripe/webhook/subscription`;
-    const webhook = await stripe.webhookEndpoints.create({
+    await stripe.webhookEndpoints.create({
       url: webhookUrl,
       enabled_events: eventsForSubscriptionWebhook,
       metadata: { app: appName || "" },
     });
-    console.log("webhook", webhook);
   }
 }
 
