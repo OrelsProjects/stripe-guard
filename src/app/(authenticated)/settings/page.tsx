@@ -18,8 +18,7 @@ import { selectAuth } from "@/lib/features/auth/authSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logger } from "@/logger";
 import { EventTracker } from "@/eventTracker";
-import { CriticalEventsSettings } from "@/components/settings/critical-events-settings";
-import { criticalEvents } from "@/models/payment";
+import { SubscriptionSettings } from "@/components/settings/subscription-settings";
 
 export default function SettingsPage() {
   const { user, loading } = useAppSelector(selectAuth);
@@ -101,6 +100,9 @@ export default function SettingsPage() {
           <ThemeSettings />
         </div>
         <div className="md:col-span-2 lg:col-span-3">
+          <SubscriptionSettings plan={userSettings.plan} loading={loading} />
+        </div>
+        <div className="md:col-span-2 lg:col-span-3">
           <NotificationSettings
             notificationEmail={userSettings.notificationChannels.email}
             onChange={(value: NotificationsChannel) => {
@@ -123,7 +125,7 @@ export default function SettingsPage() {
             loading={loading}
           />
         </div>
-        <div className="md:col-span-2 lg:col-span-3">
+        {/* <div className="md:col-span-2 lg:col-span-3">
           <CriticalEventsSettings
             userCriticalEvents={userSettings.userCriticalEvents || []}
             onChange={(events: string[]) => {
@@ -131,7 +133,7 @@ export default function SettingsPage() {
             }}
             loading={loading}
           />
-        </div>
+        </div> */}
       </div>
 
       <AnimatePresence>

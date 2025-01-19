@@ -24,7 +24,7 @@ export function NotificationSettings({
   const formik = useFormik({
     initialValues: {
       enabled: notificationEmail.enabled,
-      value: notificationEmail.value || "",
+      value: notificationEmail.value || "example@example.com",
     },
     validationSchema: Yup.object({
       value: Yup.string()

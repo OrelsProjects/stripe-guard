@@ -1,4 +1,5 @@
 import { Event, criticalEvents } from "@/models/payment";
+import moment from "moment";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
@@ -64,7 +65,7 @@ function generateSubscriptionCreatedWebhookIssueEmail() {
       <li>No additional action is required from you at this time.</li>
       <li>We will notify you once the issue has been resolved.</li>
     </ul>
-    <p>If you have any questions or concerns, please don’t hesitate to reach out to our support team for assistance.</p>
+    <p>If you have any questions or concerns, please don't hesitate to reach out to our support team for assistance.</p>
     <p>Thank you for your understanding and welcome to [Subscription Name]!</p>
   `;
   return baseEmailTemplate(content);
@@ -74,7 +75,7 @@ function generateSubscriptionUpdatedWebhookIssueEmail() {
   const content = `
     <h2>Subscription Update - Notification Issue</h2>
     <p>Hi there,</p>
-    <p>We’ve successfully updated your subscription for [Subscription Name]. However, we encountered a temporary issue with our systems while notifying you of this change.</p>
+    <p>We've successfully updated your subscription for [Subscription Name]. However, we encountered a temporary issue with our systems while notifying you of this change.</p>
     <p>Please note:</p>
     <ul>
       <li>If you haven't noticed any issues with our services, you can safely disregard this email.</li>
@@ -245,4 +246,46 @@ export function successfulTokensPurchaseEmail(tokens: number, price: number) {
     <p>Thank you for your purchase and continued trust in our services.</p>
   `;
   return baseEmailTemplate(content);
+}
+
+export function newSubscriptionAdminNotificationEmail(data: {
+  userEmail: string;
+  userName: string;
+  planName: string;
+  planPrice: number;
+  interval: string;
+  subscriptionId: string;
+  startDate: Date;
+}) {
+  const content = `
+    <h2>🎉 New Subscription Alert!</h2>
+    <p>A new user has subscribed to ${APP_NAME}!</p>
+    
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+      <h3 style="margin-top: 0;">User Details</h3>
+      <p><strong>Name:</strong> ${data.userName}</p>
+      <p><strong>Email:</strong> ${data.userEmail}</p>
+    </div>
+
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+      <h3 style="margin-top: 0;">Subscription Details</h3>
+      <p><strong>Plan:</strong> ${data.planName}</p>
+      <p><strong>Price:</strong> $${data.planPrice}/${data.interval}</p>
+      <p><strong>Start Date:</strong> ${moment(data.startDate).format('MMMM D, YYYY HH:mm:ss')}</p>
+      <p><strong>Subscription ID:</strong> ${data.subscriptionId}</p>
+    </div>
+
+    <div class="button-container" style="text-align: right;">
+      <a
+        href="https://dashboard.stripe.com/${process.env.NODE_ENV === 'production' ? '' : 'test/'}subscriptions/${data.subscriptionId}"
+        class="button"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View in Stripe Dashboard
+      </a>
+    </div>
+  `;
+
+  return baseEmailTemplate(content, "New Subscription Notification");
 }

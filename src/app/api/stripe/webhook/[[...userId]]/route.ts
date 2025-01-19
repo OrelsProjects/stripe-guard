@@ -406,7 +406,7 @@ export async function POST(
 
     if (!userStripeCredentials) {
       return NextResponse.json(
-        { error: "Unauthorized access" },
+        { error: "Unauthorized access, no user stripe credentials" },
         { status: 401 },
       );
     }

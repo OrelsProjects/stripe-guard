@@ -55,8 +55,8 @@ model User {
   meta              UserMetadata?
   userWebhookEvents UserWebhookEvent[]
   payments          Payment[]
-  subscription      Subscription[]
-  TokensPool        TokensPool?
+  subscriptions     Subscription[]
+  tokensPool        TokensPool?
 
   @@map("user")
 }
@@ -177,13 +177,16 @@ model Subscription {
   userId         String @map("user_id")
   subscriptionId String @unique @map("subscription_id")
   productId      String @map("product_id")
-
-  tokens Int    @map("tokens")
-  status String @map("status")
+  name           String @map("name")
+  
+  tokens         Int    @map("tokens")
+  status         String @map("status")
 
   price           Int    @map("price")
   paymentInterval String @map("payment_interval") // monthly, yearly
   refillInterval  String @map("refill_interval") // monthly, yearly
+
+  isActive Boolean @default(true) @map("is_active")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

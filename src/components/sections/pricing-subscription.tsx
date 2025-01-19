@@ -13,12 +13,14 @@ import {
   IntervalType,
   Product,
   ProductsResponse,
+  formatPrice,
 } from "@/models/payment";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logger } from "@/logger";
 import Link from "next/link";
 import { useAppSelector } from "@/lib/hooks/redux";
 import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
+import { FREE_PLAN_NAME } from "@/models/user";
 
 const MotionCard = motion(Card);
 
@@ -35,7 +37,7 @@ const cardVariants = {
 };
 
 const freePlan: Product = {
-  id: "free",
+  id: FREE_PLAN_NAME,
   name: "Totally free",
   description: "Just starting to Stripe? No cost, no frills, no judgment.",
   priceStructure: {
@@ -43,12 +45,16 @@ const freePlan: Product = {
       id: "price_free",
       price: 0,
       tokens: 0,
+      dollars: 0,
+      cents: 0,
       currency: "USD",
     },
     monthly: {
       id: "price_free",
       price: 0,
       tokens: 0,
+      dollars: 0,
+      cents: 0,
       currency: "USD",
     },
   },
@@ -174,7 +180,6 @@ export default function PricingSubscription({
                   whileInView="visible"
                   viewport={{ once: true }}
                   key={tier.name}
-                  // make it span over 2 columns
                   className={cn(
                     "relative h-full p-8 flex flex-col",
                     tier.recommended ? "border-primary border-2" : "",
@@ -201,8 +206,12 @@ export default function PricingSubscription({
                     <span className="text-4xl font-bold">
                       $
                       {selectedPlan === "monthly"
-                        ? tier.priceStructure.monthly.price
-                        : tier.priceStructure.yearly.price / 12}
+                        ? formatPrice({
+                            priceWithCents: tier.priceStructure.monthly.price,
+                          })
+                        : formatPrice({
+                            priceWithCents: tier.priceStructure.yearly.price,
+                          })}
                     </span>
                     <span className="text-muted-foreground">
                       {selectedPlan === "monthly" ? "/month" : "/month"}
@@ -216,7 +225,7 @@ export default function PricingSubscription({
                       </li>
                     ))}
                   </ul>
-                  {tier.name.includes("free") ? (
+                  {tier.id === FREE_PLAN_NAME ? (
                     <Button
                       disabled={loadingCheckout}
                       className="mt-auto w-full"

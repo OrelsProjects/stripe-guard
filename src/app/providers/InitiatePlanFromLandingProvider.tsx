@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import usePayments from "@/lib/hooks/usePayments";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { FREE_PLAN_NAME } from "@/models/user";
+import { useCustomRouter } from "@/lib/hooks/useCustomRouter";
 
 const LoadingRedirect = () => (
   <div className="min-h-screen h-full w-full flex items-center justify-center pb-16 bg-background">
@@ -68,6 +70,8 @@ export default function InitiatePlanFromLandingProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useCustomRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { goToCheckout } = usePayments();
   const [loadingRedirect, setLoadingRedirect] = useState(false);
@@ -79,6 +83,12 @@ export default function InitiatePlanFromLandingProvider({
 
   useEffect(() => {
     if (productId && priceId) {
+      if (productId === FREE_PLAN_NAME) {
+        router.push(pathname, {
+          preserveQuery: false,
+        });
+        return;
+      }
       if (loadingRedirectRef.current) return;
 
       loadingRedirectRef.current = true;

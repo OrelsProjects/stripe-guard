@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
         id: session.user.userId,
       },
       select: {
-        subscription: true,
+        subscriptions: true,
         settings: {
           select: {
             emailWebhookNotifications: true,
@@ -49,21 +49,24 @@ export async function GET(req: NextRequest) {
     });
 
     const subscription =
-      userData.subscription[userData.subscription.length - 1];
+      userData.subscriptions[userData.subscriptions.length - 1];
 
-    const nextRefillAt = getNextRefillAt(
-      subscription.refillInterval as IntervalType,
-      tokensPool,
-    );
+    const interval = subscription
+      ? (subscription.refillInterval as IntervalType)
+      : null;
 
+    const nextRefillAt = getNextRefillAt(interval, tokensPool.lastRefillAt);
+
+    plan.nextRefillAt = nextRefillAt;
     if (subscription) {
       plan = {
-        name: subscription.productId,
+        name: subscription.name,
         price: subscription.price,
         interval: subscription.paymentInterval as IntervalType,
         tokensLeft: tokensPool?.tokensRemaining || 0,
         tokensUsed: tokensPool?.tokensUsed || 0,
         totalTokens: subscription.tokens,
+        isActive: subscription.isActive,
         nextRefillAt,
       };
     }

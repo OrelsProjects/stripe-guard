@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const product = await getStripeInstance().products.retrieve(productId);
     const price = await getStripeInstance().prices.retrieve(priceId);
     const tokens = parseInt(product.metadata.tokens || "40021");
-    const amountReceived = (price.unit_amount as number) / 100;
+    const amountReceived = (price.unit_amount as number);
 
     await prisma.payment.create({
       data: {

@@ -188,7 +188,8 @@ function App() {
         />
       </section>
       <FailedWebhookAlertsSection />
-      <PricingSubscription className="mx-auto max-w-7xl" />
+      <PricingSubscription
+       className="mx-auto max-w-7xl" />
 
       {/* FAQ Section */}
       <FAQSection />

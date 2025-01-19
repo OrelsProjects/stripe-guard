@@ -5,6 +5,11 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { IntervalType, MIN_TOKENS } from "@/models/payment";
+import { sendMail } from "@/app/api/_utils/mail/mail";
+import { newSubscriptionAdminNotificationEmail } from "@/app/api/_utils/mail/templates";
+
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-11-20.acacia",
 });
@@ -71,6 +76,9 @@ async function handleSubscriptionCreated(event: Stripe.Event) {
   });
 
   if (existingSubscription) {
+    loggerServer.info("Subscription already exists", "webhook", {
+      subscriptionId: subscription.id,
+    });
     return NextResponse.json({ received: true }, { status: 200 });
   }
   const product = await getStripeInstance().products.retrieve(
@@ -102,16 +110,29 @@ async function handleSubscriptionCreated(event: Stripe.Event) {
       userId: user.id,
       subscriptionId: subscription.id,
       productId: subscription.items.data[0].plan.product as string,
+      name: product.name,
       status: subscription.status,
       tokens,
-      price: (price.unit_amount || 0) / 1000,
+      price: price.unit_amount || 0,
       paymentInterval: price.recurring?.interval as IntervalType,
       refillInterval: "monthly",
     },
   });
 
-  // Send welcome email
-  console.log("Subscription created:", subscription.id);
+  sendMail(
+    "orelsmail@gmail.com",
+    `support@${APP_NAME}.com`,
+    "Subscription created",
+    newSubscriptionAdminNotificationEmail({
+      userEmail: user.email || "",
+      userName: user.name || "",
+      planName: product.name,
+      planPrice: price.unit_amount || 0,
+      interval: price.recurring?.interval as IntervalType,
+      subscriptionId: subscription.id,
+      startDate: new Date(subscription.current_period_start * 1000),
+    }),
+  );
 
   return NextResponse.json({ received: true });
 }
@@ -153,11 +174,12 @@ async function handleSubscriptionUpdated(event: Stripe.Event) {
     },
     create: {
       userId: user.id,
+      name: product.name,
       subscriptionId: subscription.id,
       productId: subscription.items.data[0].plan.product as string,
       status: subscription.status,
       tokens,
-      price: (price.unit_amount || 0) / 1000,
+      price: price.unit_amount || 0,
       paymentInterval: price.recurring?.interval as IntervalType,
       refillInterval: "monthly",
     },
@@ -183,10 +205,10 @@ async function handleSubscriptionUpdated(event: Stripe.Event) {
 async function handleSubscriptionDeleted(event: Stripe.Event) {
   const subscription = event.data.object as Stripe.Subscription;
 
-  // Handle subscription cancellation
-  // Update user's access
-  // Send cancellation confirmation
-  console.log("Subscription deleted:", subscription.id);
+  await prisma.subscription.update({
+    where: { id: subscription.id },
+    data: { isActive: false },
+  });
 
   return NextResponse.json({ received: true });
 }
@@ -236,6 +258,11 @@ export async function POST(req: Request) {
       webhookSecret,
     );
 
+    loggerServer.info("Unhandled event type", "webhook", {
+      eventType: event.type,
+      event,
+    });
+
     // Handle different event types
     switch (event.type) {
       case "payment_intent.succeeded":
@@ -266,12 +293,10 @@ export async function POST(req: Request) {
         return handleCheckoutSessionExpired(event);
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
         return NextResponse.json({ received: true });
     }
-  } catch (err) {
-    loggerServer.error("Webhook error", `${JSON.stringify(err)}`);
-    console.error("Webhook error:", err);
+  } catch (error: any) {
+    loggerServer.error("Webhook error", "webhook", error);
     return new NextResponse("Webhook Error", { status: 400 });
   }
 }

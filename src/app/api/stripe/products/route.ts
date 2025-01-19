@@ -44,17 +44,30 @@ export async function GET(req: NextRequest) {
         return;
       }
 
+      const priceMonthlyValue = priceMonthly.unit_amount || 0;
+      const priceYearlyValue = priceYearly.unit_amount || 0;
+
+      const priceMonthlyDollars = priceMonthlyValue / 100;
+      const priceYearlyDollars = priceYearlyValue / 100;
+
+      const priceMonthlyCents = priceMonthlyValue % 100;
+      const priceYearlyCents = priceYearlyValue % 100;
+
       const priceStructure: Pricing = {
         monthly: {
           id: priceMonthly.id,
           currency: priceMonthly.currency,
-          price: priceMonthly.unit_amount! / 100,
+          price: priceMonthlyValue,
+          dollars: priceMonthlyDollars,
+          cents: priceMonthlyCents,
           tokens: parseInt(stripeProduct.metadata.tokens),
         },
         yearly: {
           id: priceYearly.id,
           currency: priceYearly.currency,
-          price: priceYearly.unit_amount! / 100,
+          price: priceYearlyValue,
+          dollars: priceYearlyDollars,
+          cents: priceYearlyCents,
           tokens: parseInt(stripeProduct.metadata.tokens),
         },
       };

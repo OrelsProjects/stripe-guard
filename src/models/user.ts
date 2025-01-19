@@ -1,13 +1,16 @@
 import { IntervalType, MIN_TOKENS } from "@/models/payment";
 
+export const FREE_PLAN_NAME = "Free";
+
 export const freePlan: Plan = {
-  name: "Free",
+  name: FREE_PLAN_NAME,
   price: 0,
   interval: "monthly",
   tokensLeft: MIN_TOKENS,
   tokensUsed: 0,
   totalTokens: MIN_TOKENS,
   nextRefillAt: new Date(),
+  isActive: true,
 };
 
 export const UserSettingsDefault: UserSettings = {
@@ -31,6 +34,7 @@ export type Plan = {
   tokensUsed: number;
   totalTokens: number;
   nextRefillAt: Date;
+  isActive: boolean;
 };
 
 export type NotificationsChannel = {

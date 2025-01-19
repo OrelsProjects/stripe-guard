@@ -56,6 +56,8 @@ export type Pricing = Record<IntervalType, PriceStructure>;
 export interface PriceStructure {
   id: string;
   price: number;
+  dollars: number;
+  cents: number;
   tokens: number;
   currency: string;
 }
@@ -107,4 +109,22 @@ export const stripeCouponToCoupon = (coupon: Stripe.Coupon): Coupon => {
     redeemBy: coupon.redeem_by || null,
     freeTokens: freeTokens,
   };
+};
+
+export const formatPrice = (
+  data: { dollars: number; cents: number } | { priceWithCents: number },
+) => {
+  let cents = 0;
+  let dollars = 0;
+  if ("dollars" in data) {
+    dollars = data.dollars;
+    cents = data.cents;
+  } else {
+    dollars = Math.floor(data.priceWithCents / 100);
+    cents = data.priceWithCents % 100;
+  }
+  if (cents > 0) {
+    return `${dollars}.${cents}`;
+  }
+  return dollars;
 };

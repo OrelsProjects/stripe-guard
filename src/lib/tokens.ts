@@ -6,11 +6,15 @@ import { TokensPool } from "@prisma/client";
 import moment from "moment";
 
 export function getNextRefillAt(
-  refillInterval: IntervalType,
-  tokensPool: TokensPool,
+  refillInterval: IntervalType | null,
+  lastRefillAt: Date,
 ) {
-  const interval = refillInterval === "monthly" ? "month" : "year";
-  return moment(tokensPool.lastRefillAt).add(1, interval).toDate();
+  let interval = "month";
+  if (refillInterval) {
+    interval = refillInterval === "monthly" ? "month" : "year";
+  }
+  const nextRefillAt = moment(lastRefillAt).add(1, interval as any).toDate();
+  return nextRefillAt;
 }
 
 export async function verifyUserTokensAndRefill(userId: string) {
@@ -27,7 +31,7 @@ export async function verifyUserTokensAndRefill(userId: string) {
 
     const subscription = await prisma.subscription.findFirst({
       where: {
-        userId: userId,
+        AND: [{ userId: userId }, { isActive: true }],
       },
     });
 
@@ -39,7 +43,7 @@ export async function verifyUserTokensAndRefill(userId: string) {
 
     // Check if a month has passed since the last token purchase
     const lastTokenPurchase = moment(userTokens?.lastRefillAt).toDate();
-    const nextRefillAt = getNextRefillAt(refillInterval, userTokens);
+    const nextRefillAt = getNextRefillAt(refillInterval, userTokens.lastRefillAt);
     // if lastTokenPurhcase day is the same or after current date of a higher month, refill tokens
     if (lastTokenPurchase >= nextRefillAt) {
       await prisma.tokensPool.update({
