@@ -4,7 +4,7 @@ import loggerServer from "@/loggerServer";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { MIN_TOKENS } from "@/models/payment";
+import { IntervalType, MIN_TOKENS } from "@/models/payment";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-11-20.acacia",
 });
@@ -83,6 +83,8 @@ async function handleSubscriptionCreated(event: Stripe.Event) {
     );
     return NextResponse.json({ received: true }, { status: 400 });
   }
+  const price = subscription.items.data[0].price;
+
   const user = await getUserBySubscription(subscription);
   if (!user) {
     loggerServer.error(
@@ -102,8 +104,12 @@ async function handleSubscriptionCreated(event: Stripe.Event) {
       productId: subscription.items.data[0].plan.product as string,
       status: subscription.status,
       tokens,
+      price: (price.unit_amount || 0) / 1000,
+      paymentInterval: price.recurring?.interval as IntervalType,
+      refillInterval: "monthly",
     },
   });
+
   // Send welcome email
   console.log("Subscription created:", subscription.id);
 
@@ -131,7 +137,7 @@ async function handleSubscriptionUpdated(event: Stripe.Event) {
     );
     return NextResponse.json({ received: true }, { status: 400 });
   }
-
+  const price = subscription.items.data[0].price;
   let tokens = parseInt(product.metadata.tokens);
   if (isNaN(tokens)) {
     tokens = MIN_TOKENS;
@@ -151,6 +157,9 @@ async function handleSubscriptionUpdated(event: Stripe.Event) {
       productId: subscription.items.data[0].plan.product as string,
       status: subscription.status,
       tokens,
+      price: (price.unit_amount || 0) / 1000,
+      paymentInterval: price.recurring?.interval as IntervalType,
+      refillInterval: "monthly",
     },
   });
 
@@ -162,7 +171,6 @@ async function handleSubscriptionUpdated(event: Stripe.Event) {
       data: {
         tokens: tokens,
         tokensRemaining: tokens,
-        tokensUsed: 0,
         lastRefillAt: new Date(),
       },
     });

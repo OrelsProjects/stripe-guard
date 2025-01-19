@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { ApiSettings } from "@/components/settings/api-settings";
 import { NotificationSettings } from "@/components/settings/notification-settings";
-import { BillingSettings } from "@/components/settings/billing-settings";
 import { ThemeSettings } from "@/components/settings/theme-settings";
 import { useAppSelector } from "@/lib/hooks/redux";
 import useAuth from "@/lib/hooks/useAuth";
@@ -98,9 +97,6 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="md:col-span-2 lg:col-span-3">
-          <BillingSettings plan={userSettings.plan} loading={loading} />
-        </div>
         <div className="md:col-span-2 lg:col-span-3">
           <ThemeSettings />
         </div>

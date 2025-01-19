@@ -165,15 +165,30 @@ function App() {
               <AnimatePresence>
                 <motion.div
                   className={cn(
-                    "mt-32 bg-background rounded-lg flex justify-center items-center",
+                    "mt-32 bg-background rounded-lg flex justify-center items-center relative",
                   )}
                   variants={itemVariants}
                 >
+                  <AnimatePresence>
+                    {showEmail || forceShowEmail ? (
+                      <motion.div
+                        className="absolute w-full md:w-[80%] bg-gradient-to-t from-background/60 via-transparent to-transparent h-full z-20"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                      >
+                        <p className="text-sm text-foreground absolute bottom-2 left-4">
+                          An email alert will be sent to you on webhook failure.
+                        </p>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                   <img
                     src="/landing/email-webhook-failure-alert.png"
                     alt="Webhook Failure Alert"
                     className={cn(
-                      "w-full md:w-[80%] h-auto transition-all duration-700",
+                      "w-full md:w-[80%] h-auto transition-all duration-700 z-10",
                       {
                         "opacity-100 translate-y-0":
                           showEmail || forceShowEmail,

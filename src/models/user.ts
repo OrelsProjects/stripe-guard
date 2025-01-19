@@ -1,3 +1,15 @@
+import { IntervalType, MIN_TOKENS } from "@/models/payment";
+
+export const freePlan: Plan = {
+  name: "Free",
+  price: 0,
+  interval: "monthly",
+  tokensLeft: MIN_TOKENS,
+  tokensUsed: 0,
+  totalTokens: MIN_TOKENS,
+  nextRefillAt: new Date(),
+};
+
 export const UserSettingsDefault: UserSettings = {
   userCriticalEvents: [],
   notificationChannels: {
@@ -6,20 +18,19 @@ export const UserSettingsDefault: UserSettings = {
       value: "",
     },
   },
+  plan: freePlan,
   connected: false,
   isOnboarded: false,
 };
 
-export type BillingHistory = {
-  amount: number;
-  date: Date;
-  planName: string;
-  tokensPurchased: number;
-};
-
 export type Plan = {
+  name: string;
+  price: number;
+  interval: IntervalType;
   tokensLeft: number;
-  billingHistory: BillingHistory[];
+  tokensUsed: number;
+  totalTokens: number;
+  nextRefillAt: Date;
 };
 
 export type NotificationsChannel = {
@@ -40,7 +51,7 @@ export interface UserSettings {
 
   notificationChannels: NotificationChannels;
 
-  plan?: Plan;
+  plan: Plan;
 
   userCriticalEvents: string[];
 

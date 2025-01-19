@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import usePayments from "@/lib/hooks/usePayments";
 import {
   Pricing,
-  PricingType,
+  IntervalType,
   Product,
   ProductsResponse,
 } from "@/models/payment";
@@ -80,7 +80,7 @@ export default function PricingSubscription({
   const { state } = useAppSelector(state => state.auth);
   const { getProducts, goToCheckout } = usePayments();
   const router = useCustomRouter();
-  const [selectedPlan, setSelectedPlan] = useState<PricingType>("monthly");
+  const [selectedPlan, setSelectedPlan] = useState<IntervalType>("monthly");
   const [loading, setLoading] = useState(true);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [products, setProducts] = useState<Product[]>([freePlan]);

@@ -1,9 +1,10 @@
 import prisma from "@/app/api/_db/db";
 import { authOptions } from "@/auth/authOptions";
+import { getNextRefillAt } from "@/lib/tokens";
 import { encrypt } from "@/lib/utils/encryption";
 import loggerServer from "@/loggerServer";
-import { criticalEvents } from "@/models/payment";
-import { BillingHistory, UserSettings } from "@/models/user";
+import { criticalEvents, IntervalType } from "@/models/payment";
+import { freePlan, UserSettings } from "@/models/user";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
         id: session.user.userId,
       },
       select: {
-        payments: true,
+        subscription: true,
         settings: {
           select: {
             emailWebhookNotifications: true,
@@ -39,6 +40,34 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    let plan = freePlan;
+
+    const tokensPool = await prisma.tokensPool.findUniqueOrThrow({
+      where: {
+        userId: session.user.userId,
+      },
+    });
+
+    const subscription =
+      userData.subscription[userData.subscription.length - 1];
+
+    const nextRefillAt = getNextRefillAt(
+      subscription.refillInterval as IntervalType,
+      tokensPool,
+    );
+
+    if (subscription) {
+      plan = {
+        name: subscription.productId,
+        price: subscription.price,
+        interval: subscription.paymentInterval as IntervalType,
+        tokensLeft: tokensPool?.tokensRemaining || 0,
+        tokensUsed: tokensPool?.tokensUsed || 0,
+        totalTokens: subscription.tokens,
+        nextRefillAt,
+      };
+    }
+
     const userSettings: UserSettings = {
       userCriticalEvents:
         userData.settings?.userCriticalEvents || criticalEvents,
@@ -52,46 +81,8 @@ export async function GET(req: NextRequest) {
         },
       },
       isOnboarded: false,
+      plan,
     };
-
-    if (userData.payments && userData.payments.length > 0) {
-      const tokens = await prisma.userTokens.findUnique({
-        where: {
-          userId: session.user.userId,
-        },
-        select: {
-          tokensLeft: true,
-        },
-      });
-
-      const userPayments = await prisma.payment.findMany({
-        where: {
-          userId: session.user.userId,
-        },
-        select: {
-          amountReceived: true,
-          currency: true,
-          status: true,
-          productName: true,
-          createdAt: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-
-      const billingHistory: BillingHistory[] = userPayments.map(payment => ({
-        amount: payment.amountReceived,
-        date: payment.createdAt,
-        planName: payment.productName,
-        tokensPurchased: payment.tokensAdded || 0,
-      }));
-
-      userSettings.plan = {
-        tokensLeft: tokens?.tokensLeft || 0,
-        billingHistory,
-      };
-    }
 
     if (userData.stripeCredentials && !userData.stripeCredentials?.connected) {
       const encryptedApiKey = encrypt(userData.stripeCredentials.apiKey!);

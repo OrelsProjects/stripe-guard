@@ -129,7 +129,7 @@ export function FAQSection() {
           </h2>
         </FadeIn>
 
-        <FadeIn delay={0.2}>
+        <FadeIn>
           <Accordion
             type="single"
             collapsible

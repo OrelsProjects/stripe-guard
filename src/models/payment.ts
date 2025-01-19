@@ -50,8 +50,8 @@ export const allEvents: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   ...subscriptionEvents,
   ...invoiceEvents,
 ];
-export type PricingType = "yearly" | "monthly";
-export type Pricing = Record<PricingType, PriceStructure>;
+export type IntervalType = "yearly" | "monthly";
+export type Pricing = Record<IntervalType, PriceStructure>;
 
 export interface PriceStructure {
   id: string;

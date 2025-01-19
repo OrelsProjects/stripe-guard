@@ -42,27 +42,20 @@ export default function AuthProvider({
       }
       dispatch(setLoadingUserDetails(true));
       const { user } = data;
+
+      const settingsResponse =
+        await axios.get<UserSettings>("/api/user/settings");
+      const settings = settingsResponse.data;
+
       const appUser: AppUser = {
         id: user.userId,
         name: user.name,
         email: user.email,
         image: user.image,
-        settings: {
-          connected: false,
-          notificationChannels: {
-            email: {
-              enabled: false,
-              value: "",
-            },
-          },
-          userCriticalEvents: [],
-          isOnboarded: false,
-        },
+        settings,
       };
-      dispatch(setUserAction(appUser));
 
-      const settings = await axios.get<UserSettings>("/api/user/settings");
-      dispatch(updateUserSettings(settings.data));
+      dispatch(setUserAction(appUser));
     } catch (error: any) {
       Logger.error(error);
       // dispatch(setUserAction(null));

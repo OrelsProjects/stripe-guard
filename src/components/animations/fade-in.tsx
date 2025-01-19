@@ -51,7 +51,7 @@ export function FadeIn({
         ease: [0.21, 0.47, 0.32, 0.98],
       }}
       style={{ width: fullWidth ? "100%" : "auto" }}
-      className={cn("w-full h-full", className)}
+      className={cn("w-full h-full container", className)}
     >
       {children}
     </motion.div>

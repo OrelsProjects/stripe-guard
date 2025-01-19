@@ -33,9 +33,9 @@ function CostItem({
         whileInView="visible"
       >
         <motion.div
-          className={`w-6 h-6 sm:w-12 sm:h-12 bg-${gradientFrom} bg-opacity-20 rounded-md sm:rounded-xl flex items-center justify-center flex-shrink-0`}
+          className={`w-6 h-6 sm:w-12 sm:h-12 bg-red-500 bg-opacity-20 rounded-md sm:rounded-xl flex items-center justify-center flex-shrink-0`}
         >
-          <Icon className={`w-4 h-4 sm:w-8 sm:h-8 text-${gradientFrom}`} />
+          <Icon className={`w-4 h-4 sm:w-8 sm:h-8 text-red-500`} />
         </motion.div>
         {title}
       </motion.h2>

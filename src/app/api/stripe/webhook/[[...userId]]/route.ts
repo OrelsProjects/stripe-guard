@@ -14,7 +14,7 @@ import { EnabledEvent, Event, criticalEvents } from "@/models/payment";
 import { UserStripeCredentials, UserWebhookEvent } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import moment from "moment";
-import { verifyUserTokens } from "@/lib/tokens";
+import { verifyUserTokensAndRefill } from "@/lib/tokens";
 
 // TODO: Send the user an email when a webhook fails and add a button to contact support.
 
@@ -413,7 +413,7 @@ export async function POST(
 
     const userIdNonNull = userId || userStripeCredentials.userId;
 
-    const canProcessEvent = await verifyUserTokens(userIdNonNull);
+    const canProcessEvent = await verifyUserTokensAndRefill(userIdNonNull);
 
     if (!canProcessEvent) {
       return NextResponse.json(
