@@ -144,18 +144,11 @@ function Dashboard() {
           </div>
           {/* Modularized Components */}
           <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-background py-4">
-            <WebhookErrorsCard
+            <CompletionTimeOverTimeGraph
               loading={loading}
-              errors={errors}
-              onErrorClick={error => {
-                setSelectedError(error);
-                setIsDialogOpen(true);
-                EventTracker.track("webhook_error_view", {
-                  errorId: error.userWebhookEvent.id,
-                });
-              }}
-              onResolve={handleResolveWebhookError}
+              eventVolumeData={eventTimeToComplete}
             />
+
             <WebhookGraph
               data={graphData}
               totalSuccess={totalSuccess}
@@ -171,9 +164,18 @@ function Dashboard() {
               loading={loading}
               eventVolumeData={eventVolumeData}
             />
-            <CompletionTimeOverTimeGraph
+            <WebhookErrorsCard
               loading={loading}
-              eventVolumeData={eventTimeToComplete}
+              errors={errors}
+              className="col-span-2"
+              onErrorClick={error => {
+                setSelectedError(error);
+                setIsDialogOpen(true);
+                EventTracker.track("webhook_error_view", {
+                  errorId: error.userWebhookEvent.id,
+                });
+              }}
+              onResolve={handleResolveWebhookError}
             />
           </div>
           <ErrorDialog

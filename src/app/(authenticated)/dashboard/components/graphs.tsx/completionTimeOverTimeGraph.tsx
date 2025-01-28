@@ -46,8 +46,8 @@ function CompletionTimeOverTimeGraph({
     if (averageTimeToComplete < MAX_GOOD) {
       return "#34d399";
     } else if (
-      averageTimeToComplete >= MAX_GOOD &&
-      averageTimeToComplete < MAX_BAD
+      !averageTimeToComplete ||
+      (averageTimeToComplete >= MAX_GOOD && averageTimeToComplete < MAX_BAD)
     ) {
       return "#f59e0b";
     } else {
@@ -56,6 +56,9 @@ function CompletionTimeOverTimeGraph({
   }, [averageTimeToComplete]);
 
   const explanation = useMemo(() => {
+    if (!averageTimeToComplete) {
+      return "No data available";
+    }
     if (averageTimeToComplete < MAX_GOOD) {
       return "All good!";
     } else if (

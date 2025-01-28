@@ -210,11 +210,14 @@ export default function PricingSubscription({
                             priceWithCents: tier.priceStructure.monthly.price,
                           })
                         : formatPrice({
-                            priceWithCents: tier.priceStructure.yearly.price,
+                            priceWithCents:
+                              tier.priceStructure.yearly.price / 12,
                           })}
                     </span>
                     <span className="text-muted-foreground">
-                      {selectedPlan === "monthly" ? "/month" : "/month"}
+                      {selectedPlan === "monthly"
+                        ? "/month"
+                        : "/month (billed annually)"}
                     </span>
                   </div>
                   <ul className="my-8 space-y-4">

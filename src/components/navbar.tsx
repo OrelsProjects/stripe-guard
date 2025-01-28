@@ -176,7 +176,7 @@ export function Navbar() {
                 className="absolute right-4 flex items-center space-x-4 bg-yellow-100 dark:bg-yellow-200 p-2 rounded-md"
               >
                 <p className="text-sm font-medium text-yellow-800 dark:text-yellow-900">
-                  Your revenue is not protected
+                  Your webhooks are not monitored
                 </p>
                 <Button
                   size="sm"
@@ -201,7 +201,7 @@ export function Navbar() {
           <DialogHeader className="flex flex-row items-center gap-2">
             <Bell className="h-6 w-6 mt-2" />
             <h3 className="text-lg font-bold ">
-              Your revenue is not protected.
+              Your webhooks are not monitored.
             </h3>
           </DialogHeader>
           <p>

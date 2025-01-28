@@ -42,14 +42,25 @@ function TopEventTypeDistributionGraph({
                     return value.slice(0, 2);
                   }
                   if (length === 2) {
-                    // split first by _ and then by .
-                    const first = value.split("_")[0];
-                    const second = value.split("_")[1].split(".")[0];
-                    return first.slice(0, 2) + "." + second;
+                    if (value.includes("_")) {
+                      debugger;
+                      const first = value.split("_")[0];
+                      const second = value.split("_")[1]?.split(".")?.[0] || "";
+                      const third = value.split(".")[1];
+                      return (
+                        first.slice(0, 2) +
+                        "_" +
+                        second.slice(0, 2) +
+                        "." +
+                        third
+                      );
+                    } else {
+                      return value.slice(0, 2) + "." + value.split(".")[1];
+                    }
                   } else {
                     const first = value.split(".")[0];
                     const second = value.split(".")[1];
-                    return first + "." + second 
+                    return first + "." + second;
                   }
                 }}
                 axisLine={false}
