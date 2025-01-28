@@ -140,9 +140,11 @@ export async function GET(req: NextRequest) {
           )}%`;
 
     const averageTimeToComplete =
-      processedEvents.reduce((acc, webhook) => {
-        return acc + webhook.timeToComplete;
-      }, 0) / processedEvents.length;
+      processedEvents.length > 0
+        ? processedEvents.reduce((acc, webhook) => {
+            return acc + webhook.timeToComplete;
+          }, 0) / processedEvents.length
+        : 0;
 
     const cardsData: Omit<WebhookCardStats, "icon">[] = [
       {
@@ -158,7 +160,7 @@ export async function GET(req: NextRequest) {
       },
       {
         title: "Average time to complete",
-        value: `${(averageTimeToComplete / 1000).toFixed(2)} seconds`,
+        value: `${averageTimeToComplete > 0 ? (averageTimeToComplete / 1000).toFixed(2) : "0"} seconds`,
         description: "Webhook completion average time",
       },
       {
